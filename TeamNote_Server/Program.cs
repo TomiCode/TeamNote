@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TeamNote_Server
+using TeamNote.Server;
+
+namespace TeamNote
 {
   class Program
   {
     static void Main(string[] args)
     {
+      ServerInstance l_serverInstance = new ServerInstance();
     }
   }
 }
