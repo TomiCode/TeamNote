@@ -12,7 +12,22 @@ namespace TeamNote
   {
     static void Main(string[] args)
     {
+      int a = 0;
+
+
       ServerInstance l_serverInstance = new ServerInstance();
+      Debug.Setup("test.log");
+      Debug.Log("Test");
+
+      try {
+        a = 3 / a;
+      }
+      catch (Exception e) {
+        Debug.Exception(e);
+      }
+
+      Console.ReadKey();
+
     }
   }
 }
