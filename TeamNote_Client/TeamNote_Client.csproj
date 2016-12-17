@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Protocol\Header.cs" />
     <Page Include="Languages\base.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

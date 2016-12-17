@@ -1,0 +1,1 @@
+protoc --proto_path=.\Protobuf --csharp_out=.\TeamNote_Client\Protocol --csharp_out=.\TeamNote_Server\Protocol .\Protobuf\*.proto
