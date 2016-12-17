@@ -68,6 +68,27 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Protocol\Header.cs" />
+    <Compile Include="UI\ContactItem.xaml.cs">
+      <DependentUpon>ContactItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MessageItem.xaml.cs">
+      <DependentUpon>MessageItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Authenticate.xaml.cs">
+      <DependentUpon>Authenticate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Contacts.xaml.cs">
+      <DependentUpon>Contacts.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Message.xaml.cs">
+      <DependentUpon>Message.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Splash.xaml.cs">
+      <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
     <Page Include="Languages\base.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -80,7 +101,35 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\ContactItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MessageItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Authenticate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Contacts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Message.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -104,6 +153,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\Ubuntu-B.ttf" />
+    <Resource Include="Fonts\Ubuntu-BI.ttf" />
+    <Resource Include="Fonts\Ubuntu-C.ttf" />
+    <Resource Include="Fonts\Ubuntu-L.ttf" />
+    <Resource Include="Fonts\Ubuntu-LI.ttf" />
+    <Resource Include="Fonts\Ubuntu-M.ttf" />
+    <Resource Include="Fonts\Ubuntu-MI.ttf" />
+    <Resource Include="Fonts\Ubuntu-R.ttf" />
+    <Resource Include="Fonts\Ubuntu-RI.ttf" />
+    <Resource Include="Fonts\UbuntuMono-B.ttf" />
+    <Resource Include="Fonts\UbuntuMono-BI.ttf" />
+    <Resource Include="Fonts\UbuntuMono-R.ttf" />
+    <Resource Include="Fonts\UbuntuMono-RI.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -116,7 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Client\" />
-    <Folder Include="Window\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\initium_logotype.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

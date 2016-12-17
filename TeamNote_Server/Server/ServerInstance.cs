@@ -8,6 +8,8 @@ namespace TeamNote.Server
 {
   class ServerInstance
   {
+    private Dictionary<uint, object> m_connectedClients;
+
     public ServerInstance()
     {
 

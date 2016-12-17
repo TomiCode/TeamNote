@@ -1,5 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:TeamNote.Languages">
-    
+                    xmlns:local="clr-namespace:TeamNote.Languages" xmlns:System="clr-namespace:System;assembly=mscorlib">
+
+  <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
+  <System:String x:Key="Authenticate_Name">Name</System:String>
+  <System:String x:Key="Authenticate_Surname">Surname</System:String>
+  <System:String x:Key="Authenticate_btnConnect">Connect</System:String>
+  <System:String x:Key="Authenticate_btnCancel">Cancel</System:String>
+  
 </ResourceDictionary>
