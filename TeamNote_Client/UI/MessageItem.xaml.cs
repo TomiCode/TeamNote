@@ -15,14 +15,15 @@ using System.Windows.Shapes;
 
 namespace TeamNote.UI
 {
-  /// <summary>
-  /// Interaction logic for MessageItem.xaml
-  /// </summary>
   public partial class MessageItem : UserControl
   {
-    public MessageItem()
+    public MessageItem(DateTime messageTime, string userName, string messageContent)
     {
       InitializeComponent();
+
+      this.lbl_datetime.Content = messageTime.ToString("dd MMM, HH:mm");
+      this.tbl_messageContent.Text = messageContent;
+      this.lbl_messageUser.Content = userName;
     }
   }
 }

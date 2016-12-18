@@ -9,12 +9,16 @@
   <Color x:Key="WindowBackgroundColor">#FFF4F0F2</Color>
   <Color x:Key="WindowBackgroundFadeColor">#FFffffff</Color>
   <Color x:Key="NormalLabelForegroundColor">#FF404040</Color>
+  <Color x:Key="SecondLabelForegroundColor">#FF5F5F5F</Color>
   <Color x:Key="ScrollbarTrackColor">#FFCFCFCF</Color>
 
   <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{DynamicResource WindowBackgroundColor}" />
   <SolidColorBrush x:Key="WindowBackgroundFadeBrush" Color="{DynamicResource WindowBackgroundFadeColor}" />
   <SolidColorBrush x:Key="NormalLabelForegroundBrush" Color="{DynamicResource NormalLabelForegroundColor}" />
+  <SolidColorBrush x:Key="SecondLabelForegroundBrush" Color="{DynamicResource SecondLabelForegroundColor}" />
+  <SolidColorBrush x:Key="ButtonIconFillBrush" Color="{DynamicResource NormalLabelForegroundColor}" />
   <SolidColorBrush x:Key="ScrollbarTrackBrush" Color="{DynamicResource ScrollbarTrackColor}" />
+  <SolidColorBrush x:Key="TransparentBrush" Color="#00000000"/>
 
   <LinearGradientBrush x:Key="WindowTitleBackgroundGradient" EndPoint="0.5,1" StartPoint="0.5,0">
     <GradientStop Color="{DynamicResource WindowBackgroundColor}" Offset="0.7"/>
@@ -28,4 +32,5 @@
   <FontFamily x:Key="GlobalLightFont">/TeamNote_Client;component/Fonts/#Ubuntu Light</FontFamily>
   <FontFamily x:Key="GlobalNormalFont">/TeamNote_Client;component/Fonts/#Ubuntu</FontFamily>
   
+
 </ResourceDictionary>

@@ -1,11 +1,12 @@
-﻿<Window x:Class="TeamNote.GUI.Contacts"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
+        xmlns:UI="clr-namespace:TeamNote.UI" x:Class="TeamNote.GUI.Contacts"
         mc:Ignorable="d"
-        Title="Contacts" Height="400" Width="350" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
+        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
       <Label x:Name="wnd_title" Content="{DynamicResource Contacts_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
@@ -23,18 +24,7 @@
     </Border>
     <ScrollViewer Margin="0,94,0,28" BorderThickness="0" Template="{DynamicResource ScrollViewerControl}" BorderBrush="#FF020202">
       <StackPanel>
-        <Label x:Name="label4" Content="Label"/>
-        <Label x:Name="label5" Content="Label"/>
-        <Label x:Name="label6" Content="Label"/>
-        <Label x:Name="label7" Content="Label"/>
-        <Label x:Name="label8" Content="Label"/>
-        <Label x:Name="label9" Content="Label"/>
-        <Label x:Name="label10" Content="Label"/>
-        <Label x:Name="label11" Content="Label"/>
-        <Label x:Name="label12" Content="Label"/>
-        <Label x:Name="label13" Content="Label"/>
-        <Label x:Name="label14" Content="Label"/>
-        <Label x:Name="label15" Content="Label"/>
+        <UI:ContactItem/>
       </StackPanel>
 
     </ScrollViewer>

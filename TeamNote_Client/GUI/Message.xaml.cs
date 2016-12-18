@@ -14,14 +14,22 @@ using System.Windows.Shapes;
 
 namespace TeamNote.GUI
 {
-  /// <summary>
-  /// Interaction logic for Message.xaml
-  /// </summary>
   public partial class Message : Window
   {
     public Message()
     {
       InitializeComponent();
+    }
+
+    private void btn_send_Click(object sender, RoutedEventArgs e)
+    {
+      this.sp_messageList.Children.Add(new UI.MessageItem(DateTime.Now, "Name Surname", this.tbx_message.Text));
+    }
+
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (e.LeftButton == MouseButtonState.Pressed)
+        this.DragMove();
     }
   }
 }

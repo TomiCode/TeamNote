@@ -4,9 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TeamNote.UI"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+             mc:Ignorable="d" d:DesignWidth="492.5">
+  <Grid Margin="0,5">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+    <Label x:Name="lbl_messageUser" Content="{}{username}" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}" Padding="5,5,4,2"/>
+    <Label Grid.Row="1" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="12" Margin="15,0,0,0" Foreground="{DynamicResource NormalLabelForegroundBrush}" UseLayoutRounding="False" VerticalAlignment="Top" Padding="0" Grid.ColumnSpan="2" TextOptions.TextHintingMode="Fixed">
+      <TextBlock x:Name="tbl_messageContent" TextWrapping="Wrap" Text="{}{message_content}" />
+    </Label>
+    <Label x:Name="lbl_datetime" Content="{}{datetime}" Grid.Column="1" Margin="0" FontFamily="{DynamicResource GlobalLightFont}" Padding="2,4" VerticalContentAlignment="Bottom" FontSize="11">
+      <Label.Foreground>
+        <SolidColorBrush Color="#FF979797"/>
+      </Label.Foreground>
+    </Label>
+  </Grid>
 </UserControl>
