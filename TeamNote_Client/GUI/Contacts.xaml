@@ -5,8 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="Contacts" Height="300" Width="300">
-    <Grid>
-        
+        Title="Contacts" Height="400" Width="350" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
+  <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
+    <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
+      <Label x:Name="wnd_title" Content="{DynamicResource Contacts_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
     </Grid>
+    <Border BorderBrush="#FFC7C7C7" BorderThickness="0,0,0,1" Height="64" Margin="0,30,0,0" VerticalAlignment="Top">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition/>
+          <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label x:Name="label" Content="{}{name}" HorizontalAlignment="Left" Margin="5,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+        <Label x:Name="label1" Content="{}{surname}" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+        <Label x:Name="label2" Content="{}{status}" HorizontalAlignment="Right" Margin="0" Grid.Row="1" VerticalContentAlignment="Bottom" FontFamily="{DynamicResource GlobalNormalFont}" HorizontalContentAlignment="Right" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+      </Grid>
+    </Border>
+    <ScrollViewer Margin="0,94,0,33" BorderThickness="0,0,0,1" Template="{DynamicResource ScrollViewerControl}">
+      <StackPanel>
+        <Label x:Name="label4" Content="Label"/>
+        <Label x:Name="label5" Content="Label"/>
+        <Label x:Name="label6" Content="Label"/>
+        <Label x:Name="label7" Content="Label"/>
+        <Label x:Name="label8" Content="Label"/>
+        <Label x:Name="label9" Content="Label"/>
+        <Label x:Name="label10" Content="Label"/>
+        <Label x:Name="label11" Content="Label"/>
+        <Label x:Name="label12" Content="Label"/>
+        <Label x:Name="label13" Content="Label"/>
+        <Label x:Name="label14" Content="Label"/>
+        <Label x:Name="label15" Content="Label"/>
+      </StackPanel>
+
+    </ScrollViewer>
+    <Grid Margin="0" VerticalAlignment="Bottom" Height="28">
+      <Label x:Name="label3" Content="{}{statusbar content}" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="#FF6A6868"/>
+    </Grid>
+  </Grid>
 </Window>
