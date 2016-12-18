@@ -10,7 +10,7 @@
     <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
       <Label x:Name="wnd_title" Content="{DynamicResource Contacts_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
     </Grid>
-    <Border BorderBrush="#FFC7C7C7" BorderThickness="0,0,0,1" Height="64" Margin="0,30,0,0" VerticalAlignment="Top">
+    <Border BorderBrush="#FFE4E4E4" BorderThickness="0,0,0,1" Height="64" Margin="0,30,0,0" VerticalAlignment="Top">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition/>
@@ -21,7 +21,7 @@
         <Label x:Name="label2" Content="{}{status}" HorizontalAlignment="Right" Margin="0" Grid.Row="1" VerticalContentAlignment="Bottom" FontFamily="{DynamicResource GlobalNormalFont}" HorizontalContentAlignment="Right" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
       </Grid>
     </Border>
-    <ScrollViewer Margin="0,94,0,33" BorderThickness="0,0,0,1" Template="{DynamicResource ScrollViewerControl}">
+    <ScrollViewer Margin="0,94,0,28" BorderThickness="0" Template="{DynamicResource ScrollViewerControl}" BorderBrush="#FF020202">
       <StackPanel>
         <Label x:Name="label4" Content="Label"/>
         <Label x:Name="label5" Content="Label"/>

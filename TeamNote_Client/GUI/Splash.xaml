@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="Splash" Height="160" Width="400" WindowStyle="None" Background="{x:Null}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Splash" Height="150" Width="400" WindowStyle="None" Background="{x:Null}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" AllowsTransparency="True">
   <Grid Margin="10">
-    <Label x:Name="lbl_status" Content="{}{status content}" HorizontalAlignment="Center" Margin="0,0,0,5" VerticalAlignment="Bottom" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="#BFFFFFFF">
+    <Label x:Name="lbl_status" Content="{}{status content}" HorizontalAlignment="Center" Margin="0,0,0,5" VerticalAlignment="Bottom" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="White" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" SnapsToDevicePixels="True">
       <Label.Effect>
-        <DropShadowEffect ShadowDepth="0" Direction="0" RenderingBias="Quality" Opacity="0.9"/>
+        <DropShadowEffect ShadowDepth="0" Direction="0" BlurRadius="3"/>
       </Label.Effect>
     </Label>
     <Image x:Name="img_logotype" HorizontalAlignment="Center" Height="96" Margin="0" VerticalAlignment="Top" Width="96" Source="/TeamNote_Client;component/Resources/initium_logotype.png"/>

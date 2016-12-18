@@ -1,14 +1,14 @@
 ﻿<Application x:Class="TeamNote.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="GUI/Contacts.xaml"
+             StartupUri="GUI/Splash.xaml"
              xmlns:local="clr-namespace:TeamNote">
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Languages/base.xaml" />
         <ResourceDictionary Source="UI/Style.xaml" />
-        <ResourceDictionary Source="ScrollBarControl.xaml"/>
+        <ResourceDictionary Source="UI/ScrollViewer.xaml"/>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
