@@ -10,24 +10,15 @@ namespace TeamNote
 {
   class Program
   {
+    private static ServerInstance serverInstance;
+    
     static void Main(string[] args)
     {
-      int a = 0;
-
-
-      ServerInstance l_serverInstance = new ServerInstance();
       Debug.Setup("test.log");
-      Debug.Log("Test");
-
-      try {
-        a = 3 / a;
-      }
-      catch (Exception e) {
-        Debug.Exception(e);
-      }
+      serverInstance = new ServerInstance();
+      serverInstance.Start();
 
       Console.ReadKey();
-
     }
   }
 }

@@ -23,7 +23,7 @@ namespace TeamNote.Protocol {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgxIZWFkZXIucHJvdG8iJAoGSGVhZGVyEgwKBFR5cGUYASABKA0SDAoEU2l6",
-            "ZRgCIAEoDUIWSAOqAhFUZWFtTm90ZS5Qcm90b2NvbGIGcHJvdG8z"));
+            "ZRgCIAEoBUIWSAGqAhFUZWFtTm90ZS5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -80,9 +80,9 @@ namespace TeamNote.Protocol {
 
     /// <summary>Field number for the "Size" field.</summary>
     public const int SizeFieldNumber = 2;
-    private uint size_;
+    private int size_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Size {
+    public int Size {
       get { return size_; }
       set {
         size_ = value;
@@ -128,7 +128,7 @@ namespace TeamNote.Protocol {
       }
       if (Size != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(Size);
+        output.WriteInt32(Size);
       }
     }
 
@@ -139,7 +139,7 @@ namespace TeamNote.Protocol {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Type);
       }
       if (Size != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Size);
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Size);
       }
       return size;
     }
@@ -170,7 +170,7 @@ namespace TeamNote.Protocol {
             break;
           }
           case 16: {
-            Size = input.ReadUInt32();
+            Size = input.ReadInt32();
             break;
           }
         }

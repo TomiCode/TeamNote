@@ -10,10 +10,17 @@ namespace TeamNote
 {
   public partial class App : Application
   {
+    private Client.ClientInstance m_clientInstance;
+
     protected override void OnStartup(StartupEventArgs e)
     {
+      if (this.m_clientInstance == null)
+        this.m_clientInstance = new Client.ClientInstance();
+
       Debug.Setup("TeamNote_Client.log");
       base.OnStartup(e);
+
+      this.m_clientInstance.Initialize();
     }
   }
 }

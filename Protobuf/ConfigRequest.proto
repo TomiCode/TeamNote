@@ -3,7 +3,7 @@ syntax = "proto3";
 option optimize_for = SPEED;
 option csharp_namespace = "TeamNote.Protocol";
 
-message Header {
-  uint32 Type = 1;
-  int32 Size = 2;
+message ConfigRequest {
+	int32 Port = 1;
+	uint32 ServiceNumber = 2;
 }

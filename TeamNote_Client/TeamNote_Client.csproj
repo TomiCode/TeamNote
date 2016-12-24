@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -67,7 +68,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Client\ClientInstance.cs" />
+    <Compile Include="Client\Configuration.cs" />
+    <Compile Include="Client\NetworkPacket.cs" />
+    <Compile Include="Client\ServerDiscoverer.cs" />
+    <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\Header.cs" />
+    <Compile Include="Protocol\Types.cs" />
     <Compile Include="UI\ContactItem.xaml.cs">
       <DependentUpon>ContactItem.xaml</DependentUpon>
     </Compile>
@@ -180,9 +187,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Client\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\initium_logotype.png" />
   </ItemGroup>
