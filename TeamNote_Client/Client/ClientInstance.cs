@@ -42,6 +42,8 @@ namespace TeamNote.Client
 
     public void Initialize()
     {
+      this.UpdateStatusMessage("Splash_Loading");
+
       if (!this.m_clientConfig.LoadConfig()) {
         Debug.Log("Failed to load configuration file.. Creating.");
 
@@ -51,12 +53,18 @@ namespace TeamNote.Client
         }
       }
 
+      this.m_guiSplash.Show();
       this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
     }
 
     private void ConnectToServer(IPEndPoint serverAddress)
     {
       Debug.Log("Address: {0}", serverAddress);
+    }
+
+    private void UpdateStatusMessage(string resourceString)
+    {
+      this.m_guiSplash.SetMessage(resourceString);
     }
   }
 }

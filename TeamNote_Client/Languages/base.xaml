@@ -3,12 +3,17 @@
                     xmlns:local="clr-namespace:TeamNote.Languages"
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
 
+  <System:String x:Key="Splash_Loading">Loading application..</System:String>
+  <System:String x:Key="Splash_Waiting">Waiting for server response..</System:String>
+
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
   <System:String x:Key="Authenticate_Name">Name</System:String>
   <System:String x:Key="Authenticate_Surname">Surname</System:String>
   <System:String x:Key="Authenticate_btnConnect">Connect</System:String>
   <System:String x:Key="Authenticate_btnCancel">Cancel</System:String>
+  
   <System:String x:Key="Contacts_Title">TeamNote – Contacts</System:String>
+  
   <System:String x:Key="Message_Title">TeamNote – Message</System:String>
   <System:String x:Key="Message_btnSend">Send</System:String>
 

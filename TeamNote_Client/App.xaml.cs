@@ -12,15 +12,17 @@ namespace TeamNote
   {
     private Client.ClientInstance m_clientInstance;
 
+    public App()
+    {
+      this.m_clientInstance = new Client.ClientInstance();
+    }
+
     protected override void OnStartup(StartupEventArgs e)
     {
-      if (this.m_clientInstance == null)
-        this.m_clientInstance = new Client.ClientInstance();
-
       Debug.Setup("TeamNote_Client.log");
-      base.OnStartup(e);
 
       this.m_clientInstance.Initialize();
+      base.OnStartup(e);
     }
   }
 }

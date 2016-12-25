@@ -19,23 +19,19 @@ namespace TeamNote.GUI
     public Splash()
     {
       InitializeComponent();
-      this.MessageTimeout();
     }
 
-    public void UpdateMessage(string content, int timeout)
+    public void SetMessage(string resourceMessage)
     {
-      Debug.Log("Message set to: {0}", content);
-      this.lbl_status.Dispatcher.Invoke(() => this.UpdateLabelContent(content));
-    }
+      string message = Application.Current.Resources[resourceMessage] as string;
+      if (message == null) {
+        Debug.Log("Message '{0}' not found in Language Dictionary.", resourceMessage);
+        return;
+      }
 
-    private void MessageTimeout()
-    {
-      this.lbl_status.Content = "";
-    }
-
-    private void UpdateLabelContent(string content)
-    {
-      this.lbl_status.Content = content;
+      this.lbl_status.Dispatcher.Invoke(() => {
+        this.lbl_status.Content = message;
+      });
     }
   }
 }
