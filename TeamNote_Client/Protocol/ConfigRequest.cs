@@ -22,13 +22,13 @@ namespace TeamNote.Protocol {
     static ConfigRequestReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNDb25maWdSZXF1ZXN0LnByb3RvIjQKDUNvbmZpZ1JlcXVlc3QSDAoEUG9y",
-            "dBgBIAEoBRIVCg1TZXJ2aWNlTnVtYmVyGAIgASgNQhZIAaoCEVRlYW1Ob3Rl",
-            "LlByb3RvY29sYgZwcm90bzM="));
+            "ChNDb25maWdSZXF1ZXN0LnByb3RvIjAKDUNvbmZpZ1JlcXVlc3QSDAoEUG9y",
+            "dBgBIAEoBRIRCglTZXJ2aWNlSWQYAiABKAVCFkgBqgIRVGVhbU5vdGUuUHJv",
+            "dG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.ConfigRequest), global::TeamNote.Protocol.ConfigRequest.Parser, new[]{ "Port", "ServiceNumber" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.ConfigRequest), global::TeamNote.Protocol.ConfigRequest.Parser, new[]{ "Port", "ServiceId" }, null, null, null)
           }));
     }
     #endregion
@@ -60,7 +60,7 @@ namespace TeamNote.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ConfigRequest(ConfigRequest other) : this() {
       port_ = other.port_;
-      serviceNumber_ = other.serviceNumber_;
+      serviceId_ = other.serviceId_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -79,14 +79,14 @@ namespace TeamNote.Protocol {
       }
     }
 
-    /// <summary>Field number for the "ServiceNumber" field.</summary>
-    public const int ServiceNumberFieldNumber = 2;
-    private uint serviceNumber_;
+    /// <summary>Field number for the "ServiceId" field.</summary>
+    public const int ServiceIdFieldNumber = 2;
+    private int serviceId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint ServiceNumber {
-      get { return serviceNumber_; }
+    public int ServiceId {
+      get { return serviceId_; }
       set {
-        serviceNumber_ = value;
+        serviceId_ = value;
       }
     }
 
@@ -104,7 +104,7 @@ namespace TeamNote.Protocol {
         return true;
       }
       if (Port != other.Port) return false;
-      if (ServiceNumber != other.ServiceNumber) return false;
+      if (ServiceId != other.ServiceId) return false;
       return true;
     }
 
@@ -112,7 +112,7 @@ namespace TeamNote.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (Port != 0) hash ^= Port.GetHashCode();
-      if (ServiceNumber != 0) hash ^= ServiceNumber.GetHashCode();
+      if (ServiceId != 0) hash ^= ServiceId.GetHashCode();
       return hash;
     }
 
@@ -127,9 +127,9 @@ namespace TeamNote.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(Port);
       }
-      if (ServiceNumber != 0) {
+      if (ServiceId != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt32(ServiceNumber);
+        output.WriteInt32(ServiceId);
       }
     }
 
@@ -139,8 +139,8 @@ namespace TeamNote.Protocol {
       if (Port != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
       }
-      if (ServiceNumber != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ServiceNumber);
+      if (ServiceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ServiceId);
       }
       return size;
     }
@@ -153,8 +153,8 @@ namespace TeamNote.Protocol {
       if (other.Port != 0) {
         Port = other.Port;
       }
-      if (other.ServiceNumber != 0) {
-        ServiceNumber = other.ServiceNumber;
+      if (other.ServiceId != 0) {
+        ServiceId = other.ServiceId;
       }
     }
 
@@ -171,7 +171,7 @@ namespace TeamNote.Protocol {
             break;
           }
           case 16: {
-            ServiceNumber = input.ReadUInt32();
+            ServiceId = input.ReadInt32();
             break;
           }
         }

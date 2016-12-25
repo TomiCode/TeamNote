@@ -14,33 +14,30 @@ using Google.Protobuf;
 
 namespace TeamNote.Client
 {
-  
-
   class ClientInstance
   {
     public const string CONFIG_FILENAME = "ClientConfig.json";
 
     /* Client private members. */
-    private UdpClient m_udpClient;
     private Configuration m_clientConfig;
+    private ServerDiscoverer m_serverDiscoverer;
 
     /* Client GUI types. */
     private GUI.Splash m_guiSplash;
     private GUI.Authenticate m_guiAuthenticate;
 
-    private Thread m_configResponseListener;
-
     public ClientInstance()
     {
-      /* udpClient initialization. */
-      this.m_udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, 48750));
+      /* Client config. */
       this.m_clientConfig = new Configuration(CONFIG_FILENAME);
+
+      /* Server Discoverer. */
+      this.m_serverDiscoverer = new ServerDiscoverer();
+      this.m_serverDiscoverer.onDiscoveryResponse += this.ConnectToServer;
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
       this.m_guiAuthenticate = new GUI.Authenticate();
-
-      this.m_configResponseListener = new Thread(this.ConfiguratorListener);
     }
 
     public void Initialize()
@@ -54,38 +51,12 @@ namespace TeamNote.Client
         }
       }
 
-      this.m_configResponseListener.Start();
-      this.SendBroadcastHello();
+      this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
     }
 
-    private bool SendBroadcastHello()
+    private void ConnectToServer(IPEndPoint serverAddress)
     {
-      int udpServicePort = this.m_clientConfig.UDP_Port;
-      if (udpServicePort == Configuration.INVALID_UDP_PORT) {
-        Debug.Error("Invalid Broadcast service address configuration!");
-        return false;
-      }
-
-      IPEndPoint broadcastEndPoint = new IPEndPoint(IPAddress.Broadcast, udpServicePort);
-      Header helloMessage = new Header();
-
-      helloMessage.Type = MessageType.BroadcastClientRequest;
-      helloMessage.Size = MessageSize.NoData;
-
-      int sended = this.m_udpClient.Send(helloMessage.ToByteArray(), helloMessage.CalculateSize(), broadcastEndPoint);
-      Debug.Log("Sended {0} bytes to {1}.", sended, broadcastEndPoint.Address);
-      return true;
-    }
-
-    private void ConfiguratorListener()
-    {
-      Debug.Log("Started listen thread..");
-      while (this.m_configResponseListener != null) {
-        IPEndPoint senderAddress = new IPEndPoint(IPAddress.Any, 1337);
-        byte[] dataBuffer = this.m_udpClient.Receive(ref senderAddress);
-
-        Debug.Log("Response from {0}, bytes {1}.", senderAddress.Address, dataBuffer.Length);
-      }
+      Debug.Log("Address: {0}", serverAddress);
     }
   }
 }

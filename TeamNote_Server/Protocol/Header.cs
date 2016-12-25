@@ -22,12 +22,14 @@ namespace TeamNote.Protocol {
     static HeaderReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgxIZWFkZXIucHJvdG8iJAoGSGVhZGVyEgwKBFR5cGUYASABKA0SDAoEU2l6",
-            "ZRgCIAEoBUIWSAGqAhFUZWFtTm90ZS5Qcm90b2NvbGIGcHJvdG8z"));
+            "CgxIZWFkZXIucHJvdG8aGWdvb2dsZS9wcm90b2J1Zi9hbnkucHJvdG8iSAoG",
+            "SGVhZGVyEgwKBFR5cGUYASABKA0SDAoEU2l6ZRgCIAEoBRIiCgRCb2R5GAMg",
+            "ASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueUIWSAGqAhFUZWFtTm90ZS5Qcm90",
+            "b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.Header), global::TeamNote.Protocol.Header.Parser, new[]{ "Type", "Size" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.Header), global::TeamNote.Protocol.Header.Parser, new[]{ "Type", "Size", "Body" }, null, null, null)
           }));
     }
     #endregion
@@ -60,6 +62,7 @@ namespace TeamNote.Protocol {
     public Header(Header other) : this() {
       type_ = other.type_;
       size_ = other.size_;
+      Body = other.body_ != null ? other.Body.Clone() : null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -89,6 +92,17 @@ namespace TeamNote.Protocol {
       }
     }
 
+    /// <summary>Field number for the "Body" field.</summary>
+    public const int BodyFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Any body_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.WellKnownTypes.Any Body {
+      get { return body_; }
+      set {
+        body_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Header);
@@ -104,6 +118,7 @@ namespace TeamNote.Protocol {
       }
       if (Type != other.Type) return false;
       if (Size != other.Size) return false;
+      if (!object.Equals(Body, other.Body)) return false;
       return true;
     }
 
@@ -112,6 +127,7 @@ namespace TeamNote.Protocol {
       int hash = 1;
       if (Type != 0) hash ^= Type.GetHashCode();
       if (Size != 0) hash ^= Size.GetHashCode();
+      if (body_ != null) hash ^= Body.GetHashCode();
       return hash;
     }
 
@@ -130,6 +146,10 @@ namespace TeamNote.Protocol {
         output.WriteRawTag(16);
         output.WriteInt32(Size);
       }
+      if (body_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Body);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -140,6 +160,9 @@ namespace TeamNote.Protocol {
       }
       if (Size != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Size);
+      }
+      if (body_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Body);
       }
       return size;
     }
@@ -154,6 +177,12 @@ namespace TeamNote.Protocol {
       }
       if (other.Size != 0) {
         Size = other.Size;
+      }
+      if (other.body_ != null) {
+        if (body_ == null) {
+          body_ = new global::Google.Protobuf.WellKnownTypes.Any();
+        }
+        Body.MergeFrom(other.Body);
       }
     }
 
@@ -171,6 +200,13 @@ namespace TeamNote.Protocol {
           }
           case 16: {
             Size = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            if (body_ == null) {
+              body_ = new global::Google.Protobuf.WellKnownTypes.Any();
+            }
+            input.ReadMessage(body_);
             break;
           }
         }

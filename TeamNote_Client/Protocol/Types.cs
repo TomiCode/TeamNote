@@ -8,8 +8,8 @@ namespace TeamNote.Protocol
 {
   static class MessageType
   {
-    public const uint BroadcastClientRequest = 0x7F000001;
-    public const uint BroadcastServerResponse = 0x7F000002;
+    public const int ServiceConfigurationRequest = 0x7F000001;
+    public const int ServiceConfigurationResponse = 0x7F000002;
   }
 
   static class MessageSize

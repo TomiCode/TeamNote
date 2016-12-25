@@ -5,5 +5,5 @@ option csharp_namespace = "TeamNote.Protocol";
 
 message ConfigRequest {
 	int32 Port = 1;
-	uint32 ServiceNumber = 2;
+	int32 ServiceId = 2;
 }

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 using TeamNote.Protocol;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 namespace TeamNote.Client
 {
-  class NetworkPacket
+  class NetworkPacketZ
   {
     private Header m_packetHeader;
     private IMessage m_packetBody;
@@ -30,13 +31,13 @@ namespace TeamNote.Client
       }
     }
 
-    public NetworkPacket()
+    public NetworkPacketZ()
     {
       this.m_packetHeader = null;
       this.m_packetBody = null;
     }
 
-    public NetworkPacket(Header h, IMessage b)
+    public NetworkPacketZ(Header h, IMessage b)
     {
       this.m_packetBody = b;
       this.m_packetHeader = h;
@@ -59,6 +60,9 @@ namespace TeamNote.Client
 
     public byte[] Encode()
     {
+      // Any.Pack(this.m_packetBody);
+
+      // this.m_packetHeader.Body
       return null;
     }
 
@@ -66,5 +70,6 @@ namespace TeamNote.Client
     {
       return false;
     }
+
   }
 }
