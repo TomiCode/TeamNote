@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message ConfigResponse {
+	string IPAddress = 1;
+	int32 Port = 2;
+	int32 ServiceId = 3;
+}

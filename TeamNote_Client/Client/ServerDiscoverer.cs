@@ -64,9 +64,44 @@ namespace TeamNote.Client
       IPEndPoint responseAddress = new IPEndPoint(IPAddress.Any, this.m_responsePort);
       while (this.m_discoverClient != null) {
         byte[] responseData = this.m_discoverClient.Receive(ref responseAddress);
-        NetworkPacket l_responsePacket = NetworkPacket.Parser.ParseFrom(responseData);
+        Debug.Log("Response received Bytes={0}.", responseData.Length);
 
-        Debug.Log("Response received, bytes={0} valid={1}.", responseData.Length, l_responsePacket);
+        NetworkPacket l_responsePacket = NetworkPacket.Parser.ParseFrom(responseData);
+        if (l_responsePacket == null) {
+          Debug.Warn("Invalid Discovery response.");
+          continue;
+        }
+
+        if (l_responsePacket.Type != MessageType.ServiceConfigurationResponse) {
+          Debug.Error("Invalid response packet type '{0}'.", l_responsePacket.Type);
+          continue;
+        }
+
+        ConfigResponse l_discoveryResponse = l_responsePacket.Message.Unpack<ConfigResponse>();
+        if (l_discoveryResponse == null) {
+          Debug.Warn("Empty discovery response message.");
+          continue;
+        }
+
+        if (l_discoveryResponse.ServiceId != this.m_serviceId) {
+          Debug.Log("Response serviceId missmatch ({0} != {1}), skipping response packet.", this.m_serviceId, l_discoveryResponse.ServiceId);
+          continue;
+        }
+
+        IPAddress serverAddress;
+        if (!IPAddress.TryParse(l_discoveryResponse.IPAddress, out serverAddress)) {
+          Debug.Error("Cannot parse server IPAddress field '{0}'.", l_discoveryResponse.IPAddress);
+          continue;
+        }
+
+        if (this.onDiscoveryResponse == null) {
+          Debug.Error("No response event handler. :(");
+          continue;
+        }
+
+        this.onDiscoveryResponse(new IPEndPoint(serverAddress, l_discoveryResponse.Port));
+        this.m_discoverDispatcher.Stop();
+        return;
       }
     }
 

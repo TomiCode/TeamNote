@@ -55,8 +55,13 @@
     <Compile Include="Debug.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\ConfigRequest.cs" />
+    <Compile Include="Protocol\ConfigResponse.cs" />
     <Compile Include="Protocol\Header.cs" />
+    <Compile Include="Protocol\NetworkPacket.cs" />
+    <Compile Include="Protocol\Types.cs" />
     <Compile Include="Server\Configuration.cs" />
+    <Compile Include="Server\DiscoveryService.cs" />
     <Compile Include="Server\ServerInstance.cs" />
   </ItemGroup>
   <ItemGroup>
