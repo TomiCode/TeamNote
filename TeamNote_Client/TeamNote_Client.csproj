@@ -70,11 +70,9 @@
     </ApplicationDefinition>
     <Compile Include="Client\ClientInstance.cs" />
     <Compile Include="Client\Configuration.cs" />
-    <Compile Include="Client\NetworkPacket.cs" />
     <Compile Include="Client\ServerDiscoverer.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
-    <Compile Include="Protocol\Header.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
     <Compile Include="Protocol\Types.cs" />
     <Compile Include="UI\ContactItem.xaml.cs">
