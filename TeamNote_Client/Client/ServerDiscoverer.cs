@@ -24,9 +24,10 @@ namespace TeamNote.Client
     public event ReceivedDiscoveryResponse onDiscoveryResponse;
 
     private DispatcherTimer m_discoverDispatcher;
-    private IPEndPoint m_requestAddress;
-    private UdpClient m_discoverClient;
     private Thread m_discovererThread;
+
+    private UdpClient m_discoverClient;
+    private IPEndPoint m_requestAddress;
 
     private bool m_serverDiscovered;
     private int m_responsePort;

@@ -3,8 +3,8 @@
                     xmlns:local="clr-namespace:TeamNote.Languages"
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
 
-  <System:String x:Key="Splash_Loading">Loading application..</System:String>
-  <System:String x:Key="Splash_Waiting">Waiting for server response..</System:String>
+  <System:String x:Key="Splash_Discover">Waiting for application server..</System:String>
+  <System:String x:Key="Splash_Connect">Connecting to server..</System:String>
 
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
   <System:String x:Key="Authenticate_Name">Name</System:String>

@@ -61,6 +61,7 @@
     <Compile Include="Protocol\Types.cs" />
     <Compile Include="Server\Configuration.cs" />
     <Compile Include="Server\DiscoveryService.cs" />
+    <Compile Include="Server\NetworkClient.cs" />
     <Compile Include="Server\ServerInstance.cs" />
   </ItemGroup>
   <ItemGroup>

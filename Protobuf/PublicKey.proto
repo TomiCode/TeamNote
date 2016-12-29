@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message PublicKey {
+	string Modulus = 1;
+	string Exponent = 2;
+}

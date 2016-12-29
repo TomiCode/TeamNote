@@ -17,14 +17,15 @@ namespace TeamNote.Server
   class DiscoveryService
   {
     private UdpClient m_discoveryService;
-    private Thread m_discoveryThread;
-
     private IPEndPoint m_serverAddress;
+
+    private Thread m_discoveryThread;
     private bool m_serviceListening;
 
     public DiscoveryService(IPEndPoint listenAddress)
     {
       this.m_discoveryService = new UdpClient(listenAddress);
+
       this.m_discoveryThread = new Thread(this.DiscoveryListener);
       this.m_serviceListening = false;
     }
@@ -32,8 +33,10 @@ namespace TeamNote.Server
     public void Start(IPEndPoint serverAddress)
     {
       Debug.Log("Starting discovery service.");
-      this.m_serviceListening = true;
+
       this.m_serverAddress = serverAddress;
+      this.m_serviceListening = true;
+
       this.m_discoveryThread.Start();
     }
 

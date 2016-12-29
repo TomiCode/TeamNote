@@ -21,6 +21,7 @@ namespace TeamNote.Client
     /* Client private members. */
     private Configuration m_clientConfig;
     private ServerDiscoverer m_serverDiscoverer;
+    private EncryptionService m_encryptionService;
 
     /* Client GUI types. */
     private GUI.Splash m_guiSplash;
@@ -35,6 +36,9 @@ namespace TeamNote.Client
       this.m_serverDiscoverer = new ServerDiscoverer();
       this.m_serverDiscoverer.onDiscoveryResponse += this.ConnectToServer;
 
+      /* Encryption service. */
+      this.m_encryptionService = new EncryptionService();
+
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
       this.m_guiAuthenticate = new GUI.Authenticate();
@@ -42,8 +46,6 @@ namespace TeamNote.Client
 
     public void Initialize()
     {
-      this.UpdateStatusMessage("Splash_Loading");
-
       if (!this.m_clientConfig.LoadConfig()) {
         Debug.Log("Failed to load configuration file.. Creating.");
 
@@ -53,13 +55,20 @@ namespace TeamNote.Client
         }
       }
 
+      this.m_encryptionService.GenerateKeyPair();
+
       this.m_guiSplash.Show();
       this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
+
+      this.UpdateStatusMessage("Splash_Discover");
     }
 
     private void ConnectToServer(IPEndPoint serverAddress)
     {
       Debug.Log("Address: {0}", serverAddress);
+      this.m_guiSplash.SetMessage("Splash_Connect");
+
+
     }
 
     private void UpdateStatusMessage(string resourceString)

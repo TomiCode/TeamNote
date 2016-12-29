@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "PublicKey.proto";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message HandshakeRequest {
+	PublicKey Key = 1;
+}
