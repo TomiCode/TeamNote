@@ -24,14 +24,7 @@ namespace TeamNote.Client
 
     public bool Connect(IPEndPoint serverAddress)
     {
-      //try {
-      //  this.m_networkClient.Connect(serverAddress);
-      //}
-      //catch (Exception ex) {
-      //  Debug.Exception(ex);
-      //  return false;
-      //}
-      //return true;
+      return false;
     }
   }
 }

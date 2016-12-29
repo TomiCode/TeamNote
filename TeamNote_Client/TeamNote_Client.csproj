@@ -76,6 +76,7 @@
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
     <Compile Include="Client\NetworkClient.cs" />
+    <Compile Include="Protocol\HandshakeRequest.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
     <Compile Include="Protocol\Types.cs" />
     <Compile Include="UI\ContactItem.xaml.cs">

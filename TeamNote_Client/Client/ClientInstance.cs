@@ -21,6 +21,8 @@ namespace TeamNote.Client
     /* Client private members. */
     private Configuration m_clientConfig;
     private ServerDiscoverer m_serverDiscoverer;
+
+    private LocalClient m_localClient;
     private EncryptionService m_encryptionService;
 
     /* Client GUI types. */
@@ -35,6 +37,9 @@ namespace TeamNote.Client
       /* Server Discoverer. */
       this.m_serverDiscoverer = new ServerDiscoverer();
       this.m_serverDiscoverer.onDiscoveryResponse += this.ConnectToServer;
+
+      /* Self object for TCPIP Handling. */
+      this.m_localClient = new LocalClient();
 
       /* Encryption service. */
       this.m_encryptionService = new EncryptionService();
@@ -55,7 +60,8 @@ namespace TeamNote.Client
         }
       }
 
-      this.m_encryptionService.GenerateKeyPair();
+      // this.m_encryptionService.GenerateKeyPair();
+      this.m_localClient.InitializeEncryption();
 
       this.m_guiSplash.Show();
       this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
