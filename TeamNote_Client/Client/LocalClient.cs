@@ -14,13 +14,15 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
+using Google.Protobuf;
+
 using TeamNote.Protocol;
 
 namespace TeamNote.Client
 {
   class LocalClient
   {
-    const int KEY_STRENGTH = 512;
+    const int KEY_STRENGTH = 1024;
 
     private PgpPublicKey m_localPublicKey;
     private PgpPrivateKey m_localPrivateKey;
@@ -30,6 +32,20 @@ namespace TeamNote.Client
     public bool IsConnected {
       get {
         return this.m_tcpClient.Connected;
+      }
+    }
+
+    private PublicKey ServerKey {
+      get {
+        PublicKey key = new PublicKey();
+
+        /* Add exception handling. */
+        RsaKeyParameters keyParams = this.m_localPublicKey.GetKey() as RsaKeyParameters;
+        
+        key.Exponent = Convert.ToBase64String(keyParams.Exponent.ToByteArray());
+        key.Modulus = Convert.ToBase64String(keyParams.Modulus.ToByteArray());
+
+        return key;
       }
     }
 
@@ -71,18 +87,35 @@ namespace TeamNote.Client
 
     public void SendHandshake()
     {
+      Debug.Log("Sending handshake to server.");
 
+      HandshakeRequest handshakeRequest = new HandshakeRequest();
+      PublicKey publicKey = this.ServerKey;
+      handshakeRequest.Key = publicKey;
+
+      this.SendMessage(MessageType.ClientHandshakeRequest, handshakeRequest, false);
     }
 
-    private bool SendUnencrypted(NetworkPacket packet)
+    public bool SendMessage(int type, IMessage message)
     {
+      return this.SendMessage(type, message, true);
+    }
+
+    private bool SendMessage(int type, IMessage message, bool encrypted)
+    {
+      NetworkPacket networkPacket = new NetworkPacket();
+      networkPacket.Type = type;
+
+      if (encrypted) {
+
+      }
+      else {
+        networkPacket.Message = message.ToByteString();
+      }
+
+      this.m_tcpClient
+
       return false;
     }
-
-    private bool SendEncrypted(NetworkPacket packet)
-    {
-      return false;
-    }
-
   }
 }

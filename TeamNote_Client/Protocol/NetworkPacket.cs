@@ -22,12 +22,11 @@ namespace TeamNote.Protocol {
     static NetworkPacketReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNOZXR3b3JrUGFja2V0LnByb3RvGhlnb29nbGUvcHJvdG9idWYvYW55LnBy",
-            "b3RvIkQKDU5ldHdvcmtQYWNrZXQSDAoEVHlwZRgBIAEoDRIlCgdNZXNzYWdl",
-            "GAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueUIWSAGqAhFUZWFtTm90ZS5Q",
-            "cm90b2NvbGIGcHJvdG8z"));
+            "ChNOZXR3b3JrUGFja2V0LnByb3RvIi4KDU5ldHdvcmtQYWNrZXQSDAoEVHlw",
+            "ZRgBIAEoBRIPCgdNZXNzYWdlGAIgASgMQhZIAaoCEVRlYW1Ob3RlLlByb3Rv",
+            "Y29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
+          new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.NetworkPacket), global::TeamNote.Protocol.NetworkPacket.Parser, new[]{ "Type", "Message" }, null, null, null)
           }));
@@ -61,7 +60,7 @@ namespace TeamNote.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NetworkPacket(NetworkPacket other) : this() {
       type_ = other.type_;
-      Message = other.message_ != null ? other.Message.Clone() : null;
+      message_ = other.message_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -71,9 +70,9 @@ namespace TeamNote.Protocol {
 
     /// <summary>Field number for the "Type" field.</summary>
     public const int TypeFieldNumber = 1;
-    private uint type_;
+    private int type_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Type {
+    public int Type {
       get { return type_; }
       set {
         type_ = value;
@@ -82,12 +81,12 @@ namespace TeamNote.Protocol {
 
     /// <summary>Field number for the "Message" field.</summary>
     public const int MessageFieldNumber = 2;
-    private global::Google.Protobuf.WellKnownTypes.Any message_;
+    private pb::ByteString message_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.WellKnownTypes.Any Message {
+    public pb::ByteString Message {
       get { return message_; }
       set {
-        message_ = value;
+        message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -105,7 +104,7 @@ namespace TeamNote.Protocol {
         return true;
       }
       if (Type != other.Type) return false;
-      if (!object.Equals(Message, other.Message)) return false;
+      if (Message != other.Message) return false;
       return true;
     }
 
@@ -113,7 +112,7 @@ namespace TeamNote.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (Type != 0) hash ^= Type.GetHashCode();
-      if (message_ != null) hash ^= Message.GetHashCode();
+      if (Message.Length != 0) hash ^= Message.GetHashCode();
       return hash;
     }
 
@@ -126,11 +125,11 @@ namespace TeamNote.Protocol {
     public void WriteTo(pb::CodedOutputStream output) {
       if (Type != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt32(Type);
+        output.WriteInt32(Type);
       }
-      if (message_ != null) {
+      if (Message.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteMessage(Message);
+        output.WriteBytes(Message);
       }
     }
 
@@ -138,10 +137,10 @@ namespace TeamNote.Protocol {
     public int CalculateSize() {
       int size = 0;
       if (Type != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Type);
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
       }
-      if (message_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Message);
+      if (Message.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Message);
       }
       return size;
     }
@@ -154,11 +153,8 @@ namespace TeamNote.Protocol {
       if (other.Type != 0) {
         Type = other.Type;
       }
-      if (other.message_ != null) {
-        if (message_ == null) {
-          message_ = new global::Google.Protobuf.WellKnownTypes.Any();
-        }
-        Message.MergeFrom(other.Message);
+      if (other.Message.Length != 0) {
+        Message = other.Message;
       }
     }
 
@@ -171,14 +167,11 @@ namespace TeamNote.Protocol {
             input.SkipLastField();
             break;
           case 8: {
-            Type = input.ReadUInt32();
+            Type = input.ReadInt32();
             break;
           }
           case 18: {
-            if (message_ == null) {
-              message_ = new global::Google.Protobuf.WellKnownTypes.Any();
-            }
-            input.ReadMessage(message_);
+            Message = input.ReadBytes();
             break;
           }
         }

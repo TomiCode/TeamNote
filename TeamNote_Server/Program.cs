@@ -14,7 +14,7 @@ namespace TeamNote
     
     static void Main(string[] args)
     {
-      Debug.Setup("test.log");
+      Debug.Setup("TeamNote_Server.log");
       serverInstance = new ServerInstance();
       serverInstance.Start();
 

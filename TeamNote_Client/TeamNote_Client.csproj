@@ -70,7 +70,6 @@
     </ApplicationDefinition>
     <Compile Include="Client\ClientInstance.cs" />
     <Compile Include="Client\Configuration.cs" />
-    <Compile Include="Client\EncryptionService.cs" />
     <Compile Include="Client\LocalClient.cs" />
     <Compile Include="Client\ServerDiscoverer.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="Client\NetworkClient.cs" />
     <Compile Include="Protocol\HandshakeRequest.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
+    <Compile Include="Protocol\PublicKey.cs" />
     <Compile Include="Protocol\Types.cs" />
     <Compile Include="UI\ContactItem.xaml.cs">
       <DependentUpon>ContactItem.xaml</DependentUpon>

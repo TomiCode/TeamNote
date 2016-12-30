@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 
 using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 
 using TeamNote.Protocol;
+using System.IO;
 
 namespace TeamNote.Client
 {
@@ -78,7 +78,7 @@ namespace TeamNote.Client
         }
 
         try {
-          ConfigResponse l_discoveryResponse = l_responsePacket.Message.Unpack<ConfigResponse>();
+          ConfigResponse l_discoveryResponse = ConfigResponse.Parser.ParseFrom(l_responsePacket.Message);
           if (l_discoveryResponse.ServiceId != this.m_serviceId) {
             Debug.Log("Response serviceId missmatch ({0} != {1}), skipping response packet.", this.m_serviceId, l_discoveryResponse.ServiceId);
             continue;
@@ -96,14 +96,14 @@ namespace TeamNote.Client
     }
 
     private void DiscoverDispatcher_Tick(object sender, EventArgs args)
-    {      
+    {
       ConfigRequest l_requestMessage = new ConfigRequest();
       l_requestMessage.Port = this.m_responsePort;
       l_requestMessage.ServiceId = this.m_serviceId;
 
       NetworkPacket l_requestPacket = new NetworkPacket();
       l_requestPacket.Type = MessageType.ServiceConfigurationRequest;
-      l_requestPacket.Message = Any.Pack(l_requestMessage, string.Empty);
+      l_requestPacket.Message = l_requestMessage.ToByteString();
 
       byte[] requestData = l_requestPacket.ToByteArray();
       int sendBytesCount = this.m_discoverClient.Send(requestData, requestData.Length, this.m_requestAddress);

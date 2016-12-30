@@ -57,7 +57,7 @@ namespace TeamNote.Server
         }
 
         try {
-          ConfigRequest l_clientRequest = l_receivedPacket.Message.Unpack<ConfigRequest>();
+          ConfigRequest l_clientRequest = ConfigRequest.Parser.ParseFrom(l_receivedPacket.Message);
           Debug.Log("Client request ServiceId={0} Port={1}.", l_clientRequest.ServiceId, l_clientRequest.Port);
 
           ConfigResponse l_responseMessage = new ConfigResponse();
@@ -67,7 +67,8 @@ namespace TeamNote.Server
 
           NetworkPacket l_responsePacket = new NetworkPacket();
           l_responsePacket.Type = MessageType.ServiceConfigurationResponse;
-          l_responsePacket.Message = Any.Pack(l_responseMessage, String.Empty);
+          // l_responsePacket.Message = Any.Pack(l_responseMessage, String.Empty);
+          l_responsePacket.Message = l_responseMessage.ToByteString();
 
           l_receiveAddress.Port = l_clientRequest.Port;
           byte[] responseData = l_responsePacket.ToByteArray();

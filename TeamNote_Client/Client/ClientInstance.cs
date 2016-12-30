@@ -23,7 +23,6 @@ namespace TeamNote.Client
     private ServerDiscoverer m_serverDiscoverer;
 
     private LocalClient m_localClient;
-    private EncryptionService m_encryptionService;
 
     /* Client GUI types. */
     private GUI.Splash m_guiSplash;
@@ -41,9 +40,6 @@ namespace TeamNote.Client
       /* Self object for TCPIP Handling. */
       this.m_localClient = new LocalClient();
 
-      /* Encryption service. */
-      this.m_encryptionService = new EncryptionService();
-
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
       this.m_guiAuthenticate = new GUI.Authenticate();
@@ -59,8 +55,6 @@ namespace TeamNote.Client
           Debug.Warn("Error occured while saving configuration file. Config Fields={0}", this.m_clientConfig.ConfigLoaded);
         }
       }
-
-      // this.m_encryptionService.GenerateKeyPair();
       this.m_localClient.InitializeEncryption();
 
       this.m_guiSplash.Show();
@@ -74,7 +68,10 @@ namespace TeamNote.Client
       Debug.Log("Address: {0}", serverAddress);
       this.m_guiSplash.SetMessage("Splash_Connect");
 
-
+      if (this.m_localClient.Connect(serverAddress)) {
+        Debug.Log("Connected to server!");
+        this.m_localClient.SendHandshake();
+      }
     }
 
     private void UpdateStatusMessage(string resourceString)

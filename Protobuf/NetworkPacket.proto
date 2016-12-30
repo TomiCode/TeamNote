@@ -1,10 +1,9 @@
 syntax = "proto3";
-import "google/protobuf/any.proto";
 
 option optimize_for = SPEED;
 option csharp_namespace = "TeamNote.Protocol";
 
 message NetworkPacket {
-  uint32 Type = 1;
-  google.protobuf.Any Message = 2;
+  int32 Type = 1;
+  bytes Message = 2;
 }
