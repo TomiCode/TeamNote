@@ -71,11 +71,13 @@
     <Compile Include="Client\ClientInstance.cs" />
     <Compile Include="Client\Configuration.cs" />
     <Compile Include="Client\LocalClient.cs" />
+    <Compile Include="Client\NetworkServices.cs" />
     <Compile Include="Client\ServerDiscoverer.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
     <Compile Include="Client\NetworkClient.cs" />
     <Compile Include="Protocol\HandshakeRequest.cs" />
+    <Compile Include="Protocol\HandshakeResponse.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
     <Compile Include="Protocol\PublicKey.cs" />
     <Compile Include="Protocol\Types.cs" />

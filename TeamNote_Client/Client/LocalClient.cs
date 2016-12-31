@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-
 using System.Net;
 using System.Net.Sockets;
 
@@ -12,6 +12,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
 using Google.Protobuf;
@@ -22,12 +23,18 @@ namespace TeamNote.Client
 {
   class LocalClient
   {
+    public delegate void MessageReceivedEvent(int type, ByteString message);
+    public event MessageReceivedEvent onMessageReceived;
+
     const int KEY_STRENGTH = 1024;
 
     private PgpPublicKey m_localPublicKey;
     private PgpPrivateKey m_localPrivateKey;
+
+    private PgpPublicKey m_serverKey;
     
     private TcpClient m_tcpClient;
+    private Thread m_listenThread;
 
     public bool IsConnected {
       get {
@@ -52,6 +59,7 @@ namespace TeamNote.Client
     public LocalClient()
     {
       this.m_tcpClient = new TcpClient();
+      this.m_listenThread = new Thread(this.ListenThread);
     }
 
     public bool Connect(IPEndPoint serverAddr)
@@ -65,10 +73,12 @@ namespace TeamNote.Client
         Debug.Exception(ex);
         return false;
       }
+
+      this.m_listenThread.Start();
       return true;
     }
 
-    public void InitializeEncryption()
+    public void InitializeKeypair()
     {
       Debug.Log("Starting client key generation.");
       RsaKeyPairGenerator keyGenerator = new RsaKeyPairGenerator();
@@ -93,15 +103,26 @@ namespace TeamNote.Client
       PublicKey publicKey = this.ServerKey;
       handshakeRequest.Key = publicKey;
 
-      this.SendMessage(MessageType.ClientHandshakeRequest, handshakeRequest, false);
+      this.SendMessage(MessageType.ClientHandshakeRequest, handshakeRequest.ToByteString(), false);
     }
 
-    public bool SendMessage(int type, IMessage message)
+    public void UpdateServerPublicKey(PublicKey serverKey)
+    {
+      byte[] modulus = Convert.FromBase64String(serverKey.Modulus);
+      byte[] exponent = Convert.FromBase64String(serverKey.Exponent);
+
+      RsaKeyParameters publicKeyParams = new RsaKeyParameters(false, new BigInteger(modulus), new BigInteger(exponent));
+      this.m_serverKey = new PgpPublicKey(PublicKeyAlgorithmTag.RsaGeneral, publicKeyParams, DateTime.Now);
+
+      Debug.Log("Updated server public key.");
+    }
+
+    public bool SendMessage(int type, ByteString message)
     {
       return this.SendMessage(type, message, true);
     }
 
-    private bool SendMessage(int type, IMessage message, bool encrypted)
+    private bool SendMessage(int type, ByteString message, bool encrypted)
     {
       NetworkPacket networkPacket = new NetworkPacket();
       networkPacket.Type = type;
@@ -110,12 +131,28 @@ namespace TeamNote.Client
 
       }
       else {
-        networkPacket.Message = message.ToByteString();
+        networkPacket.Message = message;
       }
+      int byteSend = this.m_tcpClient.Client.Send(networkPacket.ToByteArray());
+      Debug.Log("Send message Type={0:X8} Size={1}.", type, byteSend);
 
-      this.m_tcpClient
-
-      return false;
+      return true;
     }
+
+    private void ListenThread()
+    {
+      Debug.Log("Started listening for server responses.");
+
+      byte[] messageBuffer = new byte[512];
+      int bytesReceived = 0;
+
+      while ((bytesReceived = this.m_tcpClient.Client.Receive(messageBuffer)) != 0) {
+        Debug.Log("Received message bytes={0}.", bytesReceived);
+        NetworkPacket receivedPacket = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
+
+        this.onMessageReceived?.Invoke(receivedPacket.Type, receivedPacket.Message);
+      }
+    }
+
   }
 }

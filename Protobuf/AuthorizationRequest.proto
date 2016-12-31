@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message AuthorizationRequest {
+	string Name = 1;
+	string Surname = 2;
+}

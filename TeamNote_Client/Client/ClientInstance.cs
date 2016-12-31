@@ -39,6 +39,7 @@ namespace TeamNote.Client
 
       /* Self object for TCPIP Handling. */
       this.m_localClient = new LocalClient();
+      this.m_localClient.onMessageReceived += this.ReceivedServerMessage;
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
@@ -55,7 +56,7 @@ namespace TeamNote.Client
           Debug.Warn("Error occured while saving configuration file. Config Fields={0}", this.m_clientConfig.ConfigLoaded);
         }
       }
-      this.m_localClient.InitializeEncryption();
+      this.m_localClient.InitializeKeypair();
 
       this.m_guiSplash.Show();
       this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
@@ -78,5 +79,21 @@ namespace TeamNote.Client
     {
       this.m_guiSplash.SetMessage(resourceString);
     }
+
+    private void ReceivedServerMessage(int type, ByteString message)
+    {
+      Debug.Log("Received from server, message Type={0:X8} Size={1}.", type, message.Length);
+
+      if (type == MessageType.ClientHandshakeResponse) {
+        HandshakeResponse responseMessage = HandshakeResponse.Parser.ParseFrom(message);
+        this.m_localClient.UpdateServerPublicKey(responseMessage.Key);
+
+        this.m_guiSplash.Dispatcher.Invoke(() => {
+          this.m_guiSplash.Hide();
+          this.m_guiAuthenticate.Show();
+        });
+      }
+    }
+
   }
 }

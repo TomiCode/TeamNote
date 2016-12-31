@@ -57,7 +57,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
+    <Compile Include="Protocol\HandshakeRequest.cs" />
+    <Compile Include="Protocol\HandshakeResponse.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
+    <Compile Include="Protocol\PublicKey.cs" />
     <Compile Include="Protocol\Types.cs" />
     <Compile Include="Server\Configuration.cs" />
     <Compile Include="Server\DiscoveryService.cs" />
