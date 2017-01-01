@@ -13,7 +13,7 @@ namespace TeamNote.Client
 {
   class NetworkClient
   {
-    private PgpPublicKey m_clientPublicKey;
+    // private PgpPublicKey m_clientPublicKey;
     // private RsaKeyParameters m_clientPublicKey;
     // private TcpClient m_networkClient;
 

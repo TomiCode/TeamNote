@@ -19,7 +19,10 @@ namespace TeamNote.Server
 {
   class NetworkClient
   {
-    class ClientProfile
+    public const int LISTEN_MESSAGE_SIZE = 512;
+
+    /* Client information fields class. */
+    public class ClientProfile
     {
       public string Name { get; private set; }
       public string Surname { get; private set; }
@@ -33,36 +36,32 @@ namespace TeamNote.Server
       }
     }
 
-    public const int LISTEN_MESSAGE_SIZE = 512;
-
-    public delegate void ClientMessageHandler(int type, ByteString message, NetworkClient client);
+    /* Delegates and events. */
+    public delegate void ClientMessageHandler(NetworkClient client, NetworkPacket packet);
     public event ClientMessageHandler onClientMessage; 
 
+    /* Client private class members. */
     private PgpPublicKey m_publicKey;
     private TcpClient m_networkClient;
     private Thread m_listenThread;
 
-    private string m_clientName;
-    private string m_clientSurname;
-    
-    public string Name {
-      get {
-        return this.m_clientName;
-      }
-    }
+    /* Client profile informations. */
+    private ClientProfile m_clientProfile;
 
-    public string Surname {
-      get {
-        return this.m_clientSurname;
-      }
-    }
-
+    /* Public properties. */
     public bool IsConnected {
       get {
         return this.m_networkClient.Connected;
       }
     }
 
+    public ClientProfile Profile {
+      get {
+        return this.m_clientProfile;
+      }
+    }
+
+    /* Public methods. */
     public NetworkClient(TcpClient clientInstance)
     {
       this.m_networkClient = clientInstance;
@@ -86,45 +85,50 @@ namespace TeamNote.Server
       Debug.Log("Updated client PublicKey.");
     }
 
+    public bool SendMessage(int type, IMessage message)
+    {
+      return this.SendMessage(type, message, true);
+    }
+
     public bool SendMessage(int type, IMessage message, bool encrypt)
     {
-      Debug.Log("Sending message Type={0:X8} Encrypt={1}.", type, encrypt);
+      Debug.Log("Sending server message Type={0} Encrypted={1}.", type, encrypt);
+
       NetworkPacket l_networkPacket = new NetworkPacket();
       l_networkPacket.Type = type;
+      l_networkPacket.Server = true;
 
       if (encrypt) {
+        l_networkPacket.Encrypted = true;
 
       }
       else {
         l_networkPacket.Message = message.ToByteString();
       }
 
-      return this.SendClientData(l_networkPacket.ToByteArray());
+      return this.SendMessage(l_networkPacket);
     }
 
-    public bool ForwardMessage(int type, ByteString message)
+    private bool SendMessage(NetworkPacket packet)
     {
-      Debug.Log("Message Type={0:X8} Size={1}.", type, message.Length);
-      NetworkPacket l_networkPacket = new NetworkPacket();
-      l_networkPacket.Type = type;
-      l_networkPacket.Message = message;
-
-      return this.SendClientData(l_networkPacket.ToByteArray());
+      int sendBytes = this.m_networkClient.Client.Send(packet.ToByteArray());
+      Debug.Log("Send {0} bytes. Packet size: {1} bytes.", sendBytes, packet.CalculateSize());
+      return (sendBytes == packet.CalculateSize());
     }
 
-    public void SetClientInfo(string name, string surname)
+    public bool ForwardNetworkPacket(long senderClientId, NetworkPacket packet)
     {
-      Debug.Log("Set client Name={0} Surname={1}.", name, surname);
-      this.m_clientName = name;
-      this.m_clientSurname = surname;
-    }
+      Debug.Log("Sending message from {0}, Type={1:X2}.", senderClientId, packet.Type);
 
-    private bool SendClientData(byte[] buffer)
-    {
-      int bytesSend = this.m_networkClient.Client.Send(buffer);
-      Debug.Log("Bytes send: {0}.", bytesSend);
+      NetworkPacket l_forwardPacket = new NetworkPacket();
+      l_forwardPacket.Server = false;
+      l_forwardPacket.ClientId = senderClientId;
 
-      return true;
+      l_forwardPacket.Encrypted = packet.Encrypted;
+      l_forwardPacket.Message = packet.Message;
+      l_forwardPacket.Type = packet.Type;
+
+      return this.SendMessage(l_forwardPacket);
     }
 
     private void ListenThread()
@@ -136,7 +140,8 @@ namespace TeamNote.Server
       while ((bytesReceived = this.m_networkClient.Client.Receive(messageBuffer)) != 0) {
         Debug.Log("Received {0} bytes.", bytesReceived);
         NetworkPacket receivedMessage = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
-        this.onClientMessage?.Invoke(receivedMessage.Type, receivedMessage.Message, this);
+
+        this.onClientMessage?.Invoke(this, receivedMessage);
       }
     }
 

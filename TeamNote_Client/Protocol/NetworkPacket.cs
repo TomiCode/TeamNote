@@ -22,13 +22,14 @@ namespace TeamNote.Protocol {
     static NetworkPacketReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNOZXR3b3JrUGFja2V0LnByb3RvIlAKDU5ldHdvcmtQYWNrZXQSDAoEVHlw",
-            "ZRgBIAEoBRIOCgZTZXJ2ZXIYAiABKAgSEAoIQ2xpZW50SWQYAyABKAMSDwoH",
-            "TWVzc2FnZRgEIAEoDEIWSAGqAhFUZWFtTm90ZS5Qcm90b2NvbGIGcHJvdG8z"));
+            "ChNOZXR3b3JrUGFja2V0LnByb3RvImMKDU5ldHdvcmtQYWNrZXQSDAoEVHlw",
+            "ZRgBIAEoBRIQCghDbGllbnRJZBgCIAEoAxIOCgZTZXJ2ZXIYAyABKAgSEQoJ",
+            "RW5jcnlwdGVkGAQgASgIEg8KB01lc3NhZ2UYBSABKAxCFkgBqgIRVGVhbU5v",
+            "dGUuUHJvdG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.NetworkPacket), global::TeamNote.Protocol.NetworkPacket.Parser, new[]{ "Type", "Server", "ClientId", "Message" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::TeamNote.Protocol.NetworkPacket), global::TeamNote.Protocol.NetworkPacket.Parser, new[]{ "Type", "ClientId", "Server", "Encrypted", "Message" }, null, null, null)
           }));
     }
     #endregion
@@ -60,8 +61,9 @@ namespace TeamNote.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NetworkPacket(NetworkPacket other) : this() {
       type_ = other.type_;
-      server_ = other.server_;
       clientId_ = other.clientId_;
+      server_ = other.server_;
+      encrypted_ = other.encrypted_;
       message_ = other.message_;
     }
 
@@ -81,19 +83,8 @@ namespace TeamNote.Protocol {
       }
     }
 
-    /// <summary>Field number for the "Server" field.</summary>
-    public const int ServerFieldNumber = 2;
-    private bool server_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Server {
-      get { return server_; }
-      set {
-        server_ = value;
-      }
-    }
-
     /// <summary>Field number for the "ClientId" field.</summary>
-    public const int ClientIdFieldNumber = 3;
+    public const int ClientIdFieldNumber = 2;
     private long clientId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long ClientId {
@@ -103,8 +94,30 @@ namespace TeamNote.Protocol {
       }
     }
 
+    /// <summary>Field number for the "Server" field.</summary>
+    public const int ServerFieldNumber = 3;
+    private bool server_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Server {
+      get { return server_; }
+      set {
+        server_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Encrypted" field.</summary>
+    public const int EncryptedFieldNumber = 4;
+    private bool encrypted_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Encrypted {
+      get { return encrypted_; }
+      set {
+        encrypted_ = value;
+      }
+    }
+
     /// <summary>Field number for the "Message" field.</summary>
-    public const int MessageFieldNumber = 4;
+    public const int MessageFieldNumber = 5;
     private pb::ByteString message_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Message {
@@ -128,8 +141,9 @@ namespace TeamNote.Protocol {
         return true;
       }
       if (Type != other.Type) return false;
-      if (Server != other.Server) return false;
       if (ClientId != other.ClientId) return false;
+      if (Server != other.Server) return false;
+      if (Encrypted != other.Encrypted) return false;
       if (Message != other.Message) return false;
       return true;
     }
@@ -138,8 +152,9 @@ namespace TeamNote.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (Type != 0) hash ^= Type.GetHashCode();
-      if (Server != false) hash ^= Server.GetHashCode();
       if (ClientId != 0L) hash ^= ClientId.GetHashCode();
+      if (Server != false) hash ^= Server.GetHashCode();
+      if (Encrypted != false) hash ^= Encrypted.GetHashCode();
       if (Message.Length != 0) hash ^= Message.GetHashCode();
       return hash;
     }
@@ -155,16 +170,20 @@ namespace TeamNote.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(Type);
       }
-      if (Server != false) {
-        output.WriteRawTag(16);
-        output.WriteBool(Server);
-      }
       if (ClientId != 0L) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteInt64(ClientId);
       }
+      if (Server != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Server);
+      }
+      if (Encrypted != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(Encrypted);
+      }
       if (Message.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteBytes(Message);
       }
     }
@@ -175,11 +194,14 @@ namespace TeamNote.Protocol {
       if (Type != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
       }
+      if (ClientId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ClientId);
+      }
       if (Server != false) {
         size += 1 + 1;
       }
-      if (ClientId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ClientId);
+      if (Encrypted != false) {
+        size += 1 + 1;
       }
       if (Message.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Message);
@@ -195,11 +217,14 @@ namespace TeamNote.Protocol {
       if (other.Type != 0) {
         Type = other.Type;
       }
+      if (other.ClientId != 0L) {
+        ClientId = other.ClientId;
+      }
       if (other.Server != false) {
         Server = other.Server;
       }
-      if (other.ClientId != 0L) {
-        ClientId = other.ClientId;
+      if (other.Encrypted != false) {
+        Encrypted = other.Encrypted;
       }
       if (other.Message.Length != 0) {
         Message = other.Message;
@@ -219,14 +244,18 @@ namespace TeamNote.Protocol {
             break;
           }
           case 16: {
-            Server = input.ReadBool();
-            break;
-          }
-          case 24: {
             ClientId = input.ReadInt64();
             break;
           }
-          case 34: {
+          case 24: {
+            Server = input.ReadBool();
+            break;
+          }
+          case 32: {
+            Encrypted = input.ReadBool();
+            break;
+          }
+          case 42: {
             Message = input.ReadBytes();
             break;
           }

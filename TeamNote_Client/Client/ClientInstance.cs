@@ -84,7 +84,7 @@ namespace TeamNote.Client
       request.Name = name;
       request.Surname = surname;
 
-      this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request.ToByteString());
+      this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request);
     }
 
     private void UpdateStatusMessage(string resourceString)
@@ -98,7 +98,7 @@ namespace TeamNote.Client
 
       if (type == MessageType.ClientHandshakeResponse) {
         HandshakeResponse responseMessage = HandshakeResponse.Parser.ParseFrom(message);
-        this.m_localClient.UpdateServerPublicKey(responseMessage.Key);
+        this.m_localClient.UpdateServerKey(responseMessage.Key);
 
         this.m_guiSplash.Dispatcher.Invoke(() => {
           this.m_guiSplash.Hide();
