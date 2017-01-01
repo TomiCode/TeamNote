@@ -5,5 +5,7 @@ option csharp_namespace = "TeamNote.Protocol";
 
 message NetworkPacket {
   int32 Type = 1;
-  bytes Message = 2;
+  bool Server = 2;
+  int64 ClientId = 3;
+  bytes Message = 4;
 }

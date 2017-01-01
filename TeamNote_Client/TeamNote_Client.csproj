@@ -73,6 +73,7 @@
     <Compile Include="Client\LocalClient.cs" />
     <Compile Include="Client\NetworkServices.cs" />
     <Compile Include="Client\ServerDiscoverer.cs" />
+    <Compile Include="Protocol\AuthorizationRequest.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
     <Compile Include="Client\NetworkClient.cs" />

@@ -43,7 +43,9 @@ namespace TeamNote.Client
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
+
       this.m_guiAuthenticate = new GUI.Authenticate();
+      this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
     }
 
     public void Initialize()
@@ -73,6 +75,16 @@ namespace TeamNote.Client
         Debug.Log("Connected to server!");
         this.m_localClient.SendHandshake();
       }
+    }
+
+    private void SendAuthorization(string name, string surname)
+    {
+      Debug.Log("Sending Hello to server {0}:{1}.", name, surname);
+      AuthorizationRequest request = new AuthorizationRequest();
+      request.Name = name;
+      request.Surname = surname;
+
+      this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request.ToByteString());
     }
 
     private void UpdateStatusMessage(string resourceString)

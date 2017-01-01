@@ -18,6 +18,7 @@ using Org.BouncyCastle.Security;
 using Google.Protobuf;
 
 using TeamNote.Protocol;
+using System.IO;
 
 namespace TeamNote.Client
 {
@@ -128,7 +129,16 @@ namespace TeamNote.Client
       networkPacket.Type = type;
 
       if (encrypted) {
+        MemoryStream ms = new MemoryStream();
 
+        PgpEncryptedDataGenerator encGen = new PgpEncryptedDataGenerator(SymmetricKeyAlgorithmTag.Blowfish, true);
+        encGen.AddMethod(this.m_serverKey);
+
+        Stream outStream = encGen.Open(ms, message.Length);
+        outStream.Write(message.ToByteArray(), 0, message.Length);
+        outStream.Close();
+
+        networkPacket.Message = ByteString.CopyFrom(ms.ToArray());
       }
       else {
         networkPacket.Message = message;

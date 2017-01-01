@@ -19,6 +19,20 @@ namespace TeamNote.Server
 {
   class NetworkClient
   {
+    class ClientProfile
+    {
+      public string Name { get; private set; }
+      public string Surname { get; private set; }
+      public string Status { get; set; }
+
+      public void UpdateProfile(AuthorizationRequest clientRequest)
+      {
+        this.Name = clientRequest.Name;
+        this.Surname = clientRequest.Surname;
+        Debug.Log("Updating profile from client request. [{0} {1}]", this.Name, this.Surname);
+      }
+    }
+
     public const int LISTEN_MESSAGE_SIZE = 512;
 
     public delegate void ClientMessageHandler(int type, ByteString message, NetworkClient client);
@@ -27,6 +41,21 @@ namespace TeamNote.Server
     private PgpPublicKey m_publicKey;
     private TcpClient m_networkClient;
     private Thread m_listenThread;
+
+    private string m_clientName;
+    private string m_clientSurname;
+    
+    public string Name {
+      get {
+        return this.m_clientName;
+      }
+    }
+
+    public string Surname {
+      get {
+        return this.m_clientSurname;
+      }
+    }
 
     public bool IsConnected {
       get {
@@ -81,6 +110,13 @@ namespace TeamNote.Server
       l_networkPacket.Message = message;
 
       return this.SendClientData(l_networkPacket.ToByteArray());
+    }
+
+    public void SetClientInfo(string name, string surname)
+    {
+      Debug.Log("Set client Name={0} Surname={1}.", name, surname);
+      this.m_clientName = name;
+      this.m_clientSurname = surname;
     }
 
     private bool SendClientData(byte[] buffer)
