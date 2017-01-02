@@ -189,15 +189,15 @@ namespace TeamNote.Server
     {
       Debug.Log("Sending message from {0}, Type={1:X2}.", senderClientId, packet.Type);
 
-      NetworkPacket l_forwardPacket = new NetworkPacket();
-      l_forwardPacket.Server = false;
-      l_forwardPacket.ClientId = senderClientId;
+      NetworkPacket forwardPacket = new NetworkPacket();
+      forwardPacket.Server = false;
+      forwardPacket.ClientId = senderClientId;
 
-      l_forwardPacket.Encrypted = packet.Encrypted;
-      l_forwardPacket.Message = packet.Message;
-      l_forwardPacket.Type = packet.Type;
+      forwardPacket.Encrypted = packet.Encrypted;
+      forwardPacket.Message = packet.Message;
+      forwardPacket.Type = packet.Type;
 
-      return this.SendMessage(l_forwardPacket);
+      return this.SendMessage(forwardPacket);
     }
 
     private bool SendMessage(NetworkPacket packet)

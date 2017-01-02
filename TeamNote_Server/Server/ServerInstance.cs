@@ -217,8 +217,14 @@ namespace TeamNote.Server
 
     private void ClientMessageReceived(NetworkClient senderClient, NetworkPacket receivedPacket)
     {
-      
-    }
+      NetworkClient requestedUser = this.GetClientFromId(receivedPacket.ClientId);
+      if (requestedUser == null) {
+        Debug.Warn("Invalid ClientId={0} requested from ClientId={1}.", receivedPacket.ClientId, senderClient.ClientId);
+        return;
+      }
 
+      Debug.Log("Forwarding message from ClientId={0} to ClientId={1}.", senderClient.ClientId, receivedPacket.ClientId);
+      requestedUser.ForwardNetworkPacket(senderClient.ClientId, receivedPacket);
+    }
   }
 }

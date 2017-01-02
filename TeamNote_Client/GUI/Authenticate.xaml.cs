@@ -64,5 +64,11 @@ namespace TeamNote.GUI
         this.lblStatus.Content = Application.Current.Resources[resourceString];
       }
     }
+
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (e.ChangedButton == MouseButton.Left)
+        DragMove();
+    }
   }
 }

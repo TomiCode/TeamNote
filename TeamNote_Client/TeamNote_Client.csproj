@@ -74,6 +74,9 @@
     <Compile Include="Client\LocalProfile.cs" />
     <Compile Include="Client\NetworkServices.cs" />
     <Compile Include="Client\ServerDiscoverer.cs" />
+    <Compile Include="GUI\ContactInformation.xaml.cs">
+      <DependentUpon>ContactInformation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Protocol\AuthorizationRequest.cs" />
     <Compile Include="Protocol\AuthorizationResponse.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
@@ -109,6 +112,10 @@
     <Compile Include="GUI\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
+    <Page Include="GUI\ContactInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Languages\base.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
