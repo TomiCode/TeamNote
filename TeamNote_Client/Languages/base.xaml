@@ -5,6 +5,7 @@
 
   <System:String x:Key="Splash_Discover">Waiting for application server..</System:String>
   <System:String x:Key="Splash_Connect">Connecting to server..</System:String>
+  <System:String x:Key="Splash_Contacts">Collecting users..</System:String>
 
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
   <System:String x:Key="Authenticate_Name">Name</System:String>

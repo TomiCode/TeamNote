@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TeamNote.GUI"
         xmlns:UI="clr-namespace:TeamNote.UI" x:Class="TeamNote.GUI.Contacts"
         mc:Ignorable="d"
-        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
+        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
       <Label x:Name="wnd_title" Content="{DynamicResource Contacts_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
@@ -23,13 +23,14 @@
       </Grid>
     </Border>
     <ScrollViewer Margin="0,94,0,28" BorderThickness="0" Template="{DynamicResource ScrollViewerControl}" BorderBrush="#FF020202">
-      <StackPanel>
+      <StackPanel x:Name="spContacts">
         <UI:ContactItem/>
       </StackPanel>
-
     </ScrollViewer>
-    <Grid Margin="0" VerticalAlignment="Bottom" Height="28">
-      <Label x:Name="label3" Content="{}{statusbar content}" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="#FF6A6868"/>
-    </Grid>
+    <Border Margin="0" VerticalAlignment="Bottom" Height="28" BorderBrush="#FFE4E4E4" BorderThickness="0,1,0,0">
+      <Grid>
+        <Label x:Name="lbWindowStatus" Content="{}{statusbar content}" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="#FF6A6868"/>
+      </Grid>
+    </Border>
   </Grid>
 </Window>

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using TeamNote.Client;
+using TeamNote.Protocol;
 
 namespace TeamNote.GUI
 {
@@ -21,8 +22,8 @@ namespace TeamNote.GUI
     public delegate void UpdateClientDataHandler(bool onlineStatus, string name = "", string surname = "");
     public event UpdateClientDataHandler onClientDataUpdated;
 
-    private const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
-    private const string STATUS_ONLINE_RESOURCE = "Contacts_Status_Online";
+    public const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
+    public const string STATUS_ONLINE_RESOURCE = "Contacts_Status_Online";
 
     private bool m_localOnlineStatus;
     private string m_localClientName;
@@ -34,6 +35,25 @@ namespace TeamNote.GUI
       }
       set {
         this.SetStatus(value);
+      }
+    }
+
+    public string StatusText {
+      get {
+        return (string)this.lbWindowStatus.Content;
+      }
+      set {
+        this.Dispatcher.Invoke(() => {
+          this.lbWindowStatus.Content = value;
+        });
+      }
+    }
+
+    public List<long> Clients {
+      get {
+        return this.Dispatcher.Invoke(() => {
+          return this.spContacts.Children.Cast<UI.ContactItem>().Select(i => i.ClientId).ToList();
+        });
       }
     }
 
@@ -67,6 +87,34 @@ namespace TeamNote.GUI
       this.onClientDataUpdated?.Invoke(this.m_localOnlineStatus, this.m_localClientName, this.m_localClientSurname);
     }
 
+    public void CreateClient(ContactUpdate.Types.Client client)
+    {
+      Debug.Log("Creating clientId={0} Name={1} Surname={2}.", client.ClientId, client.Name, client.Surname);
+      this.spContacts.Dispatcher.Invoke(() => {
+        this.spContacts.Children.Add(new UI.ContactItem(client));
+      });
+    }
+
+    public void RemoveClient(long clientId)
+    {
+      Debug.Log("Removing clientId={0}.", clientId);
+      this.spContacts.Dispatcher.Invoke(() => {
+        UI.ContactItem contactItem = null;
+
+        foreach (UI.ContactItem contactElement in this.spContacts.Children) {
+          if (contactElement.ClientId == clientId) {
+            Debug.Log("Found Stackpanel element.");
+            contactItem = contactElement;
+            break;
+          }
+        }
+        if (contactItem != null) {
+          Debug.Log("Removing item from StackPanel.");
+          this.spContacts.Children.Remove(contactItem);
+        }
+      });
+    }
+
     private void SetStatus(bool status)
     {
       this.m_localOnlineStatus = status;
@@ -89,5 +137,10 @@ namespace TeamNote.GUI
       this.lbStatus.Content = statusText;
     }
 
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (e.ChangedButton == MouseButton.Left)
+        DragMove();
+    }
   }
 }

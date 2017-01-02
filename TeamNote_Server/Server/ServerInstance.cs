@@ -170,6 +170,46 @@ namespace TeamNote.Server
             AuthorizationResponse response = new AuthorizationResponse();
             response.ServerName = this.m_serverConfig.ServerName;
             senderClient.SendMessage(MessageType.AuthorizationResponse, response);
+
+            Task.Run(() => {
+              ContactUpdate contactUpdate = new ContactUpdate();
+              contactUpdate.Add.Add(senderClient.ContactClient);
+
+              foreach (NetworkClient connectedClient in this.m_connectedClients) {
+                if (connectedClient.ClientId == senderClient.ClientId) continue;
+
+                Debug.Log("Sending contact update to ClientId={0}.", connectedClient.ClientId);
+                connectedClient.SendMessage(MessageType.ContactUpdate, contactUpdate);
+              }
+            });
+          }
+          break;
+
+        /* Contact list update. */
+        case MessageType.ContactUpdateRequest: {
+            ContactUpdateRequest request = ContactUpdateRequest.Parser.ParseFrom(messageContent);
+            ContactUpdate contactUpdate = new ContactUpdate();
+
+            List<long> clientList = request.Clients.ToList();
+            foreach (NetworkClient connectedClient in this.m_connectedClients) {
+              // if (connectedClient.ClientId == senderClient.ClientId) continue;
+              if (!connectedClient.Profile.Valid) continue;
+
+              if (clientList.Contains(connectedClient.ClientId)) {
+                Debug.Log("Client {0} has got ClientId={1}.", senderClient.ClientId, connectedClient.ClientId);
+                clientList.Remove(connectedClient.ClientId);
+              }
+              else {
+                Debug.Log("Client {0} requires ClientId={1}.", senderClient.ClientId, connectedClient.ClientId);
+                contactUpdate.Add.Add(connectedClient.ContactClient);
+              }
+            }
+
+            Debug.Log("Trash clients count={0}.", clientList.Count);
+            if (clientList.Count > 0) {
+              contactUpdate.Remove.Add(clientList);
+            }
+            senderClient.SendMessage(MessageType.ContactUpdate, contactUpdate);
           }
           break;
       }

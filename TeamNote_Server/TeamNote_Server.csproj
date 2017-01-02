@@ -59,6 +59,10 @@
     <Compile Include="Protocol\AuthorizationResponse.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />
     <Compile Include="Protocol\ConfigResponse.cs" />
+    <Compile Include="Protocol\ContactUpdate.cs" />
+    <Compile Include="Protocol\ContactUpdateChangeRequest.cs" />
+    <Compile Include="Protocol\ContactUpdateRequest.cs" />
+    <Compile Include="Protocol\ContactUpdateStatus.cs" />
     <Compile Include="Protocol\HandshakeRequest.cs" />
     <Compile Include="Protocol\HandshakeResponse.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />

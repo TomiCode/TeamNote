@@ -24,14 +24,20 @@ namespace TeamNote.Server
 {
   class NetworkClient
   {
-    public const int LISTEN_MESSAGE_SIZE = 512;
+    public const int LISTEN_MESSAGE_SIZE = 1024;
 
     /* Client information fields class. */
     public class ClientProfile
     {
       public string Name { get; private set; }
       public string Surname { get; private set; }
-      public string Status { get; set; }
+      public bool Status { get; set; }
+
+      public bool Valid {
+        get {
+          return (this.Name != null && this.Name != string.Empty && this.Surname != null && this.Surname != string.Empty); 
+        }
+      }
 
       public void UpdateProfile(AuthorizationRequest clientRequest)
       {
@@ -81,6 +87,18 @@ namespace TeamNote.Server
       }
     }
     
+    public ContactUpdate.Types.Client ContactClient {
+      get {
+        ContactUpdate.Types.Client resultClient = new ContactUpdate.Types.Client();
+        resultClient.ClientId = this.m_clientId;
+        resultClient.Surname = this.Profile.Surname;
+        resultClient.Name = this.Profile.Name;
+        resultClient.Online = this.Profile.Status;
+
+        return resultClient;
+      }
+    }
+
     /* Public methods. */
     public NetworkClient(TcpClient clientInstance, RequestServerCipherKey keyRequester)
     {

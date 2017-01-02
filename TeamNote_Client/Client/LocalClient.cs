@@ -31,7 +31,7 @@ namespace TeamNote.Client
   {
     /* Constants. */
     const int KEY_STRENGTH = 1024;
-    const int LISTEN_BUFFER_SIZE = 512;
+    const int LISTEN_BUFFER_SIZE = 4096;
 
     /* Client events and delegates. */
     public delegate void ServerMessageReceivedHandler(int type, ByteString message);
