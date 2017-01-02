@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Net.Sockets;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Engines;
@@ -22,8 +24,6 @@ using Org.BouncyCastle.Security;
 using Google.Protobuf;
 
 using TeamNote.Protocol;
-using System.IO;
-using Org.BouncyCastle.Crypto.Digests;
 
 namespace TeamNote.Client
 {

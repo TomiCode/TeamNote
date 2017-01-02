@@ -18,7 +18,10 @@
   <System:String x:Key="Authenticate_Status_Invalid_Surname">Surname: Invalid characters.</System:String>
 
   <System:String x:Key="Contacts_Title">TeamNote – Contacts</System:String>
-  
+  <System:String x:Key="Contacts_Status_Online">Online</System:String>
+  <System:String x:Key="Contacts_Status_Away">Away</System:String>
+
+
   <System:String x:Key="Message_Title">TeamNote – Message</System:String>
   <System:String x:Key="Message_btnSend">Send</System:String>
 

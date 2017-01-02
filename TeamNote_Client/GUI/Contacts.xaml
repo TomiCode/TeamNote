@@ -17,9 +17,9 @@
           <RowDefinition/>
           <RowDefinition/>
         </Grid.RowDefinitions>
-        <Label x:Name="label" Content="{}{name}" HorizontalAlignment="Left" Margin="5,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
-        <Label x:Name="label1" Content="{}{surname}" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
-        <Label x:Name="label2" Content="{}{status}" HorizontalAlignment="Right" Margin="0" Grid.Row="1" VerticalContentAlignment="Bottom" FontFamily="{DynamicResource GlobalNormalFont}" HorizontalContentAlignment="Right" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+        <Label x:Name="lbName" Content="{}{name}" HorizontalAlignment="Left" Margin="5,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+        <Label x:Name="lbSurname" Content="{}{surname}" HorizontalAlignment="Left" Margin="5,0,0,0" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+        <Label x:Name="lbStatus" Content="{}{status}" HorizontalAlignment="Right" Margin="0" Grid.Row="1" VerticalContentAlignment="Bottom" FontFamily="{DynamicResource GlobalNormalFont}" HorizontalContentAlignment="Right" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
       </Grid>
     </Border>
     <ScrollViewer Margin="0,94,0,28" BorderThickness="0" Template="{DynamicResource ScrollViewerControl}" BorderBrush="#FF020202">

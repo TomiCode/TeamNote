@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message ContactUpdateRequest {
+    repeated int64 Clients = 1;
+}

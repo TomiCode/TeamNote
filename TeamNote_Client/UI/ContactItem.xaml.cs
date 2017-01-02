@@ -15,14 +15,31 @@ using System.Windows.Shapes;
 
 namespace TeamNote.UI
 {
-  /// <summary>
-  /// Interaction logic for ContactItem.xaml
-  /// </summary>
   public partial class ContactItem : UserControl
   {
-    public ContactItem()
+    public delegate void ContactItemButtonClickHandler(long client);
+
+    public event ContactItemButtonClickHandler onMessageClick;
+    public event ContactItemButtonClickHandler onInfotmationClick;
+
+    private long m_clientId;
+
+    public long ClientId {
+      get {
+        return this.m_clientId;
+      }
+    }
+
+    public bool IsValid {
+      get {
+        return (this.m_clientId != 0);
+      }
+    }
+
+    public ContactItem(long clientId)
     {
       InitializeComponent();
+      this.m_clientId = clientId;
     }
   }
 }

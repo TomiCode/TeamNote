@@ -26,7 +26,9 @@ namespace TeamNote.Client
 
     /* Client GUI types. */
     private GUI.Splash m_guiSplash;
+    private GUI.Contacts m_guiContacts;
     private GUI.Authenticate m_guiAuthenticate;
+
 
     public ClientInstance()
     {
@@ -47,6 +49,8 @@ namespace TeamNote.Client
 
       this.m_guiAuthenticate = new GUI.Authenticate();
       this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
+
+      this.m_guiContacts = new GUI.Contacts();
     }
 
     public void Initialize()

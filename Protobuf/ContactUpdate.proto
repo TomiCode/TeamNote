@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+option csharp_namespace = "TeamNote.Protocol";
+
+message ContactUpdate {
+	message Client {
+		int64  ClientId = 1;
+		bool   Online 	= 2;
+		string Name 	= 3;
+		string Surname 	= 4;
+	}
+	repeated Client Add = 1;
+    repeated int64 Remove = 2;
+}
