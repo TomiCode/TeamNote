@@ -31,19 +31,22 @@ namespace TeamNote.Client
   {
     /* Constants. */
     const int KEY_STRENGTH = 1024;
+    const int LISTEN_BUFFER_SIZE = 512;
 
     /* Client events and delegates. */
-    public delegate void MessageReceivedEvent(int type, ByteString message);
-    public event MessageReceivedEvent onMessageReceived;
+    public delegate void ServerMessageReceivedHandler(int type, ByteString message);
+    public delegate void ClientMessageReceivedHandler(long sender, int type, ByteString message);
 
-    /* Local pgp-keys. */
-    // private PgpPublicKey m_localPublicKey;
-    // private PgpPrivateKey m_localPrivateKey;
+    public event ServerMessageReceivedHandler onServerMessageReceived;
+    public event ClientMessageReceivedHandler onClientMessageReceived;
+
+    /* Local Keypair. */
     private AsymmetricCipherKeyPair m_localCipherKeys;
 
     /* Server public key. */
     private AsymmetricKeyParameter m_serverKey;
 
+    /* Connected client keyring. */
     private Dictionary<long, AsymmetricKeyParameter> m_localKeyring;
     
     /* Private members. */
@@ -232,15 +235,29 @@ namespace TeamNote.Client
     private void ListenThread()
     {
       Debug.Log("Started listening for server responses.");
-
-      byte[] messageBuffer = new byte[512];
+      byte[] messageBuffer = new byte[LISTEN_BUFFER_SIZE];
       int bytesReceived = 0;
 
       while ((bytesReceived = this.m_tcpClient.Client.Receive(messageBuffer)) != 0) {
-        Debug.Log("Received message bytes={0}.", bytesReceived);
         NetworkPacket receivedPacket = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
+        Debug.Log("Received packet Type={0} Server={1} ClientId={2} Encrypted={3}.",
+          receivedPacket.Type, receivedPacket.Server, receivedPacket.ClientId, receivedPacket.Encrypted);
 
-        this.onMessageReceived?.Invoke(receivedPacket.Type, receivedPacket.Message);
+        ByteString messageContent = receivedPacket.Message;
+        if (receivedPacket.Encrypted) {
+          messageContent = this.ProceedMessageEncoding(this.m_localCipherKeys.Private, messageContent);
+          if (messageContent == null) {
+            Debug.Error("Encoded message content is invalid.");
+            continue;
+          }
+        }
+
+        if (receivedPacket.Server) {
+          this.onServerMessageReceived?.Invoke(receivedPacket.Type, messageContent);
+        }
+        else {
+          this.onClientMessageReceived?.Invoke(receivedPacket.ClientId, receivedPacket.Type, messageContent);
+        }
       }
     }
 

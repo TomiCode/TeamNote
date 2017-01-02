@@ -39,7 +39,8 @@ namespace TeamNote.Client
 
       /* Self object for TCPIP Handling. */
       this.m_localClient = new LocalClient();
-      this.m_localClient.onMessageReceived += this.ReceivedServerMessage;
+      this.m_localClient.onServerMessageReceived += this.ReceivedServerMessage;
+      this.m_localClient.onClientMessageReceived += this.ReceivedClientMessage;
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
@@ -70,9 +71,11 @@ namespace TeamNote.Client
     {
       Debug.Log("Address: {0}", serverAddress);
       this.m_guiSplash.SetMessage("Splash_Connect");
+      /* Delay. */
 
       if (this.m_localClient.Connect(serverAddress)) {
         Debug.Log("Connected to server!");
+        /* Delay. */
         this.m_localClient.SendHandshake();
       }
     }
@@ -105,6 +108,11 @@ namespace TeamNote.Client
           this.m_guiAuthenticate.Show();
         });
       }
+    }
+
+    private void ReceivedClientMessage(long senderClientId, int messageType, ByteString messageContent)
+    {
+
     }
 
   }

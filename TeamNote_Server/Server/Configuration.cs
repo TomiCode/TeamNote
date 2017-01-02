@@ -98,7 +98,7 @@ namespace TeamNote.Server
 
     public string ServerName {
       get {
-        if (this.m_configFields.serverName == string.Empty)
+        if (this.m_configFields.serverName == null || this.m_configFields.serverName == string.Empty)
           return SERVER_NAME;
 
         return this.m_configFields.serverName;
