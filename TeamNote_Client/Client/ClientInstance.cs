@@ -30,7 +30,6 @@ namespace TeamNote.Client
     private GUI.Contacts m_guiContacts;
     private GUI.Authenticate m_guiAuthenticate;
 
-
     public ClientInstance()
     {
       /* Client config. */
@@ -51,7 +50,7 @@ namespace TeamNote.Client
       this.m_guiAuthenticate = new GUI.Authenticate();
       this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
 
-      this.m_guiContacts = new GUI.Contacts();
+      this.m_guiContacts = new GUI.Contacts(this.HandleContactItemButton);
       this.m_guiContacts.onClientDataUpdated += this.SendClientUpdateChange;
     }
 
@@ -181,5 +180,9 @@ namespace TeamNote.Client
 
     }
 
+    private void HandleContactItemButton(long clientId, GUI.Contacts.ContactButton button)
+    {
+      Debug.Log("Clicked on ClientId={0} Button={1}.", clientId, button.ToString());
+    }
   }
 }

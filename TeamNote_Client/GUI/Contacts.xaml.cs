@@ -19,7 +19,14 @@ namespace TeamNote.GUI
 {
   public partial class Contacts : Window
   {
+    public enum ContactButton : byte {
+      Information,
+      Message
+    }
+
     public delegate void UpdateClientDataHandler(bool onlineStatus, string name = "", string surname = "");
+    public delegate void ContactWindowButtonClickHandler(long clientId, ContactButton button);
+
     public event UpdateClientDataHandler onClientDataUpdated;
 
     public const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
@@ -28,6 +35,8 @@ namespace TeamNote.GUI
     private bool m_localOnlineStatus;
     private string m_localClientName;
     private string m_localClientSurname;
+
+    private ContactWindowButtonClickHandler m_clientButtonHandler;
 
     public bool OnlineStatus {
       get {
@@ -57,9 +66,10 @@ namespace TeamNote.GUI
       }
     }
 
-    public Contacts()
+    public Contacts(ContactWindowButtonClickHandler handler)
     {
       InitializeComponent();
+      this.m_clientButtonHandler = handler;
     }
 
     public void Setup(string name, string surname, bool status = true)
@@ -91,7 +101,9 @@ namespace TeamNote.GUI
     {
       Debug.Log("Creating clientId={0} Name={1} Surname={2}.", client.ClientId, client.Name, client.Surname);
       this.spContacts.Dispatcher.Invoke(() => {
-        this.spContacts.Children.Add(new UI.ContactItem(client));
+        UI.ContactItem createdContact = new UI.ContactItem(client);
+        createdContact.onContactItemButtonClick += this.m_clientButtonHandler;
+        this.spContacts.Children.Add(createdContact);
       });
     }
 

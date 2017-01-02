@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using TeamNote.Protocol;
+using TeamNote.GUI;
 
 namespace TeamNote.UI
 {
   public partial class ContactItem : UserControl
   {
-    public delegate void ContactItemButtonClickHandler(long client);
-
-    public event ContactItemButtonClickHandler onMessageClick;
-    public event ContactItemButtonClickHandler onInfotmationClick;
+    public event Contacts.ContactWindowButtonClickHandler onContactItemButtonClick;
 
     private long m_clientId;
     private bool m_clientStatus;
@@ -81,14 +80,12 @@ namespace TeamNote.UI
 
     private void btnContactMessage_Click(object sender, RoutedEventArgs e)
     {
-      Debug.Log("Clicked message button ClientId={0}.", this.m_clientId);
-      this.onMessageClick?.Invoke(this.m_clientId);
+      this.onContactItemButtonClick?.Invoke(this.m_clientId, Contacts.ContactButton.Message);
     }
 
     private void btnContactInfo_Click(object sender, RoutedEventArgs e)
     {
-      Debug.Log("Clicked information button ClientId={0}.", this.m_clientId);
-      this.onInfotmationClick?.Invoke(this.m_clientId);
+      this.onContactItemButtonClick?.Invoke(this.m_clientId, Contacts.ContactButton.Information);
     }
   }
 }
