@@ -3,7 +3,6 @@ syntax = "proto3";
 option optimize_for = SPEED;
 option csharp_namespace = "TeamNote.Protocol";
 
-message PublicKey {
-	bytes Modulus = 1;
-	bytes Exponent = 2;
+message AuthorizationResponse {
+	string ServerName = 1;
 }

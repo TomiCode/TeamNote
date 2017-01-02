@@ -23,7 +23,7 @@ namespace TeamNote.Protocol {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg9QdWJsaWNLZXkucHJvdG8iLgoJUHVibGljS2V5Eg8KB01vZHVsdXMYASAB",
-            "KAkSEAoIRXhwb25lbnQYAiABKAlCFkgBqgIRVGVhbU5vdGUuUHJvdG9jb2xi",
+            "KAwSEAoIRXhwb25lbnQYAiABKAxCFkgBqgIRVGVhbU5vdGUuUHJvdG9jb2xi",
             "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
@@ -70,9 +70,9 @@ namespace TeamNote.Protocol {
 
     /// <summary>Field number for the "Modulus" field.</summary>
     public const int ModulusFieldNumber = 1;
-    private string modulus_ = "";
+    private pb::ByteString modulus_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Modulus {
+    public pb::ByteString Modulus {
       get { return modulus_; }
       set {
         modulus_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -81,9 +81,9 @@ namespace TeamNote.Protocol {
 
     /// <summary>Field number for the "Exponent" field.</summary>
     public const int ExponentFieldNumber = 2;
-    private string exponent_ = "";
+    private pb::ByteString exponent_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Exponent {
+    public pb::ByteString Exponent {
       get { return exponent_; }
       set {
         exponent_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -125,11 +125,11 @@ namespace TeamNote.Protocol {
     public void WriteTo(pb::CodedOutputStream output) {
       if (Modulus.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Modulus);
+        output.WriteBytes(Modulus);
       }
       if (Exponent.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(Exponent);
+        output.WriteBytes(Exponent);
       }
     }
 
@@ -137,10 +137,10 @@ namespace TeamNote.Protocol {
     public int CalculateSize() {
       int size = 0;
       if (Modulus.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Modulus);
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Modulus);
       }
       if (Exponent.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Exponent);
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Exponent);
       }
       return size;
     }
@@ -167,11 +167,11 @@ namespace TeamNote.Protocol {
             input.SkipLastField();
             break;
           case 10: {
-            Modulus = input.ReadString();
+            Modulus = input.ReadBytes();
             break;
           }
           case 18: {
-            Exponent = input.ReadString();
+            Exponent = input.ReadBytes();
             break;
           }
         }

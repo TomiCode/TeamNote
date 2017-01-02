@@ -79,11 +79,11 @@ namespace TeamNote.Client
 
     private void SendAuthorization(string name, string surname)
     {
-      Debug.Log("Sending Hello to server {0}:{1}.", name, surname);
       AuthorizationRequest request = new AuthorizationRequest();
       request.Name = name;
       request.Surname = surname;
 
+      Debug.Log("Sending authorization to server [{0} {1}].", name, surname);
       this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request);
     }
 

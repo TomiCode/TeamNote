@@ -23,6 +23,7 @@ using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Utilities.IO;
+using Org.BouncyCastle.Math;
 
 namespace TeamNote.Server
 {
@@ -35,19 +36,34 @@ namespace TeamNote.Server
     private DiscoveryService m_discoveryService;
 
     /* Connected clients. */
-    private Dictionary<long, NetworkClient> m_connectedClients;
-    
+    // private Dictionary<long, NetworkClient> m_connectedClients;
+    private List<NetworkClient> m_connectedClients;
+
     /* Internal members. */
     private TcpListener m_serverListener;
     private Thread m_serverThread;
 
     /* Pgp Server Keypair. */
-    private PgpKeyPair m_serverKeyPair;
-    private PgpPublicKey m_serverPublicKey;
-    private PgpPrivateKey m_serverPrivateKey;
+    private AsymmetricCipherKeyPair m_serverCipherKeys;
+
+    public PublicKey ServerKey {
+      get {
+        PublicKey resultKey = new PublicKey();
+        RsaKeyParameters serverPublic = this.m_serverCipherKeys.Public as RsaKeyParameters;
+        if (serverPublic == null) {
+          Debug.Warn("Cannot create server PublicKey request.");
+          return null;
+        }
+
+        resultKey.Modulus = ByteString.CopyFrom(serverPublic.Modulus.ToByteArray());
+        resultKey.Exponent = ByteString.CopyFrom(serverPublic.Exponent.ToByteArray());
+        return resultKey;
+      }
+    }
 
     public ServerInstance()
     {
+      /* Configuration loader. */
       this.m_serverConfig = new Configuration("ServerConfig.json");
       
       if (!this.m_serverConfig.LoadConfig()) {
@@ -58,7 +74,8 @@ namespace TeamNote.Server
       }
 
       /* Current connected clients. */
-      this.m_connectedClients = new Dictionary<long, NetworkClient>();
+      //this.m_connectedClients = new Dictionary<long, NetworkClient>();
+      this.m_connectedClients = new List<NetworkClient>();
 
       /* UDP Server discovery service. */
       this.m_discoveryService = new DiscoveryService(this.m_serverConfig.ConfigService);
@@ -72,85 +89,20 @@ namespace TeamNote.Server
 
     public void Start()
     {
-      Debug.Log("Starting socket listeners. [{0} => {1}]", this.m_serverConfig.ConfigService, this.m_serverConfig.ListenAddress);
+      Debug.Log("Starting socket listeners. [{0} => {1}]", 
+        this.m_serverConfig.ConfigService, this.m_serverConfig.ListenAddress);
+
+      /* Start listeners and threads. */
       this.m_discoveryService.Start(this.m_serverConfig.ListenAddress);
       this.m_serverListener.Start();
       this.m_serverThread.Start();
-
-
-      AuthorizationRequest request = new AuthorizationRequest();
-      request.Name = "test";
-      byte[] messageBytes = request.ToByteArray();
-      Debug.Log("Message size={0}.", messageBytes.Length);
-
-      MemoryStream bOut = new MemoryStream();
-      PgpCompressedDataGenerator comData = new PgpCompressedDataGenerator(CompressionAlgorithmTag.Uncompressed);
-      Stream cos = comData.Open(bOut);
-      PgpLiteralDataGenerator lData = new PgpLiteralDataGenerator();
-
-      Stream pOut = lData.Open(cos, PgpLiteralData.Binary, PgpLiteralData.Console, messageBytes.Length, DateTime.UtcNow);
-      pOut.Write(messageBytes, 0, messageBytes.Length);
-      pOut.Close();
-      comData.Close();
-      messageBytes = bOut.ToArray();
-      Debug.Log("Compressed message size={0}.", messageBytes.Length);
-
-      PgpEncryptedDataGenerator l_dataGenerator = new PgpEncryptedDataGenerator(SymmetricKeyAlgorithmTag.Cast5, new SecureRandom());
-      l_dataGenerator.AddMethod(this.m_serverKeyPair.PublicKey);
-
-      MemoryStream l_byteStream = new MemoryStream();
-      Stream l_dataStream = l_dataGenerator.Open(l_byteStream, messageBytes.Length);
-      l_byteStream.Write(messageBytes, 0, messageBytes.Length);
-      l_byteStream.Close();
-
-      messageBytes = l_byteStream.ToArray();
-      Debug.Log("Encoded message size={0}.", messageBytes.Length);
-
-      Stream inputStream = new MemoryStream(messageBytes);
-      inputStream = PgpUtilities.GetDecoderStream(inputStream);
-      MemoryStream decoded = new MemoryStream();
-
-      PgpObjectFactory pgpF = new PgpObjectFactory(inputStream);
-      PgpEncryptedDataList enc = null;
-      PgpObject o = pgpF.NextPgpObject();
-
-      if (o is PgpEncryptedDataList) {
-        enc = (PgpEncryptedDataList)o;
-      }
-      else {
-        enc = (PgpEncryptedDataList)pgpF.NextPgpObject();
-      }
-      
-      PgpPublicKeyEncryptedData pbe = enc.GetEncryptedDataObjects().Cast<PgpPublicKeyEncryptedData>().First();
-      // Debug.Log("KeyId={0} KeyId={1}.", pbe.KeyId, this.m_serverPrivateKey.KeyId);
-
-      Stream clear = pbe.GetDataStream(this.m_serverKeyPair.PrivateKey);
-      PgpObjectFactory plainFact = new PgpObjectFactory(clear);
-      PgpObject message = plainFact.NextPgpObject();
-
-      if (message is PgpCompressedData) {
-        PgpCompressedData cData = (PgpCompressedData)message;
-        PgpObjectFactory pgpFact = new PgpObjectFactory(cData.GetDataStream());
-        message = pgpFact.NextPgpObject();
-      }
-      if (message is PgpLiteralData) {
-        PgpLiteralData ld = (PgpLiteralData)message;
-        Stream unc = ld.GetInputStream();
-        Streams.PipeAll(unc, decoded);
-      }
-
     }
 
     public void GenerateServerKeypair()
     {
       RsaKeyPairGenerator keypairGenerator = new RsaKeyPairGenerator();
       keypairGenerator.Init(new KeyGenerationParameters(new SecureRandom(), KEY_STRENGTH));
-
-      AsymmetricCipherKeyPair l_keypair = keypairGenerator.GenerateKeyPair();
-      this.m_serverKeyPair = new PgpKeyPair(PublicKeyAlgorithmTag.RsaEncrypt, l_keypair, DateTime.Now);
-      // this.m_serverPrivateKey = pair.
-      // this.m_serverPublicKey = new PgpPublicKey(PublicKeyAlgorithmTag.RsaEncrypt, l_keypair.Public, DateTime.UtcNow);
-      // this.m_serverPrivateKey = new PgpPrivateKey(this.m_serverPublicKey.KeyId, this.m_serverPublicKey.PublicKeyPacket, l_keypair.Private);
+      this.m_serverCipherKeys = keypairGenerator.GenerateKeyPair();
 
       Debug.Log("Keypair created.");
     }
@@ -158,101 +110,74 @@ namespace TeamNote.Server
     private void ServerListener()
     {
       while (this.m_serverListener != null) {
-        TcpClient l_tcpClient = this.m_serverListener.AcceptTcpClient();
-        Debug.Log("New client connection accepted.");
+        TcpClient tcpClient = this.m_serverListener.AcceptTcpClient();
+        Debug.Log("New client connection.");
 
-        NetworkClient l_networkClient = new NetworkClient(l_tcpClient);
-        l_networkClient.onClientMessage += this.ClientMessageReceived;
+        NetworkClient networkClient = new NetworkClient(tcpClient, this.ClientKeyRequester);
+        networkClient.onServerMessageRequest += this.ServerMessageReceived;
+        networkClient.onClientMessageRequest += this.ClientMessageReceived;
 
-        this.m_connectedClients.Add(DateTime.Now.Ticks, l_networkClient);
-        l_networkClient.Start();
+        this.m_connectedClients.Add(networkClient);
+        networkClient.Start();
       }
     }
 
-    private ByteString DecryptServerMessage(ByteString message)
+    private NetworkClient GetClientFromId(long clientId)
     {
-      Debug.Log("Private KeyId={0}.", this.m_serverPrivateKey.KeyId);
-
-      Stream inputStream = new MemoryStream(message.ToByteArray());
-
-      inputStream = PgpUtilities.GetDecoderStream(inputStream);
-
-      PgpObjectFactory pgpF = new PgpObjectFactory(inputStream);
-      PgpEncryptedDataList enc = null;
-      PgpObject o = pgpF.NextPgpObject();
-
-      //
-      // the first object might be a PGP marker packet.
-      //
-      if (o is PgpEncryptedDataList) {
-        enc = (PgpEncryptedDataList)o;
-      }
-      else {
-        enc = (PgpEncryptedDataList)pgpF.NextPgpObject();
+      Debug.Log("Requesting ClientId={0}.", clientId);
+      foreach (NetworkClient connectedClient in this.m_connectedClients) {
+        if (connectedClient.ClientId == clientId)
+          return connectedClient;
       }
 
-      PgpPublicKeyEncryptedData publicEncrypted = enc[0] as PgpPublicKeyEncryptedData;
-      Debug.Log("KeyId={0} Server Private KeyId={1}.", publicEncrypted.KeyId, this.m_serverPrivateKey.KeyId);
-      BcpgInputStream clear = publicEncrypted.GetDataStream(this.m_serverPrivateKey) as BcpgInputStream;
-
-      //PgpPbeEncryptedData pbe = (PgpPbeEncryptedData)enc[0];
-      //Stream clear = pbe.GetDataStream();
-
-      PgpObjectFactory pgpFact = new PgpObjectFactory(clear);
-      // Debug.Log("Object count: {0}.", pgpFact.AllPgpObjects().Count);
-
-      // PgpCompressedData cData = (PgpCompressedData) pgpFact.NextPgpObject();
-      //pgpFact = new PgpObjectFactory(cData.GetDataStream());
-
-      PgpLiteralData ld = (PgpLiteralData) pgpFact.NextPgpObject();
-      Stream unc = ld.GetInputStream();
-
-      Debug.Log("Type={0}", unc.ToString());
-
-      byte[] test = new byte[512];
-      int count = unc.Read(test, 0, 512);
-      Debug.Log("Read {0} bytes.", count);
-
+      Debug.Warn("ClientId={0} does not exists.", clientId);
       return null;
+    }
+
+    private AsymmetricKeyParameter ClientKeyRequester()
+    {
+      Debug.Log("Requesting server private key.");
+      return this.m_serverCipherKeys.Private;
+    }
+
+    private void ServerMessageReceived(NetworkClient senderClient, int messageType, ByteString messageContent)
+    {
+      Debug.Log("Server message Type={0} Size={1}.", messageType, messageContent.Length);
+
+      switch (messageType) {
+        /* Handshake request. */
+        case MessageType.ClientHandshakeRequest: {
+            HandshakeRequest request = HandshakeRequest.Parser.ParseFrom(messageContent);
+            senderClient.UpdatePublicKey(request.Key);
+
+            PublicKey serverPublic = this.ServerKey;
+            if (serverPublic == null) {
+              Debug.Error("Server public key is invalid.");
+              return;
+            }
+
+            HandshakeResponse response = new HandshakeResponse();
+            response.Key = serverPublic;
+            senderClient.SendMessage(MessageType.ClientHandshakeResponse, response);
+          }
+          break;
+
+        /* Authorization request. */
+        case MessageType.AuthorizationRequest: {
+            AuthorizationRequest request = AuthorizationRequest.Parser.ParseFrom(messageContent);
+            senderClient.Profile.UpdateProfile(request);
+
+            AuthorizationResponse response = new AuthorizationResponse();
+            response.ServerName = this.m_serverConfig.ServerName;
+            senderClient.SendMessage(MessageType.AuthorizationResponse, response);
+          }
+          break;
+      }
     }
 
     private void ClientMessageReceived(NetworkClient senderClient, NetworkPacket receivedPacket)
     {
-      Debug.Log("NetworkPacket Type={0:X2} Server={1} Encrypted={2} ClientId={3} Message Size={4}.", 
-        receivedPacket.Type, receivedPacket.Server, receivedPacket.Encrypted, receivedPacket.ClientId, receivedPacket.Message.Length);
-
-      ByteString l_receivedMessage = receivedPacket.Message;
-      if (receivedPacket.Server && receivedPacket.Encrypted) {
-        l_receivedMessage = this.DecryptServerMessage(l_receivedMessage);
-        if (l_receivedMessage == null) {
-          Debug.Warn("Error occured while message encryption.");
-          return;
-        }
-      }
-
-      if (receivedPacket.Type == MessageType.ClientHandshakeRequest) {
-        HandshakeRequest clientRequest = HandshakeRequest.Parser.ParseFrom(l_receivedMessage);
-        senderClient.UpdatePublicKey(clientRequest.Key);
-
-        PublicKey serverPublicKey = new PublicKey();
-        RsaKeyParameters publicKeyParams = this.m_serverPublicKey.GetKey() as RsaKeyParameters;
-
-        serverPublicKey.Modulus = Convert.ToBase64String(publicKeyParams.Modulus.ToByteArray());
-        serverPublicKey.Exponent = Convert.ToBase64String(publicKeyParams.Exponent.ToByteArray());
-
-        HandshakeResponse serverResponse = new HandshakeResponse();
-        serverResponse.Key = serverPublicKey;
-
-        senderClient.SendMessage(MessageType.ClientHandshakeResponse, serverResponse, false);
-      }
-      else if (receivedPacket.Type == MessageType.AuthorizationRequest) {
-        AuthorizationRequest authRequest = AuthorizationRequest.Parser.ParseFrom(l_receivedMessage);
-        senderClient.Profile.UpdateProfile(authRequest);
-
-        /* Response. */
-      }
-
-
+      
     }
 
   }

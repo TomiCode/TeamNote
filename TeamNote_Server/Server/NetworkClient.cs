@@ -14,6 +14,11 @@ using Org.BouncyCastle.Math;
 using Google.Protobuf;
 
 using TeamNote.Protocol;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Encodings;
+using System.IO;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace TeamNote.Server
 {
@@ -36,17 +41,26 @@ namespace TeamNote.Server
       }
     }
 
-    /* Delegates and events. */
-    public delegate void ClientMessageHandler(NetworkClient client, NetworkPacket packet);
-    public event ClientMessageHandler onClientMessage; 
+    /* Delegates. */
+    public delegate void ReceivedClientMessageHandler(NetworkClient sender, NetworkPacket packet);
+    public delegate void ReceivedServerMessageHandler(NetworkClient sender, int type, ByteString message);
+    public delegate AsymmetricKeyParameter RequestServerCipherKey();
+    
+    /* Public events. */
+    public event ReceivedClientMessageHandler onClientMessageRequest;
+    public event ReceivedServerMessageHandler onServerMessageRequest;
 
     /* Client private class members. */
-    private PgpPublicKey m_publicKey;
+    private AsymmetricKeyParameter m_clientPublicKey;
     private TcpClient m_networkClient;
     private Thread m_listenThread;
 
     /* Client profile informations. */
     private ClientProfile m_clientProfile;
+    private long m_clientId;
+
+    /* Request private server key. */
+    private RequestServerCipherKey m_clientRequestServerKey;
 
     /* Public properties. */
     public bool IsConnected {
@@ -55,17 +69,35 @@ namespace TeamNote.Server
       }
     }
 
+    public long ClientId {
+      get {
+        return this.m_clientId;
+      }
+    }
+
     public ClientProfile Profile {
       get {
         return this.m_clientProfile;
       }
     }
-
+    
     /* Public methods. */
-    public NetworkClient(TcpClient clientInstance)
+    public NetworkClient(TcpClient clientInstance, RequestServerCipherKey keyRequester)
     {
+      /* TcpClient from server handler. */
       this.m_networkClient = clientInstance;
+
+      /* Server Private key request delegate. */
+      this.m_clientRequestServerKey = keyRequester;
+
+      /* ClientId Creation. */
+      this.m_clientId = DateTime.Now.Ticks;
+
+      /* Client members initialization. */
+      this.m_clientProfile = new ClientProfile();
       this.m_listenThread = new Thread(this.ListenThread);
+
+      Debug.Log("Created client Id={0}.", this.m_clientId);
     }
 
     public void Start()
@@ -74,15 +106,37 @@ namespace TeamNote.Server
       this.m_listenThread.Start();
     }
 
-    public void UpdatePublicKey(PublicKey clientPublicKey)
+    public ByteString ProceedMessageEncoding(AsymmetricKeyParameter messageKey, ByteString messageBytes)
     {
-      byte[] modulus = Convert.FromBase64String(clientPublicKey.Modulus);
-      byte[] exponent = Convert.FromBase64String(clientPublicKey.Exponent);
+      Debug.Log("Proceeding with key IsPrivate={0} Message Size={1}.", messageKey.IsPrivate, messageBytes.Length);
 
-      RsaKeyParameters publicKeyParameters = new RsaKeyParameters(false, new BigInteger(modulus), new BigInteger(exponent));
-      this.m_publicKey = new PgpPublicKey(PublicKeyAlgorithmTag.RsaGeneral, publicKeyParameters, DateTime.Now);
+      OaepEncoding cipherEncoder = new OaepEncoding(new RsaBlindedEngine(), new Sha256Digest());
+      cipherEncoder.Init(!(messageKey.IsPrivate), messageKey);
 
-      Debug.Log("Updated client PublicKey.");
+      using (MemoryStream outputStream = new MemoryStream())
+      using (Stream inputStream = new MemoryStream(messageBytes.ToByteArray())) {
+        byte[] inputBlock = new byte[cipherEncoder.GetInputBlockSize()];
+        int readBytes = 0;
+
+        while ((readBytes = inputStream.Read(inputBlock, 0, inputBlock.Length)) > 0) {
+          byte[] outputBlock = cipherEncoder.ProcessBlock(inputBlock, 0, readBytes);
+          outputStream.Write(outputBlock, 0, outputBlock.Length);
+
+          if (readBytes != inputBlock.Length)
+            break;
+        }
+        return ByteString.CopyFrom(outputStream.ToArray(), 0, (int)outputStream.Length);
+      }
+    }
+
+    public void UpdatePublicKey(PublicKey clientKey)
+    {
+      this.m_clientPublicKey = new RsaKeyParameters(
+        modulus: new BigInteger(clientKey.Modulus.ToByteArray()),
+        exponent: new BigInteger(clientKey.Exponent.ToByteArray()),
+        isPrivate: false
+      );
+      Debug.Log("Updated client encryption key.");
     }
 
     public bool SendMessage(int type, IMessage message)
@@ -94,26 +148,23 @@ namespace TeamNote.Server
     {
       Debug.Log("Sending server message Type={0} Encrypted={1}.", type, encrypt);
 
-      NetworkPacket l_networkPacket = new NetworkPacket();
-      l_networkPacket.Type = type;
-      l_networkPacket.Server = true;
+      ByteString messageContent = message.ToByteString();
+      NetworkPacket networkPacket = new NetworkPacket();
+      networkPacket.Type = type;
+      networkPacket.Server = true;
+      networkPacket.Encrypted = encrypt;
 
-      if (encrypt) {
-        l_networkPacket.Encrypted = true;
+      if (networkPacket.Encrypted) {
+        Debug.Log("Encrypting message content. Size={0}", messageContent.Length);
 
+        messageContent = this.ProceedMessageEncoding(this.m_clientPublicKey, messageContent);
+        if (messageContent == null) {
+          Debug.Error("Encoded message content is invalid.");
+          return false;
+        }
       }
-      else {
-        l_networkPacket.Message = message.ToByteString();
-      }
-
-      return this.SendMessage(l_networkPacket);
-    }
-
-    private bool SendMessage(NetworkPacket packet)
-    {
-      int sendBytes = this.m_networkClient.Client.Send(packet.ToByteArray());
-      Debug.Log("Send {0} bytes. Packet size: {1} bytes.", sendBytes, packet.CalculateSize());
-      return (sendBytes == packet.CalculateSize());
+      networkPacket.Message = messageContent;
+      return this.SendMessage(networkPacket);
     }
 
     public bool ForwardNetworkPacket(long senderClientId, NetworkPacket packet)
@@ -131,6 +182,13 @@ namespace TeamNote.Server
       return this.SendMessage(l_forwardPacket);
     }
 
+    private bool SendMessage(NetworkPacket packet)
+    {
+      int sendBytes = this.m_networkClient.Client.Send(packet.ToByteArray());
+      Debug.Log("Send {0} bytes. Packet size: {1} bytes.", sendBytes, packet.CalculateSize());
+      return (sendBytes == packet.CalculateSize());
+    }
+    
     private void ListenThread()
     {
       Debug.Log("Starting listening for client.");
@@ -138,10 +196,33 @@ namespace TeamNote.Server
       int bytesReceived = 0;
 
       while ((bytesReceived = this.m_networkClient.Client.Receive(messageBuffer)) != 0) {
-        Debug.Log("Received {0} bytes.", bytesReceived);
-        NetworkPacket receivedMessage = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
+        NetworkPacket receivedMessage = NetworkPacket.Parser.ParseFrom(ByteString.CopyFrom(messageBuffer, 0, bytesReceived));
+        Debug.Log("Received message Server={0} ClientId={1} Encrypted={2}.", receivedMessage.Server, 
+          receivedMessage.ClientId, receivedMessage.Encrypted);
 
-        this.onClientMessage?.Invoke(this, receivedMessage);
+        if (receivedMessage.Server) {
+          ByteString messageContent = receivedMessage.Message;
+
+          if (receivedMessage.Encrypted) {
+            Debug.Log("Decrypting server message.");
+
+            AsymmetricKeyParameter cipherPrivateKey = this.m_clientRequestServerKey?.Invoke();
+            if (cipherPrivateKey == null) {
+              Debug.Error("Cannot receive server private cipher key.");
+              continue;
+            }
+
+            messageContent = this.ProceedMessageEncoding(cipherPrivateKey, messageContent);
+            if (messageContent == null) {
+              Debug.Error("Invalid message content after encoding.");
+              continue;
+            }
+          }
+          this.onServerMessageRequest?.Invoke(this, receivedMessage.Type, messageContent);
+        }
+        else {
+          this.onClientMessageRequest?.Invoke(this, receivedMessage);
+        }
       }
     }
 

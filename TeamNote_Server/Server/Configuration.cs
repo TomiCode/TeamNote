@@ -17,6 +17,8 @@ namespace TeamNote.Server
     public const int DEFAULT_UDP_PORT = 1337;
     public const int DEFAULT_TCP_PORT = 1330;
 
+    public const string SERVER_NAME = "TeamNote v2 Srv";
+
     [DataContract]
     class Fields
     {
@@ -31,6 +33,9 @@ namespace TeamNote.Server
 
       [DataMember(IsRequired = true, Name = "listenPort")]
       public int tcpListenPort { get; set; }
+
+      [DataMember(IsRequired = false, Name = "serverName")]
+      public string serverName { get; set; }
 
       public Fields()
       {
@@ -88,6 +93,15 @@ namespace TeamNote.Server
           return new IPEndPoint(IPAddress.Loopback, DEFAULT_TCP_PORT);
         }
         return new IPEndPoint(l_readAddress, this.m_configFields.tcpListenPort);
+      }
+    }
+
+    public string ServerName {
+      get {
+        if (this.m_configFields.serverName == string.Empty)
+          return SERVER_NAME;
+
+        return this.m_configFields.serverName;
       }
     }
 
