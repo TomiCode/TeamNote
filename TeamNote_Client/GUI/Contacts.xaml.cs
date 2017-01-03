@@ -17,6 +17,8 @@ using TeamNote.Protocol;
 
 namespace TeamNote.GUI
 {
+  public delegate void ConactItemDataUpdateDelegate();
+
   public partial class Contacts : Window
   {
     public enum ContactButton : byte {
@@ -61,7 +63,7 @@ namespace TeamNote.GUI
     public List<long> Clients {
       get {
         return this.Dispatcher.Invoke(() => {
-          return this.spContacts.Children.Cast<UI.ContactItem>().Select(i => i.ClientId).ToList();
+          return this.spContacts.Children.Cast<UI.ContactItem>().Select(i => i.ClientContact.ClientId).ToList();
         });
       }
     }
@@ -114,7 +116,7 @@ namespace TeamNote.GUI
         UI.ContactItem contactItem = null;
 
         foreach (UI.ContactItem contactElement in this.spContacts.Children) {
-          if (contactElement.ClientId == clientId) {
+          if (contactElement.ClientContact.ClientId == clientId) {
             Debug.Log("Found Stackpanel element.");
             contactItem = contactElement;
             break;
@@ -125,6 +127,11 @@ namespace TeamNote.GUI
           this.spContacts.Children.Remove(contactItem);
         }
       });
+    }
+
+    public UI.ContactItem.Contact GetClientContact(long clientId)
+    {
+      return null;
     }
 
     private void SetStatus(bool status)

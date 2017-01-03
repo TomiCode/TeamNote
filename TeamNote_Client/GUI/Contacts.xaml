@@ -28,9 +28,7 @@
       </StackPanel>
     </ScrollViewer>
     <Border Margin="0" VerticalAlignment="Bottom" Height="28" BorderBrush="#FFE4E4E4" BorderThickness="0,1,0,0">
-      <Grid>
-        <Label x:Name="lbWindowStatus" Content="{}{statusbar content}" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="#FF6A6868"/>
-      </Grid>
+      <Label x:Name="lbWindowStatus" Content="{}{statusbar content}" HorizontalAlignment="Left" Margin="0" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="#FF6A6868"/>
     </Border>
   </Grid>
 </Window>

@@ -5,15 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="ContactInformation" Height="245" Width="390" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
+        Title="ContactInformation" Height="270" Width="330" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
       <Label x:Name="wnd_title" Content="{DynamicResource ContactInformation_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
     </Grid>
-    <Label x:Name="lbContactName" Content="{}{name&amp;surname}" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14"/>
-    <Label Content="Identification Number" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="13"/>
-    <Label x:Name="lbContactId" Content="{}{ClientId}" HorizontalAlignment="Right" Margin="0,67,10,0" VerticalAlignment="Top" FontFamily="Consolas"/>
-    <TextBlock x:Name="tbModulus" Margin="10,95,10,35" TextWrapping="Wrap" Text="{}{Public key modulus}" FontFamily="Consolas" TextAlignment="Center"/>
+    <Label Content="{DynamicResource ContactInformation_Username}" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="13"/>
+    <Label Content="{DynamicResource ContactInformation_ClientId}" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="13"/>
+
+    <Label x:Name="lbContactName" Content="{}{Username}" HorizontalAlignment="Right" Margin="0,39,10,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalNormalFont}" Foreground="{DynamicResource NormalLabelForegroundBrush}" FontSize="14"/>
+    <Label x:Name="lbContactId" Content="{}{ClientId}" HorizontalAlignment="Right" Margin="0,67,10,0" VerticalAlignment="Top" Foreground="{DynamicResource NormalLabelForegroundBrush}" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu Mono"/>
+    <Border Margin="0,100,0,40" Padding="5,0" BorderBrush="#FFE4E4E4" BorderThickness="0,1">
+      <TextBlock x:Name="tbModulus" TextWrapping="Wrap" Text="{}{Client modulus}" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu Mono" FontSize="14" TextAlignment="Center" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+    </Border>
     <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="76"/>
   </Grid>
 </Window>

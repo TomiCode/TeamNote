@@ -147,6 +147,13 @@ namespace TeamNote.Client
       this.m_localKeyring.Add(client, l_keyParam);
     }
 
+    public AsymmetricKeyParameter GetClientKey(long client)
+    {
+      Debug.Log("Requesting ClientId={0} public key.", client);
+      if (!this.m_localKeyring.ContainsKey(client)) return null;
+      return this.m_localKeyring[client];
+    }
+
     public bool RemoveClientKey(long client)
     {
       Debug.Log("Removing ClientId={0} from keyring.", client);

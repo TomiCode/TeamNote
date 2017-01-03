@@ -25,6 +25,8 @@
 
   <System:String x:Key="Message_Title">TeamNote – Message</System:String>
   <System:String x:Key="Message_btnSend">Send</System:String>
-  <System:String x:Key="ContactInformation_Title">TeamNote – Contact</System:String>
 
+  <System:String x:Key="ContactInformation_Title">TeamNote – Contact info</System:String>
+  <System:String x:Key="ContactInformation_Username">Username</System:String>
+  <System:String x:Key="ContactInformation_ClientId">Client ID</System:String>
 </ResourceDictionary>

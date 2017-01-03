@@ -20,72 +20,107 @@ namespace TeamNote.UI
 {
   public partial class ContactItem : UserControl
   {
+    public class Contact
+    {
+      public ConactItemDataUpdateDelegate onDataUpdate;
+
+      private long m_clientId;
+      private string m_clientUsername;
+      private bool m_clientOnlineStatus;
+
+      public long ClientId {
+        get {
+          return this.m_clientId;
+        }
+      }
+
+      public bool Status {
+        get {
+          return this.m_clientOnlineStatus;
+        }
+        set {
+          this.m_clientOnlineStatus = value;
+          this.onDataUpdate?.Invoke();
+        }
+      }
+
+      public bool Valid {
+        get {
+          return ((this.m_clientId != 0) && (this.m_clientUsername != null) && (this.m_clientUsername != string.Empty));
+        }
+      }
+
+      public string Username {
+        get {
+          return this.m_clientUsername;
+        }
+      }
+
+      public Contact(long clientId)
+      {
+        this.m_clientId = clientId;
+        this.m_clientOnlineStatus = true;
+      }
+
+      public void SetUsername(string name, string surname)
+      {
+        this.m_clientUsername = string.Format("{0} {1}", name, surname);
+        this.onDataUpdate?.Invoke();
+      }
+    }
+
     public event Contacts.ContactWindowButtonClickHandler onContactItemButtonClick;
 
-    private long m_clientId;
-    private bool m_clientStatus;
+    private Contact m_clientContact;
 
-    public long ClientId {
+    public Contact ClientContact {
       get {
-        return this.m_clientId;
-      }
-    }
-
-    public bool Status {
-      get {
-        return this.m_clientStatus;
-      }
-      set {
-        this.m_clientStatus = value;
-        this.UpdateStatusLabel();
-      }
-    }
-
-    public bool IsValid {
-      get {
-        return (this.m_clientId != 0);
+        return this.m_clientContact;
       }
     }
 
     public ContactItem()
     {
       InitializeComponent();
-      this.m_clientId = 0;
+      this.m_clientContact = new Contact(0);
+
+      Debug.Warn("This constructor is deprecated. ContactItem is probably invalid.");
     }
 
     public ContactItem(ContactUpdate.Types.Client client)
     {
       InitializeComponent();
-      this.m_clientId = client.ClientId;
-      this.Dispatcher.Invoke(() => {
-        this.lbContactName.Content = string.Format("{0} {1}", client.Name, client.Surname);
-        this.UpdateStatusLabel();
-      });
+      this.m_clientContact = new Contact(client.ClientId);
+      this.m_clientContact.onDataUpdate += this.OnDataUpdated;
+
+      this.m_clientContact.SetUsername(client.Name, client.Surname);
+      this.m_clientContact.Status = client.Online;
     }
 
-    public void UpdateContactProfile(string name, string surname)
+    private void OnDataUpdated()
     {
+      Debug.Log("ClientId={0} data updated.", this.m_clientContact.ClientId);
 
-    }
+      if ((string)this.lbContactName.Content != this.m_clientContact.Username)
+        this.lbContactName.Dispatcher.Invoke(() => this.lbContactName.Content = this.m_clientContact.Username);
 
-    private void UpdateStatusLabel()
-    {
-      string contactStatus = (string)Application.Current.Resources[this.m_clientStatus ? GUI.Contacts.STATUS_ONLINE_RESOURCE : GUI.Contacts.STATUS_AWAY_RESOURCE];
-      if (contactStatus == null) {
-        Debug.Warn("Cannot read STATUS resources.");
-        return;
-      }
-      this.Dispatcher.Invoke(() => this.lbContactStatus.Content = contactStatus);
+      object statusContent = Application.Current.Resources[this.m_clientContact.Status ? Contacts.STATUS_ONLINE_RESOURCE : Contacts.STATUS_AWAY_RESOURCE];
+      if (statusContent != null)
+        this.lbContactStatus.Dispatcher.Invoke(() => this.lbContactStatus.Content = statusContent);
+      else
+        Debug.Warn("Cannot load STATUS resource.");
     }
 
     private void btnContactMessage_Click(object sender, RoutedEventArgs e)
     {
-      this.onContactItemButtonClick?.Invoke(this.m_clientId, Contacts.ContactButton.Message);
+      if (this.m_clientContact.Valid)
+        this.onContactItemButtonClick?.Invoke(this.m_clientContact.ClientId, Contacts.ContactButton.Message);
     }
 
     private void btnContactInfo_Click(object sender, RoutedEventArgs e)
     {
-      this.onContactItemButtonClick?.Invoke(this.m_clientId, Contacts.ContactButton.Information);
+      if (this.m_clientContact.Valid)
+        this.onContactItemButtonClick?.Invoke(this.m_clientContact.ClientId, Contacts.ContactButton.Information);
     }
   }
 }

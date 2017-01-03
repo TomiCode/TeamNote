@@ -29,6 +29,9 @@ namespace TeamNote.Client
     private GUI.Splash m_guiSplash;
     private GUI.Contacts m_guiContacts;
     private GUI.Authenticate m_guiAuthenticate;
+    private GUI.ContactInformation m_guiContactInformation;
+
+    private Dictionary<long, GUI.Message> m_guiMessages;
 
     public ClientInstance()
     {
@@ -52,6 +55,10 @@ namespace TeamNote.Client
 
       this.m_guiContacts = new GUI.Contacts(this.HandleContactItemButton);
       this.m_guiContacts.onClientDataUpdated += this.SendClientUpdateChange;
+
+      this.m_guiContactInformation = new GUI.ContactInformation();
+
+      this.m_guiMessages = new Dictionary<long, GUI.Message>();
     }
 
     public void Initialize()
@@ -183,6 +190,16 @@ namespace TeamNote.Client
     private void HandleContactItemButton(long clientId, GUI.Contacts.ContactButton button)
     {
       Debug.Log("Clicked on ClientId={0} Button={1}.", clientId, button.ToString());
+      if (button == GUI.Contacts.ContactButton.Information) {
+        if (this.m_guiContactInformation.Visibility == System.Windows.Visibility.Visible) {
+          this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Hide());
+        }
+
+        this.m_guiContactInformation.UpdatePublicKey(this.m_localClient.GetClientKey(clientId));
+        this.m_guiContactInformation.UpdateClient("?!", clientId);
+        this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Show());
+      }
+
     }
   }
 }
