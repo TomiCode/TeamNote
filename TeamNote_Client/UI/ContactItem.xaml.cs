@@ -22,7 +22,7 @@ namespace TeamNote.UI
   {
     public class Contact
     {
-      public ConactItemDataUpdateDelegate onDataUpdate;
+      public ContactsDataUpdateDelegate onDataUpdate;
 
       private long m_clientId;
       private string m_clientUsername;

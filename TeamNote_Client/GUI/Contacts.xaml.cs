@@ -17,46 +17,82 @@ using TeamNote.Protocol;
 
 namespace TeamNote.GUI
 {
-  public delegate void ConactItemDataUpdateDelegate();
+  public delegate void ContactsDataUpdateDelegate();
 
   public partial class Contacts : Window
   {
+    public delegate void ContactWindowButtonClickHandler(long clientId, ContactButton button);
+
+    public const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
+    public const string STATUS_ONLINE_RESOURCE = "Contacts_Status_Online";
+    
     public enum ContactButton : byte {
       Information,
       Message
     }
 
-    public delegate void UpdateClientDataHandler(bool onlineStatus, string name = "", string surname = "");
-    public delegate void ContactWindowButtonClickHandler(long clientId, ContactButton button);
+    public class LocalClient
+    {
+      public ContactsDataUpdateDelegate onDataUpdate;
 
-    public event UpdateClientDataHandler onClientDataUpdated;
+      private bool m_clientStatus;
+      private string m_clientName;
+      private string m_clientSurname;
 
-    public const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
-    public const string STATUS_ONLINE_RESOURCE = "Contacts_Status_Online";
-
-    private bool m_localOnlineStatus;
-    private string m_localClientName;
-    private string m_localClientSurname;
-
-    private ContactWindowButtonClickHandler m_clientButtonHandler;
-
-    public bool OnlineStatus {
-      get {
-        return this.m_localOnlineStatus;
+      public bool Status {
+        get {
+          return this.m_clientStatus;
+        }
+        set {
+          this.m_clientStatus = value;
+          this.onDataUpdate?.Invoke();
+        }
       }
-      set {
-        this.SetStatus(value);
+
+      public string Name {
+        get {
+          return this.m_clientName;
+        }
+      }
+
+      public string Surname {
+        get {
+          return this.m_clientSurname;
+        }
+      }
+
+      public LocalClient()
+      {
+        this.m_clientStatus = true;
+        this.m_clientName = string.Empty;
+        this.m_clientSurname = string.Empty;
+      }
+
+      public void SetUsername(string name, string surname)
+      {
+        Debug.Log("Setting up local username. [{0} {1}]", name, surname);
+
+        this.m_clientName = name;
+        this.m_clientSurname = surname;
+        this.onDataUpdate?.Invoke();
       }
     }
+
+    private ContactWindowButtonClickHandler m_clientButtonHandler;
+    private LocalClient m_localClientContact;
+
+    public LocalClient LocalContact {
+      get {
+        return this.m_localClientContact;
+      }
+   }
 
     public string StatusText {
       get {
         return (string)this.lbWindowStatus.Content;
       }
       set {
-        this.Dispatcher.Invoke(() => {
-          this.lbWindowStatus.Content = value;
-        });
+        this.lbWindowStatus.Dispatcher.Invoke(() => this.lbWindowStatus.Content = value);
       }
     }
 
@@ -68,35 +104,15 @@ namespace TeamNote.GUI
       }
     }
 
-    public Contacts(ContactWindowButtonClickHandler handler)
+    public Contacts(ContactWindowButtonClickHandler buttonHandler, ContactsDataUpdateDelegate updateHandler)
     {
       InitializeComponent();
-      this.m_clientButtonHandler = handler;
-    }
 
-    public void Setup(string name, string surname, bool status = true)
-    {
-      this.m_localClientName = name;
-      this.m_localClientSurname = surname;
-      this.m_localOnlineStatus = status;
+      this.m_clientButtonHandler = buttonHandler;
 
-      this.Dispatcher.Invoke(() => {
-        this.lbName.Content = this.m_localClientName;
-        this.lbSurname.Content = this.m_localClientSurname;
-        this.UpdateStatusLabel();
-      });
-    }
-
-    public void ChangeClientName(string name, string surname)
-    {
-      this.m_localClientName = name;
-      this.m_localClientSurname = surname;
-
-      this.Dispatcher.Invoke(() => {
-        this.lbName.Content = this.m_localClientName;
-        this.lbSurname.Content = this.m_localClientSurname;
-      });
-      this.onClientDataUpdated?.Invoke(this.m_localOnlineStatus, this.m_localClientName, this.m_localClientSurname);
+      this.m_localClientContact = new LocalClient();
+      this.m_localClientContact.onDataUpdate += updateHandler;
+      this.m_localClientContact.onDataUpdate += OnDataUpdate;
     }
 
     public void CreateClient(ContactUpdate.Types.Client client)
@@ -131,29 +147,26 @@ namespace TeamNote.GUI
 
     public UI.ContactItem.Contact GetClientContact(long clientId)
     {
+      Debug.Log("Requesting ClientId={0} contact informations.", clientId);
+      foreach (UI.ContactItem contactItem in this.spContacts.Children) {
+        if (contactItem.ClientContact.ClientId == clientId)
+          return contactItem.ClientContact;
+      }
       return null;
     }
 
-    private void SetStatus(bool status)
+    private void OnDataUpdate()
     {
-      this.m_localOnlineStatus = status;
-      this.UpdateStatusLabel();
-      this.onClientDataUpdated?.Invoke(this.m_localOnlineStatus);
-    }
+      Debug.Log("Updating local contact data.");
+      if ((string)this.lbName.Content != this.m_localClientContact.Name)
+        this.lbName.Dispatcher.Invoke(() => this.lbName.Content = this.m_localClientContact.Name);
 
-    private void UpdateStatusLabel()
-    {
-      string statusText = null;
-      if (this.m_localOnlineStatus)
-        statusText = (string)Application.Current.Resources[STATUS_ONLINE_RESOURCE];
-      else
-        statusText = (string)Application.Current.Resources[STATUS_AWAY_RESOURCE];
+      if ((string)this.lbSurname.Content != this.m_localClientContact.Surname)
+        this.lbSurname.Dispatcher.Invoke(() => this.lbSurname.Content = this.m_localClientContact.Surname);
 
-      if (statusText == null) {
-        Debug.Warn("Can not load resources for STATUS texts.");
-        return;
-      }
-      this.lbStatus.Content = statusText;
+      object statusContent = Application.Current.Resources[this.m_localClientContact.Status ? STATUS_ONLINE_RESOURCE : STATUS_AWAY_RESOURCE];
+      if (statusContent != null)
+        this.lbStatus.Dispatcher.Invoke(() => this.lbStatus.Content = statusContent);
     }
 
     private void Window_MouseDown(object sender, MouseButtonEventArgs e)
