@@ -10,11 +10,13 @@ namespace TeamNote
 {
   public partial class App : Application
   {
+    public delegate void ApplicationCloseDelegate(int exitCode);
+
     private Client.ClientInstance m_clientInstance;
 
     public App()
     {
-      this.m_clientInstance = new Client.ClientInstance();
+      this.m_clientInstance = new Client.ClientInstance(this.CloseApplication);
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -23,6 +25,11 @@ namespace TeamNote
 
       this.m_clientInstance.Initialize();
       base.OnStartup(e);
+    }
+
+    private void CloseApplication(int exitCode)
+    {
+      this.Dispatcher.Invoke(() => Current.Shutdown(exitCode));
     }
   }
 }

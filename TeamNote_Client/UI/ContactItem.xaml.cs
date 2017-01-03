@@ -20,6 +20,12 @@ namespace TeamNote.UI
 {
   public partial class ContactItem : UserControl
   {
+    public enum Buttons : byte
+    {
+      Information,
+      Message
+    }
+
     public class Contact
     {
       public ContactsDataUpdateDelegate onDataUpdate;
@@ -69,7 +75,7 @@ namespace TeamNote.UI
       }
     }
 
-    public event Contacts.ContactWindowButtonClickHandler onContactItemButtonClick;
+    public event ContactItemButtonClickDelegate onContactItemButtonClick;
 
     private Contact m_clientContact;
 
@@ -114,13 +120,13 @@ namespace TeamNote.UI
     private void btnContactMessage_Click(object sender, RoutedEventArgs e)
     {
       if (this.m_clientContact.Valid)
-        this.onContactItemButtonClick?.Invoke(this.m_clientContact.ClientId, Contacts.ContactButton.Message);
+        this.onContactItemButtonClick?.Invoke(this.m_clientContact, Buttons.Message);
     }
 
     private void btnContactInfo_Click(object sender, RoutedEventArgs e)
     {
       if (this.m_clientContact.Valid)
-        this.onContactItemButtonClick?.Invoke(this.m_clientContact.ClientId, Contacts.ContactButton.Information);
+        this.onContactItemButtonClick?.Invoke(this.m_clientContact, Buttons.Information);
     }
   }
 }

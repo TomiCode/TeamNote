@@ -19,6 +19,8 @@ namespace TeamNote.Client
   {
     public const string CONFIG_FILENAME = "ClientConfig.json";
 
+    private App.ApplicationCloseDelegate m_appCloseDelegate;
+
     /* Client private members. */
     private Configuration m_clientConfig;
     private ServerDiscoverer m_serverDiscoverer;
@@ -33,14 +35,18 @@ namespace TeamNote.Client
 
     private Dictionary<long, GUI.Message> m_guiMessages;
 
-    public ClientInstance()
+    public ClientInstance(App.ApplicationCloseDelegate appCloseHandle)
     {
+      /* Close application handler. */
+      this.m_appCloseDelegate = appCloseHandle;
+
       /* Client config. */
       this.m_clientConfig = new Configuration(CONFIG_FILENAME);
 
       /* Server Discoverer. */
       this.m_serverDiscoverer = new ServerDiscoverer();
-      this.m_serverDiscoverer.onDiscoveryResponse += this.ConnectToServer;
+      this.m_serverDiscoverer.onDiscoveryResponse += this.HandleDiscoveryResponse;
+      this.m_serverDiscoverer.onDiscoveryFailed += this.HandleDiscoveryFailure;
 
       /* Self object for TCPIP Handling. */
       this.m_localClient = new LocalClient();
@@ -49,13 +55,11 @@ namespace TeamNote.Client
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
-
+      
       this.m_guiAuthenticate = new GUI.Authenticate();
       this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
 
-      this.m_guiContacts = new GUI.Contacts(this.HandleContactItemButton);
-      this.m_guiContacts.onClientDataUpdated += this.SendClientUpdateChange;
-
+      this.m_guiContacts = new GUI.Contacts(this.HandleContactItemButton, this.SendClientDataUpdateChange);
       this.m_guiContactInformation = new GUI.ContactInformation();
 
       this.m_guiMessages = new Dictionary<long, GUI.Message>();
@@ -79,17 +83,33 @@ namespace TeamNote.Client
       this.UpdateStatusMessage("Splash_Discover");
     }
 
-    private void ConnectToServer(IPEndPoint serverAddress)
+    private void HandleDiscoveryResponse(IPEndPoint serverAddress)
     {
       Debug.Log("Address: {0}", serverAddress);
       this.m_guiSplash.SetMessage("Splash_Connect");
+      Task.Delay(2000).ContinueWith(_ => this.ConnectToServer(serverAddress));
+    }
 
-      Task.Delay(1000).ContinueWith(_ => {
-        if (this.m_localClient.Connect(serverAddress)) {
-          Debug.Log("Connected to server!");
-          this.m_localClient.SendHandshake();
-        }
+    private void HandleDiscoveryFailure(int retriesCount)
+    {
+      Debug.Warn("Handling discoverer failure.");
+      this.UpdateStatusMessage("Splash_DiscoverFailure");
+
+      Task.Delay(5000).ContinueWith(_ => {
+        this.m_appCloseDelegate(1);
       });
+    }
+
+    private void ConnectToServer(IPEndPoint serverAddress)
+    {
+      if (this.m_localClient.Connect(serverAddress)) {
+        Debug.Log("Connected to server!");
+        this.m_localClient.SendHandshake();
+      }
+      else {
+        Debug.Error("Could not connect to remote server {0}.", serverAddress);
+        this.UpdateStatusMessage("Splash_CannotConnect");
+      }
     }
 
     private void SendAuthorization(string name, string surname)
@@ -100,28 +120,24 @@ namespace TeamNote.Client
 
       Debug.Log("Sending authorization to server [{0} {1}].", name, surname);
       this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request);
-      this.m_guiContacts.Setup(name, surname);
+      this.m_guiContacts.LocalContact.SetUsername(name, surname);
     }
 
     private void SendContactRequest()
     {
       Debug.Log("Sending request for Contacts update.");
       ContactUpdateRequest request = new ContactUpdateRequest();
-      //Debug.Log("Element count={0}.", this.m_guiContacts.Clients());
       request.Clients.Add(this.m_guiContacts.Clients);
+
       this.m_localClient.SendMessage(MessageType.ContactUpdateRequest, request);
     }
 
-    private void SendClientUpdateChange(bool onlineStatus, string name, string surname)
+    private void SendClientDataUpdateChange()
     {
-      ContactUpdateChangeRequest clientRequest = new ContactUpdateChangeRequest();
-      if (name != string.Empty && surname != string.Empty) {
-        clientRequest.Name = name;
-        clientRequest.Surname = surname;
-      }
-      clientRequest.Online = onlineStatus;
+      ContactUpdateChangeRequest clientRequest = this.m_guiContacts.LocalContact.ContactUpdate;
+      Debug.Log("Sending update change to server. Online={0} Name={1} Surname={2}.", 
+        clientRequest.Online, clientRequest.Name, clientRequest.Surname);
 
-      Debug.Log("Sending update change to server. Online={0} Name={1} Surname={2}.", onlineStatus, name, surname);
       this.m_localClient.SendMessage(MessageType.ContactUpdateChangeRequest, clientRequest);
     }
 
@@ -187,19 +203,18 @@ namespace TeamNote.Client
 
     }
 
-    private void HandleContactItemButton(long clientId, GUI.Contacts.ContactButton button)
+    private void HandleContactItemButton(UI.ContactItem.Contact senderContact, UI.ContactItem.Buttons clickedButton)
     {
-      Debug.Log("Clicked on ClientId={0} Button={1}.", clientId, button.ToString());
-      if (button == GUI.Contacts.ContactButton.Information) {
+      Debug.Log("Clicked on ClientId={0} Button={1}.", senderContact.ClientId, clickedButton.ToString());
+      if (clickedButton == UI.ContactItem.Buttons.Information) {
         if (this.m_guiContactInformation.Visibility == System.Windows.Visibility.Visible) {
           this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Hide());
         }
 
-        this.m_guiContactInformation.UpdatePublicKey(this.m_localClient.GetClientKey(clientId));
-        this.m_guiContactInformation.UpdateClient("?!", clientId);
+        this.m_guiContactInformation.UpdatePublicKey(this.m_localClient.GetClientKey(senderContact.ClientId));
+        this.m_guiContactInformation.UpdateClient(senderContact.Username, senderContact.ClientId);
         this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Show());
       }
-
     }
   }
 }

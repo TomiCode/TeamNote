@@ -18,18 +18,12 @@ using TeamNote.Protocol;
 namespace TeamNote.GUI
 {
   public delegate void ContactsDataUpdateDelegate();
+  public delegate void ContactItemButtonClickDelegate(UI.ContactItem.Contact sender, UI.ContactItem.Buttons button);
 
   public partial class Contacts : Window
   {
-    public delegate void ContactWindowButtonClickHandler(long clientId, ContactButton button);
-
     public const string STATUS_AWAY_RESOURCE = "Contacts_Status_Away";
     public const string STATUS_ONLINE_RESOURCE = "Contacts_Status_Online";
-    
-    public enum ContactButton : byte {
-      Information,
-      Message
-    }
 
     public class LocalClient
     {
@@ -61,6 +55,17 @@ namespace TeamNote.GUI
         }
       }
 
+      public ContactUpdateChangeRequest ContactUpdate {
+        get {
+          ContactUpdateChangeRequest contactUpdate = new ContactUpdateChangeRequest();
+          contactUpdate.Online = this.m_clientStatus;
+          contactUpdate.Name = this.m_clientName;
+          contactUpdate.Surname = this.m_clientSurname;
+
+          return contactUpdate;
+        }
+      }
+
       public LocalClient()
       {
         this.m_clientStatus = true;
@@ -78,7 +83,7 @@ namespace TeamNote.GUI
       }
     }
 
-    private ContactWindowButtonClickHandler m_clientButtonHandler;
+    private ContactItemButtonClickDelegate m_clientButtonHandler;
     private LocalClient m_localClientContact;
 
     public LocalClient LocalContact {
@@ -104,7 +109,7 @@ namespace TeamNote.GUI
       }
     }
 
-    public Contacts(ContactWindowButtonClickHandler buttonHandler, ContactsDataUpdateDelegate updateHandler)
+    public Contacts(ContactItemButtonClickDelegate buttonHandler, ContactsDataUpdateDelegate updateHandler)
     {
       InitializeComponent();
 

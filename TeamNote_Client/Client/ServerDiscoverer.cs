@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 using Google.Protobuf;
 
 using TeamNote.Protocol;
-using System.IO;
 
 namespace TeamNote.Client
 {
@@ -20,8 +15,13 @@ namespace TeamNote.Client
     public const int DISCOVERY_LOW_PORTNUM = 49152;
     public const int DISCOVERY_HIGH_PORTNUM = 65534;
 
-    public delegate void ReceivedDiscoveryResponse(IPEndPoint serverAddress);
-    public event ReceivedDiscoveryResponse onDiscoveryResponse;
+    public const int MAX_RETRIES = 0;
+
+    public delegate void ServerDiscovererResponseDelegate(IPEndPoint serverAddress);
+    public delegate void ServerDiscovererFailedDelegate(int retries);
+
+    public event ServerDiscovererResponseDelegate onDiscoveryResponse;
+    public event ServerDiscovererFailedDelegate onDiscoveryFailed;
 
     private DispatcherTimer m_discoverDispatcher;
     private Thread m_discovererThread;
@@ -32,6 +32,8 @@ namespace TeamNote.Client
     private bool m_serverDiscovered;
     private int m_responsePort;
     private int m_serviceId;
+
+    private int m_sendRequests;
 
     public bool ServerDiscovered {
       get {
@@ -46,13 +48,14 @@ namespace TeamNote.Client
       this.m_serviceId = l_random.Next(short.MaxValue);
 
       this.m_serverDiscovered = false;
+      this.m_sendRequests = 0;
 
       this.m_discoverClient = new UdpClient(new IPEndPoint(IPAddress.Any, this.m_responsePort));
       this.m_discovererThread = new Thread(this.DiscoverResponseListener);
 
       this.m_discoverDispatcher = new DispatcherTimer();
       this.m_discoverDispatcher.Tick += this.DiscoverDispatcher_Tick;
-      this.m_discoverDispatcher.Interval = TimeSpan.FromSeconds(10.0);
+      this.m_discoverDispatcher.Interval = TimeSpan.FromSeconds(2.0);
     }
 
     public void Start(int requestPort)
@@ -62,6 +65,20 @@ namespace TeamNote.Client
 
       this.m_discovererThread.Start();
       this.m_discoverDispatcher.Start();
+    }
+
+    public void Stop(bool abortThread = false)
+    {
+      Debug.Warn("Stopping discoverer.");
+
+      /* Stop threads and listeners. */
+      if (abortThread)
+        this.m_discovererThread.Abort();
+
+      this.m_discoverDispatcher.Stop();
+
+      /* Close UDP Client. */
+      this.m_discoverClient.Close();
     }
 
     private void DiscoverResponseListener()
@@ -85,8 +102,8 @@ namespace TeamNote.Client
           }
 
           this.onDiscoveryResponse?.Invoke(new IPEndPoint(IPAddress.Parse(l_discoveryResponse.IPAddress), l_discoveryResponse.Port));
-          this.m_discoverDispatcher.Stop();
           this.m_serverDiscovered = true;
+          this.Stop();
         }
         catch (Exception ex) {
           Debug.Exception(ex);
@@ -97,6 +114,14 @@ namespace TeamNote.Client
 
     private void DiscoverDispatcher_Tick(object sender, EventArgs args)
     {
+      if (this.m_sendRequests > MAX_RETRIES) {
+        Debug.Error("Could not discover network server. Sended {0} discovery requests.", this.m_sendRequests);
+
+        this.Stop(true);
+        this.onDiscoveryFailed?.Invoke(this.m_sendRequests);
+        return;
+      }
+
       ConfigRequest l_requestMessage = new ConfigRequest();
       l_requestMessage.Port = this.m_responsePort;
       l_requestMessage.ServiceId = this.m_serviceId;
@@ -108,8 +133,8 @@ namespace TeamNote.Client
       byte[] requestData = l_requestPacket.ToByteArray();
       int sendBytesCount = this.m_discoverClient.Send(requestData, requestData.Length, this.m_requestAddress);
 
-      Debug.Log("Sended request Address={0} Bytes={1}.", this.m_requestAddress, sendBytesCount);
+      Debug.Log("Send {0}. Discovery request Address={1} Bytes={2}.", this.m_sendRequests, this.m_requestAddress, sendBytesCount);
+      this.m_sendRequests++;
     }
-
   }
 }
