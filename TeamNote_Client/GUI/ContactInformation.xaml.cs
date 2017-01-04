@@ -47,5 +47,16 @@ namespace TeamNote.GUI
         this.lbContactName.Content = name;
       });
     }
+
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+      if (e.ChangedButton == MouseButton.Left)
+        DragMove();
+    }
+
+    private void btnClose_Click(object sender, RoutedEventArgs e)
+    {
+      this.Hide();
+    }
   }
 }

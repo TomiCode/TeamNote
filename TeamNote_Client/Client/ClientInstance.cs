@@ -75,12 +75,16 @@ namespace TeamNote.Client
           Debug.Warn("Error occured while saving configuration file. Config Fields={0}", this.m_clientConfig.ConfigLoaded);
         }
       }
+      if (!this.m_clientConfig.ConfigLoaded) {
+        Debug.Error("Config not loaded. Closing client.");
+        this.m_appCloseDelegate(0);
+      }
       this.m_localClient.InitializeKeypair();
 
+      this.m_guiSplash.SetMessage("Splash_Discover");
       this.m_guiSplash.Show();
-      this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
 
-      this.UpdateStatusMessage("Splash_Discover");
+      this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
     }
 
     private void HandleDiscoveryResponse(IPEndPoint serverAddress)
@@ -92,23 +96,25 @@ namespace TeamNote.Client
 
     private void HandleDiscoveryFailure(int retriesCount)
     {
-      Debug.Warn("Handling discoverer failure.");
-      this.UpdateStatusMessage("Splash_DiscoverFailure");
+      Debug.Warn("Discovery had failed after {0} retries. :(", retriesCount);
 
-      Task.Delay(5000).ContinueWith(_ => {
-        this.m_appCloseDelegate(1);
-      });
+      this.CloseApplicationAfter(5000);
+      this.UpdateStatusMessage("Splash_DiscoverFailure");
     }
 
     private void ConnectToServer(IPEndPoint serverAddress)
     {
       if (this.m_localClient.Connect(serverAddress)) {
         Debug.Log("Connected to server!");
-        this.m_localClient.SendHandshake();
+        if (!this.m_localClient.SendHandshake()) {
+          this.m_guiSplash.SetMessage("Splash_HandshakeFail");
+          this.CloseApplicationAfter(5000);
+        }
       }
       else {
         Debug.Error("Could not connect to remote server {0}.", serverAddress);
-        this.UpdateStatusMessage("Splash_CannotConnect");
+        this.m_guiSplash.SetMessage("Splash_CannotConnect");
+        this.CloseApplicationAfter(5000);
       }
     }
 
@@ -144,6 +150,12 @@ namespace TeamNote.Client
     private void UpdateStatusMessage(string resourceString)
     {
       this.m_guiSplash.SetMessage(resourceString);
+    }
+
+    private void CloseApplicationAfter(int miliseconds)
+    {
+      Debug.Log("Closing aplication after {0} ms.", miliseconds);
+      Task.Delay(miliseconds).ContinueWith(_ => this.m_appCloseDelegate(1));
     }
 
     private void ReceivedServerMessage(int messageType, ByteString messageContent)

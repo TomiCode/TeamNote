@@ -7,6 +7,7 @@
   <System:String x:Key="Splash_DiscoverFailure">Server did not respond to client. Exiting..</System:String>
   <System:String x:Key="Splash_Connect">Connecting to server..</System:String>
   <System:String x:Key="Splash_CannotConnect">Cannot connect to server. Check Your system.</System:String>
+  <System:String x:Key="Splash_HandshakeFail">Error occured with the local rsa key.</System:String>
   <System:String x:Key="Splash_Contacts">Collecting users..</System:String>
 
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>

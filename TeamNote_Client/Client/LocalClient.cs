@@ -60,7 +60,7 @@ namespace TeamNote.Client
       }
     }
 
-    private PublicKey ServerKey {
+    private PublicKey LocalPublicKey {
       get {
         PublicKey serverKey = new PublicKey();
         RsaKeyParameters publicKey = this.m_localCipherKeys.Public as RsaKeyParameters;
@@ -114,15 +114,19 @@ namespace TeamNote.Client
       );
     }
 
-    public void SendHandshake()
+    public bool SendHandshake()
     {
       Debug.Log("Sending handshake to server.");
 
       HandshakeRequest handshakeRequest = new HandshakeRequest();
-      PublicKey publicKey = this.ServerKey;
+      PublicKey publicKey = this.LocalPublicKey;
+      if (publicKey == null) {
+        Debug.Warn("Client public key is invalid.");
+        return false;
+      }
       handshakeRequest.Key = publicKey;
 
-      this.SendMessage(MessageType.ClientHandshakeRequest, handshakeRequest, false);
+      return this.SendMessage(MessageType.ClientHandshakeRequest, handshakeRequest, false);
     }
 
     public void UpdateServerKey(PublicKey serverKey)

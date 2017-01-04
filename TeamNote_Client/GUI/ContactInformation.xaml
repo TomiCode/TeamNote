@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="ContactInformation" Height="270" Width="330" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True">
+        Title="ContactInformation" Height="270" Width="330" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" MouseDown="Window_MouseDown">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
       <Label x:Name="wnd_title" Content="{DynamicResource ContactInformation_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
@@ -18,6 +18,6 @@
     <Border Margin="0,100,0,40" Padding="5,0" BorderBrush="#FFE4E4E4" BorderThickness="0,1">
       <TextBlock x:Name="tbModulus" TextWrapping="Wrap" Text="{}{Client modulus}" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu Mono" FontSize="14" TextAlignment="Center" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
     </Border>
-    <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="76"/>
+    <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="76" Click="btnClose_Click"/>
   </Grid>
 </Window>

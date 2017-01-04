@@ -15,7 +15,7 @@ namespace TeamNote.Client
     public const int DISCOVERY_LOW_PORTNUM = 49152;
     public const int DISCOVERY_HIGH_PORTNUM = 65534;
 
-    public const int MAX_RETRIES = 0;
+    public const int MAX_RETRIES = 5;
 
     public delegate void ServerDiscovererResponseDelegate(IPEndPoint serverAddress);
     public delegate void ServerDiscovererFailedDelegate(int retries);
@@ -55,7 +55,7 @@ namespace TeamNote.Client
 
       this.m_discoverDispatcher = new DispatcherTimer();
       this.m_discoverDispatcher.Tick += this.DiscoverDispatcher_Tick;
-      this.m_discoverDispatcher.Interval = TimeSpan.FromSeconds(2.0);
+      this.m_discoverDispatcher.Interval = TimeSpan.FromSeconds(8.0);
     }
 
     public void Start(int requestPort)
