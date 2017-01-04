@@ -14,16 +14,23 @@ using System.Windows.Shapes;
 
 namespace TeamNote.GUI
 {
+  public delegate bool MessageSendHandlerDelegate(string messageContent);
+
   public partial class Message : Window
   {
+    public event MessageSendHandlerDelegate onMessageAccept;
+
+    private Contacts.LocalClient m_localClient;
+
     public Message()
     {
       InitializeComponent();
     }
 
-    private void btn_send_Click(object sender, RoutedEventArgs e)
+    public void SetWindow(Contacts.LocalClient localContact, UI.ContactItem.Contact selectedContact)
     {
-      // this.sp_messageList.Children.Add(new UI.MessageItem(DateTime.Now, "Name Surname", this.tbx_message.Text));
+      this.m_localClient = localContact;
+      this.lbUsername.Dispatcher.Invoke(() => this.lbUsername.Content = selectedContact.Username);
     }
 
     private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -32,9 +39,44 @@ namespace TeamNote.GUI
         this.DragMove();
     }
 
-    private void btnClose_Click(object sender, RoutedEventArgs e)
+    private void tbMessage_KeyUp(object sender, KeyEventArgs e)
     {
-      this.Hide();
+      if (e.Key == Key.Enter) {
+        e.Handled = true;
+        this.btnSend_Click(null, null);
+      }
+      return;
     }
-  }
+
+    private void btnSend_Click(object sender, RoutedEventArgs e)
+    {
+      string messageContent = this.tbMessage.Text;
+      if (messageContent == string.Empty) {
+        Debug.Warn("Cannot send empty messages.");
+        return;
+      }
+
+      this.tbMessage.Clear();
+      if (this.onMessageAccept?.Invoke(messageContent) == true) {
+        UI.MessageItem sendMessage = new UI.MessageItem();
+        sendMessage.Content = messageContent;
+        sendMessage.Username = string.Format("{0} {1}", this.m_localClient.Name, this.m_localClient.Surname);
+        sendMessage.Date = DateTime.Now;
+        this.spMessageList.Children.Add(sendMessage);
+      }
+      else {
+        UI.MessageItem sendMessage = new UI.MessageItem();
+        sendMessage.Content = "Cannot send message :(";
+        sendMessage.Username = "Server";
+        sendMessage.Date = DateTime.Now;
+        this.spMessageList.Children.Add(sendMessage);
+      }
+
+    }
+
+    private void AddServerMessage(string messageContent)
+    {
+
+    }
+    }
 }

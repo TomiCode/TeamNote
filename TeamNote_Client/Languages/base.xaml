@@ -25,7 +25,6 @@
   <System:String x:Key="Contacts_Status_Online">Online</System:String>
   <System:String x:Key="Contacts_Status_Away">Away</System:String>
 
-
   <System:String x:Key="Message_Title">TeamNote – Message</System:String>
   <System:String x:Key="Message_btnSend">Send</System:String>
 

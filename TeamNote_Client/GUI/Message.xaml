@@ -19,8 +19,8 @@
         </StackPanel>
       </ScrollViewer>
     </Border>
-    <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Margin="10,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="538" VerticalContentAlignment="Center" Padding="3,6,3,0" FontFamily="{DynamicResource GlobalNormalFont}" Background="{x:Null}" BorderThickness="0,0,0,1" BorderBrush="#FFCDCDCD" FontSize="13" Text="Test" MaxLines="2" MaxLength="256"/>
-    <Button x:Name="btnSend" Content="{DynamicResource Message_btnSend}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Padding="14,2" Click="btn_send_Click"/>
+    <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Margin="10,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="538" VerticalContentAlignment="Center" Padding="3,6,3,0" FontFamily="{DynamicResource GlobalNormalFont}" Background="{x:Null}" BorderThickness="0,0,0,1" BorderBrush="#FFCDCDCD" FontSize="13" MaxLines="2" MaxLength="512" KeyUp="tbMessage_KeyUp"/>
+    <Button x:Name="btnSend" Content="{DynamicResource Message_btnSend}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Padding="14,2" Click="btnSend_Click"/>
     <Grid Margin="0,35,0,0" VerticalAlignment="Top">
       <Grid.RowDefinitions>
         <RowDefinition Height="1*"/>

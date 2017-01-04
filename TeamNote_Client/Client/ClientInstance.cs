@@ -147,6 +147,12 @@ namespace TeamNote.Client
       this.m_localClient.SendMessage(MessageType.ContactUpdateChangeRequest, clientRequest);
     }
 
+    private bool SendClientMessage(long clientId, string messageContent)
+    {
+      Debug.Log("Sending to ClientId={0} message='{1}'.", clientId, messageContent);
+      return true;
+    }
+
     private void UpdateStatusMessage(string resourceString)
     {
       this.m_guiSplash.SetMessage(resourceString);
@@ -236,6 +242,8 @@ namespace TeamNote.Client
         else {
           Debug.Log("Creating message window for ClientId={0}.", senderContact.ClientId);
           clientMessageUI = new GUI.Message();
+          clientMessageUI.SetWindow(this.m_guiContacts.LocalContact, senderContact);
+          clientMessageUI.onMessageAccept += (string messageContent) => this.SendClientMessage(senderContact.ClientId, messageContent);
           this.m_guiMessages.Add(senderContact.ClientId, clientMessageUI);
         }
 
