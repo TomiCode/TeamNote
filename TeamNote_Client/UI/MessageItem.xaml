@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TeamNote.UI"
              mc:Ignorable="d" d:DesignWidth="492.5">
-  <Grid Margin="0,5">
+  <Grid Margin="0,2">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto"/>
       <ColumnDefinition/>
@@ -14,14 +14,14 @@
       <RowDefinition Height="Auto"/>
       <RowDefinition/>
     </Grid.RowDefinitions>
-    <Label x:Name="lbl_messageUser" Content="{}{username}" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}" Padding="5,5,4,2"/>
-    <Label Grid.Row="1" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="12" Margin="15,0,0,0" Foreground="{DynamicResource NormalLabelForegroundBrush}" UseLayoutRounding="False" VerticalAlignment="Top" Padding="0" Grid.ColumnSpan="2" TextOptions.TextHintingMode="Fixed">
-      <TextBlock x:Name="tbl_messageContent" TextWrapping="Wrap" Text="{}{message_content}" />
-    </Label>
-    <Label x:Name="lbl_datetime" Content="{}{datetime}" Grid.Column="1" Margin="0" FontFamily="{DynamicResource GlobalLightFont}" Padding="2,4" VerticalContentAlignment="Bottom" FontSize="11">
+    <Label x:Name="lbUsername" Content="{}{Username}" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}" Padding="0,5,4,0" Margin="5,0,0,0"/>
+    <Label x:Name="lbDatetime" Content="11:43, Środa 4 Styczeń" Grid.Column="1" Margin="0,0,5,0" FontFamily="{DynamicResource GlobalLightFont}" Padding="2,0" VerticalContentAlignment="Bottom" FontSize="11" HorizontalContentAlignment="Right">
       <Label.Foreground>
         <SolidColorBrush Color="#FF979797"/>
       </Label.Foreground>
+    </Label>
+    <Label Grid.Row="1" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="12" Margin="0,0,0,0" Foreground="{DynamicResource SecondLabelForegroundBrush}" VerticalAlignment="Top" Padding="0,2" Grid.ColumnSpan="2" TextOptions.TextHintingMode="Fixed">
+      <TextBlock x:Name="tbContent" TextWrapping="Wrap" Text="{}{message}" Margin="10,0,0,0" />
     </Label>
   </Grid>
 </UserControl>

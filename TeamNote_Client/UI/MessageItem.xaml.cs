@@ -17,13 +17,9 @@ namespace TeamNote.UI
 {
   public partial class MessageItem : UserControl
   {
-    public MessageItem(DateTime messageTime, string userName, string messageContent)
+    public MessageItem()
     {
       InitializeComponent();
-
-      this.lbl_datetime.Content = messageTime.ToString("dd MMM, HH:mm");
-      this.tbl_messageContent.Text = messageContent;
-      this.lbl_messageUser.Content = userName;
     }
   }
 }

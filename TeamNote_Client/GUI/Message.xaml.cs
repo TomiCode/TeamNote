@@ -23,7 +23,7 @@ namespace TeamNote.GUI
 
     private void btn_send_Click(object sender, RoutedEventArgs e)
     {
-      this.sp_messageList.Children.Add(new UI.MessageItem(DateTime.Now, "Name Surname", this.tbx_message.Text));
+      // this.sp_messageList.Children.Add(new UI.MessageItem(DateTime.Now, "Name Surname", this.tbx_message.Text));
     }
 
     private void Window_MouseDown(object sender, MouseButtonEventArgs e)
