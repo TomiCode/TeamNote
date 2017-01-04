@@ -27,6 +27,9 @@
 
   <System:String x:Key="Message_Title">TeamNote – Message</System:String>
   <System:String x:Key="Message_Description">Direct messages</System:String>
+  <System:String x:Key="Message_ServerName">Server Message</System:String>
+  <System:String x:Key="Message_SendFailed">We couldn't send Your message. :(</System:String>
+  <System:String x:Key="Message_KeyUpdated">Server updated client's public key.</System:String>
   <System:String x:Key="Message_btnSend">Send</System:String>
 
   <System:String x:Key="ContactInformation_Title">TeamNote – Contact info</System:String>

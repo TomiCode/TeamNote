@@ -23,5 +23,7 @@
     /* Messages. */
     public const int MessageClientPublicRequest = 11;
     public const int MessageClientPublicResponse = 12;
+
+    public const int DirectMessage = 13;
   }
 }

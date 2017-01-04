@@ -21,10 +21,13 @@ namespace TeamNote.GUI
     public event MessageSendHandlerDelegate onMessageAccept;
 
     private Contacts.LocalClient m_localClient;
+    private bool m_autoScroll;
 
     public Message()
     {
       InitializeComponent();
+      this.MouseDown += (object s, MouseButtonEventArgs e) => { if (e.LeftButton == MouseButtonState.Pressed) this.DragMove(); };
+      this.m_autoScroll = true;
     }
 
     public void SetWindow(Contacts.LocalClient localContact, UI.ContactItem.Contact selectedContact)
@@ -35,20 +38,37 @@ namespace TeamNote.GUI
 
     public void AddServerMessage(string resourceMessage)
     {
-      this.Dispatcher.Invoke(() => {
-        UI.MessageItem sendMessage = new UI.MessageItem();
-        sendMessage.Content = resourceMessage;
-        sendMessage.Username = "Server";
-        sendMessage.Date = DateTime.Now;
+      object serverName = Application.Current.Resources["Message_ServerName"];
+      string messageContent = Application.Current.Resources[resourceMessage] as string;
+      if (serverName == null || messageContent == null) {
+        Debug.Warn("Cannot read reources for Server messages. Resource message: '{0}'.", resourceMessage);
+        return;
+      }
 
-        this.spMessageList.Children.Add(sendMessage);
-      });
+      UI.MessageItem serverMessage = null;
+      this.Dispatcher.Invoke(() => serverMessage = new UI.MessageItem());
+      if (serverMessage == null) {
+        Debug.Error("Cannot create MessageItem object from dispatcher.");
+        return;
+      }
+
+      serverMessage.Content = messageContent;
+      serverMessage.Username = serverName;
+      serverMessage.Date = DateTime.Now;
+
+      this.spMessageList.Dispatcher.Invoke(() => this.spMessageList.Children.Add(serverMessage));
     }
 
-    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    public void AddMessage(UI.ContactItem.Contact senderContact, string messageContent)
     {
-      if (e.LeftButton == MouseButtonState.Pressed)
-        this.DragMove();
+      this.spMessageList.Dispatcher.Invoke(() => {
+        UI.MessageItem receivedMessage = new UI.MessageItem();
+        receivedMessage.Content = messageContent;
+        receivedMessage.Username = senderContact.Username;
+        receivedMessage.Date = DateTime.Now;
+
+        this.spMessageList.Children.Add(receivedMessage);
+      });
     }
 
     private void tbMessage_KeyUp(object sender, KeyEventArgs e)
@@ -77,13 +97,20 @@ namespace TeamNote.GUI
         this.spMessageList.Children.Add(sendMessage);
       }
       else {
-        UI.MessageItem sendMessage = new UI.MessageItem();
-        sendMessage.Content = "Cannot send message :(";
-        sendMessage.Username = "Server";
-        sendMessage.Date = DateTime.Now;
-        this.spMessageList.Children.Add(sendMessage);
+        this.AddServerMessage("Message_SendFailed");
       }
+    }
 
+    private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+      if (!(sender is ScrollViewer)) return;
+
+      ScrollViewer scrollViewer = sender as ScrollViewer;
+      if (e.ExtentHeightChange == 0)
+        this.m_autoScroll = (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight);
+      
+      if (this.m_autoScroll && e.ExtentHeightChange != 0)
+        scrollViewer.ScrollToVerticalOffset(scrollViewer.ExtentHeight);
     }
   }
 }

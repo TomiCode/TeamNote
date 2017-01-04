@@ -153,6 +153,12 @@ namespace TeamNote.GUI
     public UI.ContactItem.Contact GetClientContact(long clientId)
     {
       Debug.Log("Requesting ClientId={0} contact informations.", clientId);
+      return this.spContacts.Dispatcher.Invoke(() => this.RequestClientContact(clientId));
+    }
+
+    private UI.ContactItem.Contact RequestClientContact(long clientId)
+    {
+      Debug.Log("Requesting ClientId={0}.", clientId);
       foreach (UI.ContactItem contactItem in this.spContacts.Children) {
         if (contactItem.ClientContact.ClientId == clientId)
           return contactItem.ClientContact;

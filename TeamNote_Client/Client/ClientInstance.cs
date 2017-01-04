@@ -150,7 +150,10 @@ namespace TeamNote.Client
     private bool SendClientMessage(long clientId, string messageContent)
     {
       Debug.Log("Sending to ClientId={0} message='{1}'.", clientId, messageContent);
-      return true;
+      DirectMessage clientDirectMessage = new DirectMessage();
+      clientDirectMessage.Content = messageContent;
+
+      return this.m_localClient.SendMessage(clientId, MessageType.DirectMessage, clientDirectMessage);
     }
 
     public void RequestClientPublicKey(long clientId)
@@ -231,7 +234,7 @@ namespace TeamNote.Client
             if (this.m_guiMessages.ContainsKey(responseMessage.ClientId)) {
               Debug.Log("Notifying message window, from ClientId={0}.", responseMessage.ClientId);
               GUI.Message guiMessage = this.m_guiMessages[responseMessage.ClientId];
-              guiMessage.AddServerMessage("Updated Client public key.");
+              guiMessage.AddServerMessage("Message_KeyUpdated");
             }
           }
           break;
@@ -240,7 +243,35 @@ namespace TeamNote.Client
 
     private void ReceivedClientMessage(long senderClientId, int messageType, ByteString messageContent)
     {
+      Debug.Log("Received client message from ClientId={0}.", senderClientId);
+      switch (messageType) {
+        case MessageType.DirectMessage: {
+            DirectMessage clientMessage = DirectMessage.Parser.ParseFrom(messageContent);
+            
+            UI.ContactItem.Contact senderContact = this.m_guiContacts.GetClientContact(senderClientId);
+            if (senderContact == null) {
+              Debug.Error("Cannot proceed invalid message contact.");
+              return;
+            }
 
+            GUI.Message clientWindow = null;
+            if (this.m_guiMessages.ContainsKey(senderClientId)) {
+              clientWindow = this.m_guiMessages[senderClientId];
+            }
+            else {
+              clientWindow = new GUI.Message();
+              clientWindow.SetWindow(this.m_guiContacts.LocalContact, senderContact);
+              clientWindow.onMessageAccept += (string msgContent) => this.SendClientMessage(senderContact.ClientId, msgContent);
+              this.m_guiMessages.Add(senderClientId, clientWindow);
+            }
+
+            clientWindow.AddMessage(senderContact, clientMessage.Content);
+            if (clientWindow.Visibility != System.Windows.Visibility.Visible) {
+              Debug.Log("Showing notification to the local client.");
+            }
+          }
+          break;
+      }
     }
 
     private void HandleContactItemButton(UI.ContactItem.Contact senderContact, UI.ContactItem.Buttons clickedButton)
