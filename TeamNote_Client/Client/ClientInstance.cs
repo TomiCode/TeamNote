@@ -153,6 +153,15 @@ namespace TeamNote.Client
       return true;
     }
 
+    public void RequestClientPublicKey(long clientId)
+    {
+      Debug.Log("Requesting ClientId={0} public key from server.", clientId);
+      MessageRequestClientPublic requestMessage = new MessageRequestClientPublic();
+      requestMessage.ClientId = clientId;
+
+      this.m_localClient.SendMessage(MessageType.MessageClientPublicRequest, requestMessage);
+    }
+
     private void UpdateStatusMessage(string resourceString)
     {
       this.m_guiSplash.SetMessage(resourceString);
@@ -213,6 +222,19 @@ namespace TeamNote.Client
             });
           }
           break;
+
+        /* Client PublicKey response. */
+        case MessageType.MessageClientPublicResponse: {
+            MessageResponseClientPublic responseMessage = MessageResponseClientPublic.Parser.ParseFrom(messageContent);
+            this.m_localClient.RegisterClientKey(responseMessage.ClientId, responseMessage.Key);
+
+            if (this.m_guiMessages.ContainsKey(responseMessage.ClientId)) {
+              Debug.Log("Notifying message window, from ClientId={0}.", responseMessage.ClientId);
+              GUI.Message guiMessage = this.m_guiMessages[responseMessage.ClientId];
+              guiMessage.AddServerMessage("Updated Client public key.");
+            }
+          }
+          break;
       }
     }
 
@@ -245,6 +267,8 @@ namespace TeamNote.Client
           clientMessageUI.SetWindow(this.m_guiContacts.LocalContact, senderContact);
           clientMessageUI.onMessageAccept += (string messageContent) => this.SendClientMessage(senderContact.ClientId, messageContent);
           this.m_guiMessages.Add(senderContact.ClientId, clientMessageUI);
+
+          Task.Delay(500).ContinueWith(_ => this.RequestClientPublicKey(senderContact.ClientId));
         }
 
         if (clientMessageUI.Visibility != System.Windows.Visibility.Visible) {

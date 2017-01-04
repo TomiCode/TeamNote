@@ -33,6 +33,18 @@ namespace TeamNote.GUI
       this.lbUsername.Dispatcher.Invoke(() => this.lbUsername.Content = selectedContact.Username);
     }
 
+    public void AddServerMessage(string resourceMessage)
+    {
+      this.Dispatcher.Invoke(() => {
+        UI.MessageItem sendMessage = new UI.MessageItem();
+        sendMessage.Content = resourceMessage;
+        sendMessage.Username = "Server";
+        sendMessage.Date = DateTime.Now;
+
+        this.spMessageList.Children.Add(sendMessage);
+      });
+    }
+
     private void Window_MouseDown(object sender, MouseButtonEventArgs e)
     {
       if (e.LeftButton == MouseButtonState.Pressed)
@@ -73,10 +85,5 @@ namespace TeamNote.GUI
       }
 
     }
-
-    private void AddServerMessage(string messageContent)
-    {
-
-    }
-    }
+  }
 }

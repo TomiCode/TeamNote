@@ -65,6 +65,8 @@
     <Compile Include="Protocol\ContactUpdateStatus.cs" />
     <Compile Include="Protocol\HandshakeRequest.cs" />
     <Compile Include="Protocol\HandshakeResponse.cs" />
+    <Compile Include="Protocol\MessageRequestClientPublic.cs" />
+    <Compile Include="Protocol\MessageResponseClientPublic.cs" />
     <Compile Include="Protocol\NetworkPacket.cs" />
     <Compile Include="Protocol\PublicKey.cs" />
     <Compile Include="Protocol\Types.cs" />

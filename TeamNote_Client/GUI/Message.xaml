@@ -27,7 +27,7 @@
         <RowDefinition Height="1*"/>
       </Grid.RowDefinitions>
       <Label x:Name="lbUsername" Content="{}{username}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Foreground="{DynamicResource NormalLabelForegroundBrush}" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Padding="10,2,2,2"/>
-      <Label x:Name="lbStatus" Content="{}{message status}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.Row="1" FontFamily="{DynamicResource GlobalLightFont}" Padding="10,2,2,2"/>
+      <Label Content="{DynamicResource Message_Description}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.Row="1" FontFamily="{DynamicResource GlobalNormalFont}" Padding="10,2,2,2" Foreground="{DynamicResource SecondLabelForegroundBrush}"/>
     </Grid>
   </Grid>
 </Window>

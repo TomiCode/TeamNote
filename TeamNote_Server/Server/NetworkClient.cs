@@ -99,6 +99,17 @@ namespace TeamNote.Server
       }
     }
 
+    public PublicKey ClientPublic {
+      get {
+        PublicKey resultKey = new PublicKey();
+        RsaKeyParameters rsaParams = this.m_clientPublicKey as RsaKeyParameters;
+
+        resultKey.Modulus = ByteString.CopyFrom(rsaParams.Modulus.ToByteArray());
+        resultKey.Exponent = ByteString.CopyFrom(rsaParams.Exponent.ToByteArray());
+        return resultKey;
+      }
+    }
+
     /* Public methods. */
     public NetworkClient(TcpClient clientInstance, RequestServerCipherKey keyRequester)
     {

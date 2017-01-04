@@ -212,6 +212,29 @@ namespace TeamNote.Server
             senderClient.SendMessage(MessageType.ContactUpdate, contactUpdate);
           }
           break;
+
+        /* Client Public Key request. */
+        case MessageType.MessageClientPublicRequest: {
+            MessageRequestClientPublic requestMessage = MessageRequestClientPublic.Parser.ParseFrom(messageContent);
+            PublicKey responseKey = null;
+
+            foreach (NetworkClient connectedClient in this.m_connectedClients) {
+              if (connectedClient.ClientId == requestMessage.ClientId) {
+                responseKey = connectedClient.ClientPublic;
+              }
+            }
+
+            if (responseKey != null) {
+              MessageResponseClientPublic responseMessage = new MessageResponseClientPublic();
+              responseMessage.ClientId = requestMessage.ClientId;
+              responseMessage.Key = responseKey;
+
+              senderClient.SendMessage(MessageType.MessageClientPublicResponse, responseMessage);
+            }
+            else 
+              Debug.Warn("ClientId={0} has invalid public key.");
+          }
+          break;
       }
     }
 
