@@ -31,5 +31,10 @@ namespace TeamNote.GUI
       if (e.LeftButton == MouseButtonState.Pressed)
         this.DragMove();
     }
+
+    private void btnClose_Click(object sender, RoutedEventArgs e)
+    {
+      this.Hide();
+    }
   }
 }

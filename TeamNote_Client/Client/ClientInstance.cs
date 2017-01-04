@@ -227,6 +227,23 @@ namespace TeamNote.Client
         this.m_guiContactInformation.UpdateClient(senderContact.Username, senderContact.ClientId);
         this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Show());
       }
+      else if (clickedButton == UI.ContactItem.Buttons.Message) {
+        GUI.Message clientMessageUI = null;
+        if (this.m_guiMessages.ContainsKey(senderContact.ClientId)) {
+          Debug.Log("Accessing created message window for ClientId={0}.", senderContact.ClientId);
+          clientMessageUI = this.m_guiMessages[senderContact.ClientId];
+        }
+        else {
+          Debug.Log("Creating message window for ClientId={0}.", senderContact.ClientId);
+          clientMessageUI = new GUI.Message();
+          this.m_guiMessages.Add(senderContact.ClientId, clientMessageUI);
+        }
+
+        if (clientMessageUI.Visibility != System.Windows.Visibility.Visible) {
+          Debug.Log("Showing message window for ClientId={0}.", senderContact.ClientId);
+          clientMessageUI.Show();
+        }
+      }
     }
   }
 }

@@ -16,7 +16,8 @@
         <StackPanel x:Name="sp_messageList" Margin="5,0,0,0"/>
       </ScrollViewer>
     </Border>
-    <TextBox x:Name="tbx_message" HorizontalAlignment="Left" Margin="20,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="400" VerticalContentAlignment="Center" Padding="2" FontFamily="{DynamicResource GlobalNormalFont}"/>
+    <TextBox x:Name="tbx_message" HorizontalAlignment="Left" Margin="20,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="340" VerticalContentAlignment="Center" Padding="2" FontFamily="{DynamicResource GlobalNormalFont}"/>
     <Button x:Name="btn_send" Content="{DynamicResource Message_btnSend}" HorizontalAlignment="Right" Margin="0,0,20,10" VerticalAlignment="Bottom" Padding="16,2" Click="btn_send_Click"/>
+    <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="384,548,0,0" VerticalAlignment="Top" Width="75" Click="btnClose_Click"/>
   </Grid>
 </Window>
