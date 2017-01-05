@@ -8,9 +8,22 @@
         mc:Ignorable="d"
         Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
-    <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
-      <Label x:Name="wnd_title" Content="{DynamicResource Contacts_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
-    </Grid>
+    <Border Grid.ColumnSpan="2" Style="{DynamicResource WindowTitleBorder}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="{DynamicResource Contacts_Title}" Style="{DynamicResource WindiwTitleLabel}"/>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Style="{DynamicResource IconAppButton}">
+          <Viewbox Height="8" Width="8">
+            <Canvas Width="8" Height="8">
+              <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Fill="Black" Height="8" Width="8" Stretch="Fill" />
+            </Canvas>
+          </Viewbox>
+        </Button>
+      </Grid>
+    </Border>
     <Border BorderBrush="#FFE4E4E4" BorderThickness="0,0,0,1" Height="64" Margin="0,30,0,0" VerticalAlignment="Top">
       <Grid>
         <Grid.RowDefinitions>

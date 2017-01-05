@@ -35,4 +35,5 @@
   <System:String x:Key="ContactInformation_Title">TeamNote – Contact info</System:String>
   <System:String x:Key="ContactInformation_Username">Username</System:String>
   <System:String x:Key="ContactInformation_ClientId">Client ID</System:String>
+  
 </ResourceDictionary>

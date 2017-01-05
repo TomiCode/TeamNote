@@ -61,7 +61,7 @@ namespace TeamNote.GUI
     {
       Debug.Log("Setting status to: {0}.", resourceString);
       if (Application.Current.Resources.Contains(resourceString)) {
-        this.lblStatus.Content = Application.Current.Resources[resourceString];
+        this.lbStatus.Content = Application.Current.Resources[resourceString];
       }
     }
 

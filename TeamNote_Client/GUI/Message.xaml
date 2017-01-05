@@ -8,19 +8,31 @@
         mc:Ignorable="d"
         Title="Message" Height="480" Width="640" Background="{x:Null}" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True">
   <Grid Background="{DynamicResource WindowBackgroundBrush}" Margin="10" Effect="{DynamicResource WindowShadowEffect}">
-    <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}">
-      <Label Content="{DynamicResource Message_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
-    </Grid>
+    <Border Style="{DynamicResource WindowTitleBorder}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="{DynamicResource Message_Title}" Style="{DynamicResource WindiwTitleLabel}"/>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Style="{DynamicResource IconAppButton}">
+          <Viewbox Height="8" Width="8">
+            <Canvas Width="8" Height="8">
+              <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Fill="Black" Height="8" Width="8" Stretch="Fill" />
+            </Canvas>
+          </Viewbox>
+        </Button>
+      </Grid>
+    </Border>
     <Border Margin="0,80,0,42" BorderBrush="#FFD4D4D4" BorderThickness="0,1">
       <ScrollViewer Template="{DynamicResource ScrollViewerControl}" Padding="5,0,0,0" ClipToBounds="True" ScrollChanged="ScrollViewer_ScrollChanged">
         <StackPanel x:Name="spMessageList">
-          <UI:MessageItem/>
           <UI:MessageItem/>
         </StackPanel>
       </ScrollViewer>
     </Border>
     <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Margin="10,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="538" VerticalContentAlignment="Center" Padding="3,6,3,0" FontFamily="{DynamicResource GlobalNormalFont}" Background="{x:Null}" BorderThickness="0,0,0,1" BorderBrush="#FFCDCDCD" FontSize="13" MaxLines="2" MaxLength="512" KeyUp="tbMessage_KeyUp"/>
-    <Button x:Name="btnSend" Content="{DynamicResource Message_btnSend}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Padding="14,2" Click="btnSend_Click"/>
+    <Button x:Name="btnSend" Content="{DynamicResource Message_btnSend}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Click="btnSend_Click" Style="{DynamicResource GlobalAppButton}"/>
     <Grid Margin="0,35,0,0" VerticalAlignment="Top">
       <Grid.RowDefinitions>
         <RowDefinition Height="1*"/>

@@ -77,6 +77,7 @@
     <Compile Include="GUI\ContactInformation.xaml.cs">
       <DependentUpon>ContactInformation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\FadingWindow.cs" />
     <Compile Include="Protocol\AuthorizationRequest.cs" />
     <Compile Include="Protocol\AuthorizationResponse.cs" />
     <Compile Include="Protocol\ConfigRequest.cs" />

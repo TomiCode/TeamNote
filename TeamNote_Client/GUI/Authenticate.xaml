@@ -15,17 +15,30 @@
       <ColumnDefinition Width="65*"/>
       <ColumnDefinition Width="153*"/>
     </Grid.ColumnDefinitions>
-    <Grid Height="25" Margin="0" VerticalAlignment="Top" Background="{DynamicResource WindowTitleBackgroundGradient}" Grid.ColumnSpan="2">
-      <Label x:Name="wndTitle" Content="{DynamicResource Authenticate_Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" FontSize="{DynamicResource WindowTitleFontSize}" Background="{x:Null}" FontFamily="{DynamicResource GlobalLightFont}" />
-    </Grid>
-    <Grid Height="27" Margin="10,30,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
-      <Label x:Name="lblStatus" Content="{DynamicResource Authenticate_Status_Notice}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
-    </Grid>
-    <Label Content="{DynamicResource Authenticate_Name}" Margin="0,62,10,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
-    <Label Content="{DynamicResource Authenticate_Surname}" Margin="0,93,10,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
-    <TextBox x:Name="tbName" Grid.Column="1" HorizontalAlignment="Left" Margin="10,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" VerticalContentAlignment="Center" Padding="2" IsUndoEnabled="False" MaxLines="1" MaxLength="24"/>
-    <TextBox x:Name="tbSurname" Grid.Column="1" HorizontalAlignment="Left" Margin="10,95,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" VerticalContentAlignment="Center" Padding="2" IsUndoEnabled="False" MaxLines="1" MaxLength="24"/>
-    <Button x:Name="btnConnect" Content="{DynamicResource Authenticate_btnConnect}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="1" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" Padding="16,3" Click="btnConnect_Click"/>
-    <Button x:Name="btnCancel" Content="{DynamicResource Authenticate_btnCancel}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,10,74,0" Grid.Row="1" VerticalAlignment="Top" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" Padding="16,3" Click="btnCancel_Click"/>
+    <Border Grid.ColumnSpan="2" Style="{DynamicResource WindowTitleBorder}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="{DynamicResource Authenticate_Title}" Style="{DynamicResource WindiwTitleLabel}"/>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Style="{DynamicResource IconAppButton}">
+          <Viewbox Height="8" Width="8">
+            <Canvas Width="8" Height="8">
+              <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Fill="Black" Height="8" Width="8" Stretch="Fill" />
+            </Canvas>
+          </Viewbox>
+        </Button>
+      </Grid>
+    </Border>
+    <Border Height="27" Margin="0,30,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+      <Label x:Name="lbStatus" Content="{DynamicResource Authenticate_Status_Notice}" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+    </Border>
+    <Label Content="{DynamicResource Authenticate_Name}" Margin="0,69,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" Padding="5,0" FontSize="13" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
+    <Label Content="{DynamicResource Authenticate_Surname}" Margin="0,96,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu" FontSize="13" Foreground="{DynamicResource NormalLabelForegroundBrush}" Padding="5,0"/>
+    <TextBox x:Name="tbName" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Width="190" MaxLines="1" MaxLength="24" Style="{DynamicResource AppTextboxes}" Grid.Column="1" />
+    <TextBox x:Name="tbSurname" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top" Width="190" MaxLines="1" MaxLength="24" Style="{DynamicResource AppTextboxes}" Grid.Column="1" />
+    <Button x:Name="btnConnect" Content="{DynamicResource Authenticate_btnConnect}" Grid.Column="1" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Grid.Row="1" Click="btnConnect_Click" Style="{DynamicResource GlobalAppButton}"/>
+    <Button x:Name="btnCancel" Content="{DynamicResource Authenticate_btnCancel}" Grid.Column="1" HorizontalAlignment="Right" Margin="0,10,115,0" Grid.Row="1" VerticalAlignment="Top" Click="btnCancel_Click" Style="{DynamicResource GlobalAppButton}"/>
   </Grid>
 </Window>
