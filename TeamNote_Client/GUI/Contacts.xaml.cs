@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -17,6 +18,8 @@ using TeamNote.Protocol;
 
 namespace TeamNote.GUI
 {
+  public delegate void ApplicationCloseDelegate();
+
   public delegate void ContactsDataUpdateDelegate();
   public delegate void ContactItemButtonClickDelegate(UI.ContactItem.Contact sender, UI.ContactItem.Buttons button);
 
@@ -83,6 +86,8 @@ namespace TeamNote.GUI
       }
     }
 
+    public ApplicationCloseDelegate onApplicationClose;
+
     private ContactItemButtonClickDelegate m_clientButtonHandler;
     private LocalClient m_localClientContact;
 
@@ -118,6 +123,30 @@ namespace TeamNote.GUI
       this.m_localClientContact = new LocalClient();
       this.m_localClientContact.onDataUpdate += updateHandler;
       this.m_localClientContact.onDataUpdate += OnDataUpdate;
+
+      this.Opacity = 0;
+
+      this.MouseDown += (object s, MouseButtonEventArgs e) => {
+        if (e.LeftButton == MouseButtonState.Pressed)
+          this.DragMove();
+      };
+      this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
+        if (!(bool)e.NewValue) {
+          Debug.Warn("Hiding window, cause IsVisible changed.");
+          base.Hide();
+        }
+      };
+    }
+
+    public new void Show()
+    {
+      base.Show();
+      (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+    }
+
+    public new void Hide()
+    {
+      (Application.Current.Resources["HideWindowStoryboard"] as Storyboard)?.Begin(this);
     }
 
     public void CreateClient(ContactUpdate.Types.Client client)
@@ -180,10 +209,10 @@ namespace TeamNote.GUI
         this.lbStatus.Dispatcher.Invoke(() => this.lbStatus.Content = statusContent);
     }
 
-    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    private void btnClose_Click(object sender, RoutedEventArgs e)
     {
-      if (e.ChangedButton == MouseButton.Left)
-        DragMove();
+      this.Hide();
+      this.onApplicationClose?.Invoke();
     }
   }
 }

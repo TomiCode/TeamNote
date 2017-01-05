@@ -120,4 +120,28 @@
     <Setter Property="HorizontalAlignment" Value="Center"/>
   </Style>
 
+  <Storyboard x:Key="HideWindowStoryboard">
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.150" To="0.0"/>
+    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+      <DiscreteObjectKeyFrame KeyTime="0:0:1.15" Value="{x:Static Visibility.Hidden}"/>
+    </ObjectAnimationUsingKeyFrames>
+  </Storyboard>
+
+  <Storyboard x:Key="ShowWindowStoryboard">
+    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+      <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="{x:Static Visibility.Visible}"/>
+    </ObjectAnimationUsingKeyFrames>
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.150" From="0.0" To="1.0"/>
+  </Storyboard>
+
+  <Storyboard x:Key="SpashStatusShow">
+    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.300" To="0,0,0,5"/>
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.300" To="1.0"/>
+  </Storyboard>
+
+  <Storyboard x:Key="SpashStatusHide">
+    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.200" To="0,0,0,12"/>
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.200" To="0.0"/>
+  </Storyboard>
+  
 </ResourceDictionary>

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -26,8 +27,35 @@ namespace TeamNote.GUI
     public Message()
     {
       InitializeComponent();
-      this.MouseDown += (object s, MouseButtonEventArgs e) => { if (e.LeftButton == MouseButtonState.Pressed) this.DragMove(); };
       this.m_autoScroll = true;
+      this.Opacity = 0;
+
+      this.btnClose.Click += (object sender, RoutedEventArgs e) => {
+        this.Hide();
+      };
+
+      this.MouseDown += (object s, MouseButtonEventArgs e) => {
+        if (e.LeftButton == MouseButtonState.Pressed)
+          this.DragMove();
+      };
+      
+      this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
+        if (!(bool)e.NewValue) {
+          Debug.Warn("Hiding window, cause IsVisible changed.");
+          base.Hide();
+        }
+      };
+    }
+
+    public new void Show()
+    {
+      base.Show();
+      (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+    }
+
+    public new void Hide()
+    {
+      (Application.Current.Resources["HideWindowStoryboard"] as Storyboard)?.Begin(this);
     }
 
     public void SetWindow(Contacts.LocalClient localContact, UI.ContactItem.Contact selectedContact)

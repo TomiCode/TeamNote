@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TeamNote.GUI"
         xmlns:UI="clr-namespace:TeamNote.UI" x:Class="TeamNote.GUI.Contacts"
         mc:Ignorable="d"
-        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" MouseDown="Window_MouseDown" WindowStartupLocation="CenterOwner">
+        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" WindowStartupLocation="CenterOwner">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Border Grid.ColumnSpan="2" Style="{DynamicResource WindowTitleBorder}">
       <Grid>
@@ -15,7 +15,7 @@
           <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Content="{DynamicResource Contacts_Title}" Style="{DynamicResource WindiwTitleLabel}"/>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Style="{DynamicResource IconAppButton}">
+        <Button x:Name="btnClose" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Style="{DynamicResource IconAppButton}" Click="btnClose_Click">
           <Viewbox Height="8" Width="8">
             <Canvas Width="8" Height="8">
               <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Fill="Black" Height="8" Width="8" Stretch="Fill" />

@@ -22,9 +22,9 @@ namespace TeamNote
     protected override void OnStartup(StartupEventArgs e)
     {
       Debug.Setup("TeamNote_Client.log");
+      base.OnStartup(e);
 
       this.m_clientInstance.Initialize();
-      base.OnStartup(e);
     }
 
     private void CloseApplication(int exitCode)

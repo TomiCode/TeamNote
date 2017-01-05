@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -21,6 +22,25 @@ namespace TeamNote.GUI
     public ContactInformation()
     {
       InitializeComponent();
+
+      this.Opacity = 0;
+      this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
+        if (!(bool)e.NewValue) {
+          Debug.Warn("Hiding window, cause IsVisible changed.");
+          base.Hide();
+        }
+      };
+    }
+
+    public new void Show()
+    {
+      base.Show();
+      (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+    }
+
+    public new void Hide()
+    {
+      (Application.Current.Resources["HideWindowStoryboard"] as Storyboard)?.Begin(this);
     }
 
     public void UpdatePublicKey(AsymmetricKeyParameter key)

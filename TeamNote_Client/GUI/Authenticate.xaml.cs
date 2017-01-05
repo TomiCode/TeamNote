@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -23,12 +24,28 @@ namespace TeamNote.GUI
     public event AcceptedAuthorization onAuthorizationAccept;
     public event CanceledAuthorization onAuthorizationCancel;
 
-    private Regex m_textValidator;
-
     public Authenticate()
     {
       InitializeComponent();
-      this.m_textValidator = new Regex("^[a-zA-Z0-9]*$");
+
+      this.Opacity = 0;
+      this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
+        if (!(bool)e.NewValue) {
+          Debug.Warn("Hiding window, cause IsVisible changed.");
+          base.Hide();
+        }
+      };
+    }
+
+    public new void Show()
+    {
+      base.Show();
+      (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+    }
+
+    public new void Hide()
+    {
+      (Application.Current.Resources["HideWindowStoryboard"] as Storyboard)?.Begin(this);
     }
 
     private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -43,12 +60,6 @@ namespace TeamNote.GUI
     {
       if (this.tbName.Text == string.Empty || this.tbSurname.Text == string.Empty) {
         this.SetStatusLabel("Authenticate_Status_Invalid_Empty");
-      }
-      else if (!this.m_textValidator.IsMatch(this.tbName.Text)) {
-        this.SetStatusLabel("Authenticate_Status_Invalid_Name");
-      }
-      else if (!this.m_textValidator.IsMatch(this.tbSurname.Text)) {
-        this.SetStatusLabel("Authenticate_Status_Invalid_Surname");
       }
       else {
         this.SetStatusLabel("Authenticate_Status_Notice");
