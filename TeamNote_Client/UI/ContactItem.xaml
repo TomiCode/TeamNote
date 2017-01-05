@@ -48,7 +48,7 @@
   <Grid Background="Transparent">
     <Label x:Name="lbContactName" Content="{}{contact_name}" HorizontalAlignment="Left" VerticalContentAlignment="Center" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14" Foreground="{DynamicResource NormalLabelForegroundBrush}"/>
     <Label x:Name="lbContactStatus" Content="{}{contact_status}" HorizontalAlignment="Right" Margin="0" FontFamily="{DynamicResource GlobalNormalFont}" FontSize="11" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="{DynamicResource SecondLabelForegroundBrush}"/>
-    <Grid x:Name="bxControls" HorizontalAlignment="Right" Height="26" Margin="0" VerticalAlignment="Top" Width="52">
+    <Grid x:Name="bxControls" HorizontalAlignment="Right" Height="26" Margin="0" VerticalAlignment="Top" Width="52" Opacity="0" Visibility="Collapsed">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="26"/>
         <ColumnDefinition Width="26"/>

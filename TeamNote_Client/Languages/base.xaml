@@ -38,4 +38,7 @@
   <System:String x:Key="ContactInformation_Username">Username</System:String>
   <System:String x:Key="ContactInformation_ClientId">Client ID</System:String>
   
+  <System:String x:Key="Notice_Title">TeamNote – Notice</System:String>
+  <System:String x:Key="Notice_NewMessage">You received a message</System:String>
+
 </ResourceDictionary>

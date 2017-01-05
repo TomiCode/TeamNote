@@ -210,6 +210,8 @@ namespace TeamNote.Server
               Debug.Log("Updating client data. This is not implemented on the client side. ;)");
             }
             else if(senderProfile.Status != clientRequestedChange.Online) {
+              senderProfile.Status = clientRequestedChange.Online;
+
               ContactUpdateStatus statusUpdate = new ContactUpdateStatus();
               statusUpdate.Online = clientRequestedChange.Online;
               statusUpdate.ClientId = senderClient.ClientId;

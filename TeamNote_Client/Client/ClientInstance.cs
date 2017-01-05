@@ -280,15 +280,23 @@ namespace TeamNote.Client
               clientWindow = this.m_guiMessages[senderClientId];
             }
             else {
-              clientWindow = new GUI.Message();
-              clientWindow.SetWindow(this.m_guiContacts.LocalContact, senderContact);
-              clientWindow.onMessageAccept += (string msgContent) => this.SendClientMessage(senderContact.ClientId, msgContent);
+              this.m_guiAuthenticate.Dispatcher.Invoke(() => {
+                clientWindow = new GUI.Message();
+                clientWindow.SetWindow(this.m_guiContacts.LocalContact, senderContact);
+                clientWindow.onMessageAccept += (string msgContent) => this.SendClientMessage(senderContact.ClientId, msgContent);
+              });
               this.m_guiMessages.Add(senderClientId, clientWindow);
             }
 
             clientWindow.AddMessage(senderContact, clientMessage.Content);
             if (clientWindow.Visibility != System.Windows.Visibility.Visible) {
               Debug.Log("Showing notification to the local client.");
+
+              this.m_guiContacts.Dispatcher.Invoke(() => {
+                GUI.Notice localNotice = new GUI.Notice();
+                localNotice.MessageContent = "alahu agbar";
+                localNotice.Show();
+              });
             }
           }
           break;
@@ -320,7 +328,7 @@ namespace TeamNote.Client
           clientMessageUI.onMessageAccept += (string messageContent) => this.SendClientMessage(senderContact.ClientId, messageContent);
           this.m_guiMessages.Add(senderContact.ClientId, clientMessageUI);
 
-          Task.Delay(500).ContinueWith(_ => this.RequestClientPublicKey(senderContact.ClientId));
+          Task.Delay(400).ContinueWith(_ => this.RequestClientPublicKey(senderContact.ClientId));
         }
 
         if (clientMessageUI.Visibility != System.Windows.Visibility.Visible) {
@@ -330,7 +338,7 @@ namespace TeamNote.Client
       }
     }
 
-    private void HandleConnectionErrors()
+    private void CloseClientWindowses()
     {
       Debug.Log("Hiding all open windowses.");
       if (this.m_guiAuthenticate.IsVisible) {
@@ -347,6 +355,11 @@ namespace TeamNote.Client
           window.Value.Dispatcher.Invoke(() => window.Value.Hide());
         }
       }
+    }
+
+    private void HandleConnectionErrors()
+    {
+      this.CloseClientWindowses();
 
       Debug.Log("Show splash with error message.");
       this.m_guiSplash.SetMessage("Splash_ServerDisconnected");
@@ -356,6 +369,9 @@ namespace TeamNote.Client
 
     private void HandleApplicationClose()
     {
+      Debug.Warn("Closing gently the client.. Bye ;)");
+      this.CloseClientWindowses();
+
       this.m_guiSplash.SetMessage("Splash_Closing");
       this.m_guiSplash.Show();
       this.m_localClient.Disconnect();

@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="Splash" Height="150" Width="400" WindowStyle="None" Background="{x:Null}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" AllowsTransparency="True">
+        Title="Splash" Height="120" Width="400" WindowStyle="None" Background="{x:Null}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" AllowsTransparency="True" Topmost="True" IsTabStop="False" ShowInTaskbar="False">
+  <Window.CacheMode>
+    <BitmapCache EnableClearType="True" SnapsToDevicePixels="True"/>
+  </Window.CacheMode>
   <Grid Margin="10">
-    <Label x:Name="lbStatus" Content="{}{status content}" HorizontalAlignment="Center" Margin="0,0,0,5" VerticalAlignment="Bottom" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="White" TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed" SnapsToDevicePixels="True">
+    <Label x:Name="lbStatus" Content="{}{status content}" HorizontalAlignment="Center" Margin="0,0,0,5" VerticalAlignment="Bottom" FontFamily="{DynamicResource GlobalLightFont}" FontSize="16" Foreground="#E5EAEAEA" TextOptions.TextFormattingMode="Display" SnapsToDevicePixels="True" Background="Transparent" >
       <Label.Effect>
-        <DropShadowEffect ShadowDepth="0" Direction="0" BlurRadius="3"/>
+        <DropShadowEffect ShadowDepth="0" Direction="90" BlurRadius="5" RenderingBias="Quality"/>
       </Label.Effect>
     </Label>
-    <Image HorizontalAlignment="Center" Height="96" Margin="0" VerticalAlignment="Top" Width="96" Source="/TeamNote_Client;component/Resources/initium_logotype.png"/>
+    <Image HorizontalAlignment="Center" Height="64" Margin="0" VerticalAlignment="Top" Width="64" Source="/TeamNote_Client;component/Resources/initium_logotype.png"/>
   </Grid>
 </Window>

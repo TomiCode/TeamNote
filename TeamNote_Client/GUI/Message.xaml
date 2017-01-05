@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TeamNote.GUI"
         xmlns:UI="clr-namespace:TeamNote.UI" x:Class="TeamNote.GUI.Message"
         mc:Ignorable="d"
-        Title="Message" Height="480" Width="640" Background="{x:Null}" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True">
+        Title="Message" Height="480" Width="640" Background="{x:Null}" WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" WindowStartupLocation="CenterOwner">
   <Grid Background="{DynamicResource WindowBackgroundBrush}" Margin="10" Effect="{DynamicResource WindowShadowEffect}">
     <Border Style="{DynamicResource WindowTitleBorder}">
       <Grid>

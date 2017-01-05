@@ -142,6 +142,7 @@ namespace TeamNote.GUI
     {
       base.Show();
       (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+      this.Activate();
     }
 
     public new void Hide()
@@ -182,7 +183,7 @@ namespace TeamNote.GUI
     public UI.ContactItem.Contact GetClientContact(long clientId)
     {
       Debug.Log("Requesting ClientId={0} contact informations.", clientId);
-      return this.spContacts.Dispatcher.Invoke(() => this.RequestClientContact(clientId));
+      return this.Dispatcher.Invoke(() => this.RequestClientContact(clientId));
     }
 
     private UI.ContactItem.Contact RequestClientContact(long clientId)
@@ -230,6 +231,13 @@ namespace TeamNote.GUI
       Task.Delay(6000).ContinueWith(task => {
         this.btnStatus.Dispatcher.Invoke(() => this.btnStatus.IsEnabled = true);
       });
+    }
+
+    private void btnTEST_Click(object s, RoutedEventArgs e)
+    {
+      Notice notice = new Notice();
+      notice.MessageContent = "Testing";
+      notice.Show();
     }
   }
 }

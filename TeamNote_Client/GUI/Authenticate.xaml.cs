@@ -41,6 +41,7 @@ namespace TeamNote.GUI
     {
       base.Show();
       (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+      this.Activate();
     }
 
     public new void Hide()
