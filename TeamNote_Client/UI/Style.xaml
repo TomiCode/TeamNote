@@ -74,6 +74,11 @@
                 <VisualStateGroup.Transitions>
                   <VisualTransition GeneratedDuration="0:0:0.12"/>
                 </VisualStateGroup.Transitions>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="contentPresenter" To="0.5"/>
+                  </Storyboard>
+                </VisualState>
                 <VisualState x:Name="Normal"/>
                 <VisualState x:Name="Pressed">
                   <Storyboard>

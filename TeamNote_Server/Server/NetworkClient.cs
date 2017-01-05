@@ -18,7 +18,7 @@ namespace TeamNote.Server
 {
   class NetworkClient
   {
-    public const int LISTEN_MESSAGE_SIZE = 1024;
+    public const int LISTEN_MESSAGE_SIZE = 4096;
 
     /* Client information fields class. */
     public class ClientProfile
@@ -37,6 +37,8 @@ namespace TeamNote.Server
       {
         this.Name = clientRequest.Name;
         this.Surname = clientRequest.Surname;
+
+        this.Status = true;
         Debug.Log("Updating profile from client request. [{0} {1}]", this.Name, this.Surname);
       }
     }

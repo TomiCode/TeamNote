@@ -9,7 +9,9 @@
   <System:String x:Key="Splash_CannotConnect">Cannot connect to server. Check Your system.</System:String>
   <System:String x:Key="Splash_HandshakeFail">Error occured with the local rsa key.</System:String>
   <System:String x:Key="Splash_Contacts">Collecting users..</System:String>
-
+  <System:String x:Key="Splash_ServerDisconnected">Server connection lost! Closing..</System:String>
+  <System:String x:Key="Splash_Closing">Closing server connection..</System:String>
+  
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
   <System:String x:Key="Authenticate_Name">Name</System:String>
   <System:String x:Key="Authenticate_Surname">Surname</System:String>

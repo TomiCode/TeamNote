@@ -30,7 +30,12 @@ namespace TeamNote.GUI
       this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
         if (!(bool)e.NewValue) {
           Debug.Warn("Hiding window, cause IsVisible changed.");
-          base.Hide();
+          try {
+            base.Hide();
+          }
+          catch (Exception ex) {
+            Debug.Exception(ex);
+          }
         }
       };
     }
@@ -50,8 +55,10 @@ namespace TeamNote.GUI
 
     public new void Show()
     {
-      base.Show();
-      (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+      this.Dispatcher.Invoke(() => {
+        base.Show();
+        (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+      });
     }
 
     public new void Hide()

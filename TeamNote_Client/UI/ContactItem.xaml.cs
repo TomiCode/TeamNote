@@ -105,7 +105,7 @@ namespace TeamNote.UI
 
     private void OnDataUpdated()
     {
-      Debug.Log("ClientId={0} data updated.", this.m_clientContact.ClientId);
+      Debug.Log("ClientId={0} data updated Online={1}.", this.m_clientContact.ClientId, this.m_clientContact.Status);
 
       if ((string)this.lbContactName.Content != this.m_clientContact.Username)
         this.lbContactName.Dispatcher.Invoke(() => this.lbContactName.Content = this.m_clientContact.Username);

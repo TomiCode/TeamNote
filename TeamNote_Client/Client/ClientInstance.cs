@@ -52,16 +52,19 @@ namespace TeamNote.Client
       this.m_localClient = new LocalClient();
       this.m_localClient.onServerMessageReceived += this.ReceivedServerMessage;
       this.m_localClient.onClientMessageReceived += this.ReceivedClientMessage;
+      this.m_localClient.onConnectionErrors += this.HandleConnectionErrors;
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
       
       this.m_guiAuthenticate = new GUI.Authenticate();
       this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
+      this.m_guiAuthenticate.onAuthorizationCancel += this.HandleApplicationClose;
 
       this.m_guiContacts = new GUI.Contacts(this.HandleContactItemButton, this.SendClientDataUpdateChange);
-      this.m_guiContactInformation = new GUI.ContactInformation();
+      this.m_guiContacts.onApplicationClose += this.HandleApplicationClose;
 
+      this.m_guiContactInformation = new GUI.ContactInformation();
       this.m_guiMessages = new Dictionary<long, GUI.Message>();
     }
 
@@ -125,8 +128,9 @@ namespace TeamNote.Client
       request.Surname = surname;
 
       Debug.Log("Sending authorization to server [{0} {1}].", name, surname);
-      this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request);
-      this.m_guiContacts.LocalContact.SetUsername(name, surname);
+      if (this.m_localClient.SendMessage(MessageType.AuthorizationRequest, request)) {
+        Task.Delay(500).ContinueWith(_ => this.m_guiContacts.LocalContact.SetUsername(name, surname));
+      }
     }
 
     private void SendContactRequest()
@@ -173,7 +177,13 @@ namespace TeamNote.Client
     private void CloseApplicationAfter(int miliseconds)
     {
       Debug.Log("Closing aplication after {0} ms.", miliseconds);
-      Task.Delay(miliseconds).ContinueWith(_ => this.m_appCloseDelegate(1));
+      Task.Delay(miliseconds).ContinueWith(a => {
+        if (this.m_guiSplash.IsVisible) {
+          this.m_guiSplash.Dispatcher.Invoke(() => this.m_guiSplash.Hide());
+          Task.Delay(2000).ContinueWith(t => this.m_appCloseDelegate(0));
+        }
+        else this.m_appCloseDelegate(0);
+      });
     }
 
     private void ReceivedServerMessage(int messageType, ByteString messageContent)
@@ -307,6 +317,38 @@ namespace TeamNote.Client
           clientMessageUI.Show();
         }
       }
+    }
+
+    private void HandleConnectionErrors()
+    {
+      Debug.Log("Hiding all open windowses.");
+      if (this.m_guiAuthenticate.IsVisible) {
+        this.m_guiAuthenticate.Dispatcher.Invoke(() => this.m_guiAuthenticate.Hide());
+      }
+      if (this.m_guiContactInformation.IsVisible) {
+        this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Hide());
+      }
+      if (this.m_guiContacts.IsVisible) {
+        this.m_guiContacts.Dispatcher.Invoke(() => this.m_guiContacts.Hide());
+      }
+      foreach (var window in this.m_guiMessages) {
+        if (window.Value.IsVisible) {
+          window.Value.Dispatcher.Invoke(() => window.Value.Hide());
+        }
+      }
+
+      Debug.Log("Show splash with error message.");
+      this.m_guiSplash.SetMessage("Splash_ServerDisconnected");
+      this.m_guiSplash.Show();
+      this.CloseApplicationAfter(6000);
+    }
+
+    private void HandleApplicationClose()
+    {
+      this.m_guiSplash.SetMessage("Splash_Closing");
+      this.m_guiSplash.Show();
+      this.m_localClient.Disconnect();
+      this.CloseApplicationAfter(6000);
     }
   }
 }

@@ -86,7 +86,7 @@ namespace TeamNote.GUI
       }
     }
 
-    public ApplicationCloseDelegate onApplicationClose;
+    public event ApplicationCloseDelegate onApplicationClose;
 
     private ContactItemButtonClickDelegate m_clientButtonHandler;
     private LocalClient m_localClientContact;
@@ -197,22 +197,39 @@ namespace TeamNote.GUI
 
     private void OnDataUpdate()
     {
-      Debug.Log("Updating local contact data.");
-      if ((string)this.lbName.Content != this.m_localClientContact.Name)
-        this.lbName.Dispatcher.Invoke(() => this.lbName.Content = this.m_localClientContact.Name);
-
-      if ((string)this.lbSurname.Content != this.m_localClientContact.Surname)
-        this.lbSurname.Dispatcher.Invoke(() => this.lbSurname.Content = this.m_localClientContact.Surname);
-
+      Debug.Log("Updating local contact data. [{0} {1}]", this.m_localClientContact.Name, this.m_localClientContact.Surname);
       object statusContent = Application.Current.Resources[this.m_localClientContact.Status ? STATUS_ONLINE_RESOURCE : STATUS_AWAY_RESOURCE];
-      if (statusContent != null)
-        this.lbStatus.Dispatcher.Invoke(() => this.lbStatus.Content = statusContent);
+
+      this.Dispatcher.Invoke(() => {
+        if ((string)this.lbName.Content != this.m_localClientContact.Name)
+          this.lbName.Content = this.m_localClientContact.Name;
+
+        if ((string)this.lbSurname.Content != this.m_localClientContact.Surname)
+          this.lbSurname.Content = this.m_localClientContact.Surname;
+
+        if (statusContent != null)
+          this.btnStatus.Content = statusContent;
+      });
     }
 
     private void btnClose_Click(object sender, RoutedEventArgs e)
     {
       this.Hide();
       this.onApplicationClose?.Invoke();
+    }
+
+    private void btnStatus_Click(object sender, RoutedEventArgs e)
+    {
+      Debug.Log("Status button clicked.");
+      if (this.btnStatus.IsEnabled) {
+        Debug.Log("Changing status.");
+        this.m_localClientContact.Status = !this.m_localClientContact.Status;
+      }
+
+      this.btnStatus.IsEnabled = false;
+      Task.Delay(6000).ContinueWith(task => {
+        this.btnStatus.Dispatcher.Invoke(() => this.btnStatus.IsEnabled = true);
+      });
     }
   }
 }

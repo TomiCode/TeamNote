@@ -8,16 +8,12 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-using Org.BouncyCastle.Bcpg;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Encodings;
-using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Utilities.Zlib;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 
@@ -36,9 +32,11 @@ namespace TeamNote.Client
     /* Client events and delegates. */
     public delegate void ServerMessageReceivedHandler(int type, ByteString message);
     public delegate void ClientMessageReceivedHandler(long sender, int type, ByteString message);
+    public delegate void ServerConnectionErrorHandler();
 
     public event ServerMessageReceivedHandler onServerMessageReceived;
     public event ClientMessageReceivedHandler onClientMessageReceived;
+    public event ServerConnectionErrorHandler onConnectionErrors;
 
     /* Local Keypair. */
     private AsymmetricCipherKeyPair m_localCipherKeys;
@@ -52,6 +50,8 @@ namespace TeamNote.Client
     /* Private members. */
     private TcpClient m_tcpClient;
     private Thread m_listenThread;
+
+    private volatile bool m_requestedDisconnect;
 
     /* Properties. */
     public bool IsConnected {
@@ -79,6 +79,7 @@ namespace TeamNote.Client
     public LocalClient()
     {
       this.m_localKeyring = new Dictionary<long, AsymmetricKeyParameter>();
+      this.m_requestedDisconnect = false;
 
       this.m_tcpClient = new TcpClient();
       this.m_listenThread = new Thread(this.ListenThread);
@@ -98,6 +99,19 @@ namespace TeamNote.Client
 
       this.m_listenThread.Start();
       return true;
+    }
+
+    public void Disconnect()
+    {
+      Debug.Log("Disconnecting from server and stopping threads.");
+      this.m_requestedDisconnect = true;
+
+      if (this.m_tcpClient.Connected) {
+        Debug.Log("Closing server connection.");
+        this.m_tcpClient.Client.Disconnect(false);
+        this.m_tcpClient.Close();
+      }
+      // this.m_listenThread.Abort();
     }
 
     public void InitializeKeypair()
@@ -186,6 +200,11 @@ namespace TeamNote.Client
 
     private bool SendMessage(long client, bool server, int type, IMessage message, bool encrypt)
     {
+      if (!this.m_tcpClient.Connected) {
+        Debug.Error("Cannot send data through a disconnected connection.");
+        return false;
+      }
+
       ByteString messageContent = message.ToByteString();
       NetworkPacket networkPacket = new NetworkPacket();
 
@@ -213,11 +232,21 @@ namespace TeamNote.Client
       }
       networkPacket.Message = messageContent;
 
-      int networkPacketSize = networkPacket.CalculateSize();
-      int bytesSend = this.m_tcpClient.Client.Send(networkPacket.ToByteArray());
+      try {
+        int networkPacketSize = networkPacket.CalculateSize();
+        int bytesSend = this.m_tcpClient.Client.Send(networkPacket.ToByteArray());
 
-      Debug.Log("Sended {0} bytes. Network packet Size={1}.", bytesSend, networkPacketSize);
-      return (bytesSend == networkPacketSize);
+        Debug.Log("Sended {0} bytes. Network packet Size={1}.", bytesSend, networkPacketSize);
+        return (bytesSend == networkPacketSize);
+      }
+      catch (Exception ex) {
+        Debug.Exception(ex);
+
+        if(!this.m_requestedDisconnect)
+          this.ServerConnectionError();
+
+        return false;
+      }
     }
 
     private ByteString ProceedMessageEncoding(AsymmetricKeyParameter messageKey, ByteString messageBytes)
@@ -249,28 +278,45 @@ namespace TeamNote.Client
       byte[] messageBuffer = new byte[LISTEN_BUFFER_SIZE];
       int bytesReceived = 0;
 
-      while ((bytesReceived = this.m_tcpClient.Client.Receive(messageBuffer)) != 0) {
-        NetworkPacket receivedPacket = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
-        Debug.Log("Received packet Type={0} Server={1} ClientId={2} Encrypted={3}.",
-          receivedPacket.Type, receivedPacket.Server, receivedPacket.ClientId, receivedPacket.Encrypted);
+      try {
+        while ((bytesReceived = this.m_tcpClient.Client.Receive(messageBuffer)) != 0) {
+          NetworkPacket receivedPacket = NetworkPacket.Parser.ParseFrom(new CodedInputStream(messageBuffer, 0, bytesReceived));
+          Debug.Log("Received packet Type={0} Server={1} ClientId={2} Encrypted={3}.",
+            receivedPacket.Type, receivedPacket.Server, receivedPacket.ClientId, receivedPacket.Encrypted);
 
-        ByteString messageContent = receivedPacket.Message;
-        if (receivedPacket.Encrypted) {
-          messageContent = this.ProceedMessageEncoding(this.m_localCipherKeys.Private, messageContent);
-          if (messageContent == null) {
-            Debug.Error("Encoded message content is invalid.");
-            continue;
+          ByteString messageContent = receivedPacket.Message;
+          if (receivedPacket.Encrypted) {
+            messageContent = this.ProceedMessageEncoding(this.m_localCipherKeys.Private, messageContent);
+            if (messageContent == null) {
+              Debug.Error("Encoded message content is invalid.");
+              continue;
+            }
+          }
+
+          if (receivedPacket.Server) {
+            this.onServerMessageReceived?.Invoke(receivedPacket.Type, messageContent);
+          }
+          else {
+            this.onClientMessageReceived?.Invoke(receivedPacket.ClientId, receivedPacket.Type, messageContent);
           }
         }
-
-        if (receivedPacket.Server) {
-          this.onServerMessageReceived?.Invoke(receivedPacket.Type, messageContent);
-        }
-        else {
-          this.onClientMessageReceived?.Invoke(receivedPacket.ClientId, receivedPacket.Type, messageContent);
-        }
       }
+      catch (Exception ex) {
+        Debug.Exception(ex);
+        if (!this.m_requestedDisconnect)
+          this.ServerConnectionError();
+      }
+      Debug.Warn("Stopped listen thread.");
     }
 
+    private void ServerConnectionError()
+    {
+      Debug.Warn("Connection to server closed.");
+      if (this.m_tcpClient.Client != null && this.m_tcpClient.Connected) {
+        Debug.Warn("Closing connected TCPClient.");
+        this.m_tcpClient.Close();
+      }
+      this.onConnectionErrors?.Invoke();
+    }
   }
 }
