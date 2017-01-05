@@ -216,6 +216,17 @@ namespace TeamNote.Client
           }
           break;
 
+        case MessageType.ContactUpdateStatus: {
+            ContactUpdateStatus statusUpdate = ContactUpdateStatus.Parser.ParseFrom(messageContent);
+
+            var updateContact = this.m_guiContacts.GetClientContact(statusUpdate.ClientId);
+            if (updateContact != null) {
+              Debug.Log("Updating status ClientId={0}.", statusUpdate.ClientId);
+              updateContact.Status = statusUpdate.Online;
+            }
+          }
+          break;
+
         /* Contacts update. */
         case MessageType.ContactUpdate: {
             ContactUpdate contactUpdate = ContactUpdate.Parser.ParseFrom(messageContent);

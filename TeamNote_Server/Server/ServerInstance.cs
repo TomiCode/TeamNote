@@ -202,6 +202,28 @@ namespace TeamNote.Server
           }
           break;
 
+        case MessageType.ContactUpdateChangeRequest: {
+            ContactUpdateChangeRequest clientRequestedChange = ContactUpdateChangeRequest.Parser.ParseFrom(messageContent);
+            var senderProfile = senderClient.Profile;
+
+            if (senderProfile.Name != clientRequestedChange.Name || senderProfile.Surname != clientRequestedChange.Surname) {
+              Debug.Log("Updating client data. This is not implemented on the client side. ;)");
+            }
+            else if(senderProfile.Status != clientRequestedChange.Online) {
+              ContactUpdateStatus statusUpdate = new ContactUpdateStatus();
+              statusUpdate.Online = clientRequestedChange.Online;
+              statusUpdate.ClientId = senderClient.ClientId;
+
+              foreach (NetworkClient connectedClient in this.m_connectedClients) {
+                // if (connectedClient.ClientId == senderClient.ClientId) continue;
+
+                Debug.Log("Sending status update to ClientId={0}.", connectedClient.ClientId);
+                connectedClient.SendMessage(MessageType.ContactUpdateStatus, statusUpdate);
+              }
+            }
+          }
+          break;
+
         /* Client Public Key request. */
         case MessageType.MessageClientPublicRequest: {
             MessageRequestClientPublic requestMessage = MessageRequestClientPublic.Parser.ParseFrom(messageContent);

@@ -106,15 +106,17 @@ namespace TeamNote.UI
     private void OnDataUpdated()
     {
       Debug.Log("ClientId={0} data updated Online={1}.", this.m_clientContact.ClientId, this.m_clientContact.Status);
-
-      if ((string)this.lbContactName.Content != this.m_clientContact.Username)
-        this.lbContactName.Dispatcher.Invoke(() => this.lbContactName.Content = this.m_clientContact.Username);
-
       object statusContent = Application.Current.Resources[this.m_clientContact.Status ? Contacts.STATUS_ONLINE_RESOURCE : Contacts.STATUS_AWAY_RESOURCE];
-      if (statusContent != null)
-        this.lbContactStatus.Dispatcher.Invoke(() => this.lbContactStatus.Content = statusContent);
-      else
-        Debug.Warn("Cannot load STATUS resource.");
+      if (statusContent == null) 
+        Debug.Warn("Status resource is invalid.");
+
+      this.Dispatcher.Invoke(() => {
+        if ((string)this.lbContactName.Content != this.m_clientContact.Username)
+          this.lbContactName.Content = this.m_clientContact.Username;
+
+        if (statusContent != null)
+          this.lbContactStatus.Content = statusContent;
+      });
     }
 
     private void btnContactMessage_Click(object sender, RoutedEventArgs e)
