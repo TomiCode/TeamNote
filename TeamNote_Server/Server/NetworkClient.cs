@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
-using Org.BouncyCastle.Bcpg;
-using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Encodings;
+using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 
 using Google.Protobuf;
 
 using TeamNote.Protocol;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Encodings;
-using System.IO;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Digests;
 
 namespace TeamNote.Server
 {
@@ -51,10 +45,14 @@ namespace TeamNote.Server
     public delegate void ReceivedClientMessageHandler(NetworkClient sender, NetworkPacket packet);
     public delegate void ReceivedServerMessageHandler(NetworkClient sender, int type, ByteString message);
     public delegate AsymmetricKeyParameter RequestServerCipherKey();
+
+    public delegate void RemoveClientConnectionHandler(NetworkClient sender);
     
     /* Public events. */
     public event ReceivedClientMessageHandler onClientMessageRequest;
     public event ReceivedServerMessageHandler onServerMessageRequest;
+
+    public event RemoveClientConnectionHandler onClientDisconnected;
 
     /* Client private class members. */
     private AsymmetricKeyParameter m_clientPublicKey;
@@ -224,36 +222,51 @@ namespace TeamNote.Server
       byte[] messageBuffer = new byte[LISTEN_MESSAGE_SIZE];
       int bytesReceived = 0;
 
-      while ((bytesReceived = this.m_networkClient.Client.Receive(messageBuffer)) != 0) {
-        NetworkPacket receivedMessage = NetworkPacket.Parser.ParseFrom(ByteString.CopyFrom(messageBuffer, 0, bytesReceived));
-        Debug.Log("Received message Server={0} ClientId={1} Encrypted={2}.", receivedMessage.Server, 
-          receivedMessage.ClientId, receivedMessage.Encrypted);
+      try {
+        while ((bytesReceived = this.m_networkClient.Client.Receive(messageBuffer)) != 0) {
+          NetworkPacket receivedMessage = NetworkPacket.Parser.ParseFrom(ByteString.CopyFrom(messageBuffer, 0, bytesReceived));
+          Debug.Log("Received message Server={0} ClientId={1} Encrypted={2}.", receivedMessage.Server,
+            receivedMessage.ClientId, receivedMessage.Encrypted);
 
-        if (receivedMessage.Server) {
-          ByteString messageContent = receivedMessage.Message;
+          if (receivedMessage.Server) {
+            ByteString messageContent = receivedMessage.Message;
 
-          if (receivedMessage.Encrypted) {
-            Debug.Log("Decrypting server message.");
+            if (receivedMessage.Encrypted) {
+              Debug.Log("Decrypting server message.");
 
-            AsymmetricKeyParameter cipherPrivateKey = this.m_clientRequestServerKey?.Invoke();
-            if (cipherPrivateKey == null) {
-              Debug.Error("Cannot receive server private cipher key.");
-              continue;
+              AsymmetricKeyParameter cipherPrivateKey = this.m_clientRequestServerKey?.Invoke();
+              if (cipherPrivateKey == null) {
+                Debug.Error("Cannot receive server private cipher key.");
+                continue;
+              }
+
+              messageContent = this.ProceedMessageEncoding(cipherPrivateKey, messageContent);
+              if (messageContent == null) {
+                Debug.Error("Invalid message content after encoding.");
+                continue;
+              }
             }
-
-            messageContent = this.ProceedMessageEncoding(cipherPrivateKey, messageContent);
-            if (messageContent == null) {
-              Debug.Error("Invalid message content after encoding.");
-              continue;
-            }
+            this.onServerMessageRequest?.Invoke(this, receivedMessage.Type, messageContent);
           }
-          this.onServerMessageRequest?.Invoke(this, receivedMessage.Type, messageContent);
+          else {
+            this.onClientMessageRequest?.Invoke(this, receivedMessage);
+          }
         }
-        else {
-          this.onClientMessageRequest?.Invoke(this, receivedMessage);
-        }
+      }
+      catch (Exception ex) {
+        Debug.Exception(ex);
+      }
+      finally {
+        this.DisconnectClient();
       }
     }
 
+    private void DisconnectClient()
+    {
+      Debug.Warn("ClientId={0} disconnected.", this.m_clientId);
+
+      this.m_networkClient.Close();
+      this.onClientDisconnected?.Invoke(this);
+    }
   }
 }

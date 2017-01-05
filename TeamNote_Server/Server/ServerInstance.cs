@@ -3,27 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Google.Protobuf;
-
-using Org.BouncyCastle.Bcpg.OpenPgp;
-
-using TeamNote.Protocol;
-
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Bcpg;
-using System.IO;
-using Org.BouncyCastle.Crypto.Encodings;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Utilities.IO;
-using Org.BouncyCastle.Math;
+
+using Google.Protobuf;
+
+using TeamNote.Protocol;
 
 namespace TeamNote.Server
 {
@@ -36,7 +26,6 @@ namespace TeamNote.Server
     private DiscoveryService m_discoveryService;
 
     /* Connected clients. */
-    // private Dictionary<long, NetworkClient> m_connectedClients;
     private List<NetworkClient> m_connectedClients;
 
     /* Internal members. */
@@ -74,7 +63,6 @@ namespace TeamNote.Server
       }
 
       /* Current connected clients. */
-      //this.m_connectedClients = new Dictionary<long, NetworkClient>();
       this.m_connectedClients = new List<NetworkClient>();
 
       /* UDP Server discovery service. */
@@ -116,6 +104,7 @@ namespace TeamNote.Server
         NetworkClient networkClient = new NetworkClient(tcpClient, this.ClientKeyRequester);
         networkClient.onServerMessageRequest += this.ServerMessageReceived;
         networkClient.onClientMessageRequest += this.ClientMessageReceived;
+        networkClient.onClientDisconnected += this.ClientDisconnectHandler;
 
         this.m_connectedClients.Add(networkClient);
         networkClient.Start();
@@ -248,6 +237,20 @@ namespace TeamNote.Server
 
       Debug.Log("Forwarding message from ClientId={0} to ClientId={1}.", senderClient.ClientId, receivedPacket.ClientId);
       requestedUser.ForwardNetworkPacket(senderClient.ClientId, receivedPacket);
+    }
+
+    private void ClientDisconnectHandler(NetworkClient senderClient)
+    {
+      this.m_connectedClients.Remove(senderClient);
+      Debug.Log("Current connected clients Count={0}.", this.m_connectedClients.Count);
+
+      ContactUpdate removeUpdate = new ContactUpdate();
+      removeUpdate.Remove.Add(senderClient.ClientId);
+
+      foreach (NetworkClient connectedClient in this.m_connectedClients) {
+        Debug.Log("Sending UpdateContact to remove Client from ClientId={0}.", connectedClient.ClientId);
+        connectedClient.SendMessage(MessageType.ContactUpdate, removeUpdate);
+      }
     }
   }
 }
