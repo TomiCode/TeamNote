@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-using TeamNote.Client;
 using TeamNote.Protocol;
 
 namespace TeamNote.GUI
@@ -231,13 +222,6 @@ namespace TeamNote.GUI
       Task.Delay(6000).ContinueWith(task => {
         this.btnStatus.Dispatcher.Invoke(() => this.btnStatus.IsEnabled = true);
       });
-    }
-
-    private void btnTEST_Click(object s, RoutedEventArgs e)
-    {
-      Notice notice = new Notice();
-      notice.MessageContent = "Testing";
-      notice.Show();
     }
   }
 }

@@ -26,9 +26,7 @@
     </Border>
     <Border Margin="0,80,0,42" BorderBrush="#FFD4D4D4" BorderThickness="0,1">
       <ScrollViewer Template="{DynamicResource ScrollViewerControl}" Padding="5,0,0,0" ClipToBounds="True" ScrollChanged="ScrollViewer_ScrollChanged">
-        <StackPanel x:Name="spMessageList">
-          <UI:MessageItem/>
-        </StackPanel>
+        <StackPanel x:Name="spMessageList"/>
       </ScrollViewer>
     </Border>
     <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Margin="10,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="538" VerticalContentAlignment="Center" Padding="3,6,3,0" FontFamily="{DynamicResource GlobalNormalFont}" Background="{x:Null}" BorderThickness="0,0,0,1" BorderBrush="#FFCDCDCD" FontSize="13" MaxLines="2" MaxLength="512" KeyUp="tbMessage_KeyUp"/>

@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading;
-
-using System.Net.Sockets;
 using System.Net;
 
-using TeamNote.Protocol;
-
 using Google.Protobuf;
-using Google.Protobuf.Collections;
+
+using TeamNote.Protocol;
 
 namespace TeamNote.Client
 {
@@ -162,11 +155,16 @@ namespace TeamNote.Client
 
     public void RequestClientPublicKey(long clientId)
     {
-      Debug.Log("Requesting ClientId={0} public key from server.", clientId);
-      MessageRequestClientPublic requestMessage = new MessageRequestClientPublic();
-      requestMessage.ClientId = clientId;
+      if (!this.m_localClient.HasClientKey(clientId)) {
+        Debug.Log("Requesting ClientId={0} public key from server.", clientId);
+        MessageRequestClientPublic requestMessage = new MessageRequestClientPublic();
+        requestMessage.ClientId = clientId;
 
-      this.m_localClient.SendMessage(MessageType.MessageClientPublicRequest, requestMessage);
+        Task.Delay(400).ContinueWith(task =>
+          this.m_localClient.SendMessage(MessageType.MessageClientPublicRequest, requestMessage));
+      }
+      else
+        Debug.Log("Keyring contains ClientId={0}.", clientId);
     }
 
     private void UpdateStatusMessage(string resourceString)
@@ -212,7 +210,14 @@ namespace TeamNote.Client
               this.m_guiSplash.SetMessage("Splash_Contacts");
               this.m_guiSplash.Show();
             });
-            Task.Delay(1000).ContinueWith(_ => { this.SendContactRequest(); });
+
+            Task.Delay(1000).ContinueWith(_ => this.SendContactRequest());
+            Task.Delay(5000).ContinueWith(_ => {
+              this.m_guiContacts.Dispatcher.Invoke(() => {
+                this.m_guiSplash.Hide();
+                this.m_guiContacts.Show();
+              });
+            });
           }
           break;
 
@@ -239,11 +244,6 @@ namespace TeamNote.Client
               this.m_guiContacts.RemoveClient(removeClient);
               this.m_localClient.RemoveClientKey(removeClient);
             }
-
-            this.m_guiContacts.Dispatcher.Invoke(() => {
-              this.m_guiSplash.Hide();
-              this.m_guiContacts.Show();
-            });
           }
           break;
 
@@ -280,23 +280,27 @@ namespace TeamNote.Client
               clientWindow = this.m_guiMessages[senderClientId];
             }
             else {
-              this.m_guiAuthenticate.Dispatcher.Invoke(() => {
-                clientWindow = new GUI.Message();
-                clientWindow.SetWindow(this.m_guiContacts.LocalContact, senderContact);
-                clientWindow.onMessageAccept += (string msgContent) => this.SendClientMessage(senderContact.ClientId, msgContent);
-              });
+              this.m_guiContacts.Dispatcher.Invoke(() => clientWindow = new GUI.Message());
+              clientWindow.SetWindow(this.m_guiContacts.LocalContact, senderContact);
+              clientWindow.onMessageAccept += (string msgContent) => this.SendClientMessage(senderContact.ClientId, msgContent);
               this.m_guiMessages.Add(senderClientId, clientWindow);
             }
-
             clientWindow.AddMessage(senderContact, clientMessage.Content);
+            this.RequestClientPublicKey(senderClientId);
+
             if (clientWindow.Visibility != System.Windows.Visibility.Visible) {
               Debug.Log("Showing notification to the local client.");
 
-              this.m_guiContacts.Dispatcher.Invoke(() => {
-                GUI.Notice localNotice = new GUI.Notice();
-                localNotice.MessageContent = "alahu agbar";
-                localNotice.Show();
-              });
+              GUI.Notice noticeWindow = null;
+              this.m_guiContacts.Dispatcher.Invoke(() => noticeWindow = new GUI.Notice());
+              if (noticeWindow != null) {
+                noticeWindow.MessageResource = "Notice_NewMessage";
+                noticeWindow.ButtonResource = "Notice_ShowButton";
+                noticeWindow.MessageContent = senderContact.Username;
+                noticeWindow.onButtonClick += (object sender) => clientWindow.Show();
+
+                noticeWindow.Dispatcher.Invoke(() => noticeWindow.Show());
+              }
             }
           }
           break;
@@ -310,7 +314,6 @@ namespace TeamNote.Client
         if (this.m_guiContactInformation.Visibility == System.Windows.Visibility.Visible) {
           this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Hide());
         }
-
         this.m_guiContactInformation.UpdatePublicKey(this.m_localClient.GetClientKey(senderContact.ClientId));
         this.m_guiContactInformation.UpdateClient(senderContact.Username, senderContact.ClientId);
         this.m_guiContactInformation.Dispatcher.Invoke(() => this.m_guiContactInformation.Show());
@@ -323,14 +326,14 @@ namespace TeamNote.Client
         }
         else {
           Debug.Log("Creating message window for ClientId={0}.", senderContact.ClientId);
-          clientMessageUI = new GUI.Message();
+          this.m_guiContacts.Dispatcher.Invoke(() => clientMessageUI = new GUI.Message());
+
           clientMessageUI.SetWindow(this.m_guiContacts.LocalContact, senderContact);
           clientMessageUI.onMessageAccept += (string messageContent) => this.SendClientMessage(senderContact.ClientId, messageContent);
+
           this.m_guiMessages.Add(senderContact.ClientId, clientMessageUI);
-
-          Task.Delay(400).ContinueWith(_ => this.RequestClientPublicKey(senderContact.ClientId));
+          this.RequestClientPublicKey(senderContact.ClientId);
         }
-
         if (clientMessageUI.Visibility != System.Windows.Visibility.Visible) {
           Debug.Log("Showing message window for ClientId={0}.", senderContact.ClientId);
           clientMessageUI.Show();
@@ -378,4 +381,12 @@ namespace TeamNote.Client
       this.CloseApplicationAfter(6000);
     }
   }
+
+  /* 
+   * You light up, my day
+   * You're the sunshine in the rain
+   * 
+   * Thanks, @am ;)
+   */
 }
+ 

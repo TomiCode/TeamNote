@@ -172,6 +172,11 @@ namespace TeamNote.Client
       return this.m_localKeyring[client];
     }
 
+    public bool HasClientKey(long client)
+    {
+      return this.m_localKeyring.ContainsKey(client);
+    }
+
     public bool RemoveClientKey(long client)
     {
       Debug.Log("Removing ClientId={0} from keyring.", client);
@@ -216,8 +221,10 @@ namespace TeamNote.Client
       if (networkPacket.Encrypted) {
         AsymmetricKeyParameter localKeyParameter = null;
 
-        if (networkPacket.Server) localKeyParameter = this.m_serverKey;
-        else localKeyParameter = this.m_localKeyring[client];
+        if (networkPacket.Server)
+          localKeyParameter = this.m_serverKey;
+        else if(this.m_localKeyring.ContainsKey(client))
+          localKeyParameter = this.m_localKeyring[client];
 
         if (localKeyParameter == null) {
           Debug.Error("Invalid key for Send. ClientId={0} Server={1}.", client, server);

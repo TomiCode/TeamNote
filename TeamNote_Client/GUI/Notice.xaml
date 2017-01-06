@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.UI"
         mc:Ignorable="d"
-        Title="Notice" Height="150" Width="330" WindowStyle="None" Background="Transparent" ShowInTaskbar="False" ResizeMode="NoResize" Topmost="True" AllowsTransparency="True">
+        Title="Notice" Height="140" Width="330" WindowStyle="None" Background="Transparent" ShowInTaskbar="False" ResizeMode="NoResize" Topmost="True" AllowsTransparency="True">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Border Grid.ColumnSpan="2" Style="{DynamicResource WindowTitleBorder}">
       <Label Content="{DynamicResource Notice_Title}" Style="{DynamicResource WindiwTitleLabel}" Margin="0,-1,0,0"/>
     </Border>
-    <Label x:Name="lbResource" Content="{}{resource message}" HorizontalAlignment="Center" Margin="72,30,72,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14"/>
-    <Label x:Name="lbContent" Content="{}{text content}" HorizontalAlignment="Center" Margin="0,61,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14"/>
+    <Label x:Name="lbResource" Content="{}{resource message}" HorizontalAlignment="Center" Margin="0,32,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="14"/>
+    <Label x:Name="lbContent" Content="{}{text content}" HorizontalAlignment="Center" Margin="0,57,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource GlobalLightFont}" FontSize="12"/>
     <Button x:Name="btnNotice" Content="View" HorizontalAlignment="Center" Margin="0,0,0,10" Style="{DynamicResource GlobalAppButton}" Height="19" VerticalAlignment="Bottom"/>
   </Grid>
 </Window>

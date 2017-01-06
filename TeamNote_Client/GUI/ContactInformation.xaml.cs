@@ -1,19 +1,11 @@
-﻿using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace TeamNote.GUI
 {
@@ -46,18 +38,13 @@ namespace TeamNote.GUI
     public void UpdatePublicKey(AsymmetricKeyParameter key)
     {
       if (key == null) {
-        this.Dispatcher.Invoke(() => {
-          this.tbModulus.Text = "not requested";
-        });
+        this.Dispatcher.Invoke(() =>  this.tbModulus.Text = "---");
         return;
       }
-
       RsaKeyParameters rsaParameters = key as RsaKeyParameters;
       byte[] modulusBytes = rsaParameters.Modulus.ToByteArray();
 
-      this.Dispatcher.Invoke(() => {
-        this.tbModulus.Text = Convert.ToBase64String(modulusBytes);
-      });
+      this.Dispatcher.Invoke(() => this.tbModulus.Text = Convert.ToBase64String(modulusBytes));
     }
 
     public void UpdateClient(string name, long client)

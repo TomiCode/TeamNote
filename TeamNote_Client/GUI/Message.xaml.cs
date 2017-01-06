@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TeamNote.GUI
 {
@@ -51,6 +42,7 @@ namespace TeamNote.GUI
     {
       base.Show();
       (Application.Current.Resources["ShowWindowStoryboard"] as Storyboard)?.Begin(this);
+      this.Activate();
     }
 
     public new void Hide()
@@ -119,9 +111,10 @@ namespace TeamNote.GUI
       this.tbMessage.Clear();
       if (this.onMessageAccept?.Invoke(messageContent) == true) {
         UI.MessageItem sendMessage = new UI.MessageItem();
+
+        sendMessage.Date = DateTime.Now;
         sendMessage.Content = messageContent;
         sendMessage.Username = string.Format("{0} {1}", this.m_localClient.Name, this.m_localClient.Surname);
-        sendMessage.Date = DateTime.Now;
         this.spMessageList.Children.Add(sendMessage);
       }
       else {
