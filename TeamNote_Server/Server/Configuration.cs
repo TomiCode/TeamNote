@@ -43,7 +43,7 @@ namespace TeamNote.Server
 
         /* Client automatic configuration port. */
         this.udpPort = DEFAULT_UDP_PORT;
-        this.udpAddress = "127.0.0.1";
+        this.udpAddress = "0.0.0.0";
 
         /* Server tcp configuration. */
         this.tcpListener = "127.0.0.1";
