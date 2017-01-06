@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
@@ -111,7 +108,6 @@ namespace TeamNote.Client
         this.m_tcpClient.Client.Disconnect(false);
         this.m_tcpClient.Close();
       }
-      // this.m_listenThread.Abort();
     }
 
     public void InitializeKeypair()
