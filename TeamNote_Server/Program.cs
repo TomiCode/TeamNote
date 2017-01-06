@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using TeamNote.Server;
 
@@ -11,7 +7,7 @@ namespace TeamNote
   class Program
   {
     private static ServerInstance serverInstance;
-    
+
     static void Main(string[] args)
     {
       Debug.Setup("TeamNote_Server.log");
@@ -20,7 +16,11 @@ namespace TeamNote
       serverInstance.GenerateServerKeypair();
       serverInstance.Start();
 
-      Console.ReadKey();
+      Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) => {
+        serverInstance.Stop();
+      };
+
+      while(true) Console.ReadKey(true);
     }
   }
 }

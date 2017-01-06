@@ -31,6 +31,6 @@
     <Border Margin="0,100,0,40" Padding="5,0" BorderBrush="#FFE4E4E4" BorderThickness="0,1">
       <TextBlock x:Name="tbModulus" TextWrapping="Wrap" Text="{}{Client modulus}" FontFamily="/TeamNote_Client;component/Fonts/#Ubuntu Mono" FontSize="13" TextAlignment="Center" Foreground="{DynamicResource NormalLabelForegroundBrush}" Padding="0,2"/>
     </Border>
-    <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Click="btnClose_Click" Style="{DynamicResource GlobalAppButton}"/>
+    <Button x:Name="btnClose" Content="{DynamicResource ContactInformation_btnClose}" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Click="btnClose_Click" Style="{DynamicResource GlobalAppButton}"/>
   </Grid>
 </Window>

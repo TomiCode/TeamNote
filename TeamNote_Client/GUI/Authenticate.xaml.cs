@@ -17,11 +17,15 @@ namespace TeamNote.GUI
       InitializeComponent();
 
       this.Opacity = 0;
-      this.IsVisibleChanged += (object s, DependencyPropertyChangedEventArgs e) => {
+      this.IsVisibleChanged += (s, e) => {
         if (!(bool)e.NewValue) {
           Debug.Warn("Hiding window, cause IsVisible changed.");
           base.Hide();
         }
+      };
+      this.MouseDown += (s, e) => {
+        if (e.ChangedButton == MouseButton.Left)
+          DragMove();
       };
     }
 
@@ -47,7 +51,7 @@ namespace TeamNote.GUI
 
     private void btnConnect_Click(object sender, RoutedEventArgs e)
     {
-      if (this.tbName.Text == string.Empty || this.tbSurname.Text == string.Empty) {
+      if (string.IsNullOrEmpty(this.tbName.Text) || string.IsNullOrEmpty(this.tbSurname.Text)) {
         this.SetStatusLabel("Authenticate_Status_Invalid_Empty");
       }
       else {
@@ -63,12 +67,6 @@ namespace TeamNote.GUI
       if (Application.Current.Resources.Contains(resourceString)) {
         this.lbStatus.Content = Application.Current.Resources[resourceString];
       }
-    }
-
-    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-      if (e.ChangedButton == MouseButton.Left)
-        DragMove();
     }
   }
 }

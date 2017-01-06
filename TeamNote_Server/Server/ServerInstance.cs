@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -77,13 +76,23 @@ namespace TeamNote.Server
 
     public void Start()
     {
-      Debug.Log("Starting socket listeners. [{0} => {1}]", 
+      Debug.Notice("Starting socket listeners. [{0} => {1}]", 
         this.m_serverConfig.ConfigService, this.m_serverConfig.ListenAddress);
 
       /* Start listeners and threads. */
       this.m_discoveryService.Start(this.m_serverConfig.ListenAddress);
       this.m_serverListener.Start();
       this.m_serverThread.Start();
+    }
+
+    public void Stop()
+    {
+      Debug.Notice("Stopping server.");
+      foreach (NetworkClient connectedClient in this.m_connectedClients) {
+        connectedClient.Stop();
+      }
+
+      this.m_serverListener.Stop();
     }
 
     public void GenerateServerKeypair()

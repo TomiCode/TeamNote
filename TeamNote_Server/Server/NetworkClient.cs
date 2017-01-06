@@ -131,8 +131,15 @@ namespace TeamNote.Server
 
     public void Start()
     {
-      Debug.Log("Starting client threads.");
+      Debug.Log("Starting ClientId={0} threads.", this.m_clientId);
       this.m_listenThread.Start();
+    }
+
+    public void Stop()
+    {
+      Debug.Log("Stopping ClientId={0} threads.", this.m_clientId);
+      this.m_networkClient.Client.Disconnect(false);
+      this.m_networkClient.Close();
     }
 
     public ByteString ProceedMessageEncoding(AsymmetricKeyParameter messageKey, ByteString messageBytes)

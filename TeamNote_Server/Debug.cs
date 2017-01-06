@@ -21,6 +21,11 @@ namespace TeamNote
       WriteLog("D", format, args);
     }
 
+    public static void Notice(string format, params object[] args)
+    {
+      WriteLog("N", format, args);
+    }
+
     public static void Warn(string format, params object[] args)
     {
       WriteLog("W", format, args);

@@ -13,7 +13,6 @@ namespace TeamNote.Client
     public const string CONFIG_FILENAME = "ClientConfig.json";
 
     private App.ApplicationCloseDelegate m_appCloseDelegate;
-    private App.ApplicationLoadLanguage m_appLanguageLoader;
     
     /* Client private members. */
     private Configuration m_clientConfig;
@@ -78,13 +77,17 @@ namespace TeamNote.Client
         this.m_appCloseDelegate(0);
       }
 
+      /* Language loader. */
       langLoader?.Invoke(this.m_clientConfig.CurrentLocale);
 
+      /* Keypair creation. */
       this.m_localClient.InitializeKeypair();
 
+      /* Show initial splash screen. */
       this.m_guiSplash.SetMessage("Splash_Discover");
       this.m_guiSplash.Show();
 
+      /* Start the Discovery Service. */
       this.m_serverDiscoverer.Start(this.m_clientConfig.UDP_Port);
     }
 
@@ -100,7 +103,7 @@ namespace TeamNote.Client
       Debug.Warn("Discovery had failed after {0} retries. :(", retriesCount);
 
       this.CloseApplicationAfter(5000);
-      this.UpdateStatusMessage("Splash_DiscoverFailure");
+      this.m_guiSplash.SetMessage("Splash_DiscoverFailure");
     }
 
     private void ConnectToServer(IPEndPoint serverAddress)
@@ -170,11 +173,6 @@ namespace TeamNote.Client
       }
       else
         Debug.Log("Keyring contains ClientId={0}.", clientId);
-    }
-
-    private void UpdateStatusMessage(string resourceString)
-    {
-      this.m_guiSplash.SetMessage(resourceString);
     }
 
     private void CloseApplicationAfter(int miliseconds)

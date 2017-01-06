@@ -31,6 +31,7 @@
   <System:String x:Key="Message_btnSend">Wyślij</System:String>
 
   <System:String x:Key="ContactInformation_Title">TeamNote – Informacje</System:String>
+  <System:String x:Key="ContactInformation_btnClose">Zamknij</System:String>
   <System:String x:Key="ContactInformation_Username">Nazwa</System:String>
   <System:String x:Key="ContactInformation_ClientId">Identyfikator</System:String>
 

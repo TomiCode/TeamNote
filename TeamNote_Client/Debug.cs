@@ -21,6 +21,11 @@ namespace TeamNote
       WriteLog("D", format, args);
     }
 
+    public static void Notice(string format, params object[] args)
+    {
+      WriteLog("N", format, args);
+    }
+
     public static void Warn(string format, params object[] args)
     {
       WriteLog("W", format, args);
@@ -38,9 +43,6 @@ namespace TeamNote
 
     private static void WriteLog(string type, string format, params object[] args)
     {
-      // if (m_sLogWriter == null)
-      //  return;
-
       StackFrame currentFrame = new StackFrame(2);
       MethodBase methodBase = currentFrame.GetMethod();
 
