@@ -140,13 +140,13 @@
   </Storyboard>
 
   <Storyboard x:Key="SpashStatusShow">
-    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.300" To="0,0,0,5"/>
-    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.300" To="1.0"/>
+    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.200" To="18,0,0,4"/>
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.200" To="1.0"/>
   </Storyboard>
 
   <Storyboard x:Key="SpashStatusHide">
-    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.200" To="0,0,0,12"/>
-    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.200" To="0.0"/>
+    <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:0.150" To="14,0,0,14"/>
+    <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.150" To="0.0"/>
   </Storyboard>
 
   <Storyboard x:Key="NoticeSlowFadeout">

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamNote.GUI"
         mc:Ignorable="d"
-        Title="Authenticate" Height="200" Width="410" Background="{x:Null}" SnapsToDevicePixels="True" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Authenticate" Height="200" Width="410" Background="{x:Null}" SnapsToDevicePixels="True" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/TeamNote_Client;component/Resources/teamnote_icon.ico">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" SnapsToDevicePixels="True" Effect="{DynamicResource WindowShadowEffect}">
     <Grid.RowDefinitions>
       <RowDefinition Height="3*"/>

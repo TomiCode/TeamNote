@@ -13,7 +13,8 @@ namespace TeamNote.Client
     public const string CONFIG_FILENAME = "ClientConfig.json";
 
     private App.ApplicationCloseDelegate m_appCloseDelegate;
-
+    private App.ApplicationLoadLanguage m_appLanguageLoader;
+    
     /* Client private members. */
     private Configuration m_clientConfig;
     private ServerDiscoverer m_serverDiscoverer;
@@ -49,7 +50,7 @@ namespace TeamNote.Client
 
       /* GUI initialization. */
       this.m_guiSplash = new GUI.Splash();
-      
+
       this.m_guiAuthenticate = new GUI.Authenticate();
       this.m_guiAuthenticate.onAuthorizationAccept += this.SendAuthorization;
       this.m_guiAuthenticate.onAuthorizationCancel += this.HandleApplicationClose;
@@ -58,10 +59,11 @@ namespace TeamNote.Client
       this.m_guiContacts.onApplicationClose += this.HandleApplicationClose;
 
       this.m_guiContactInformation = new GUI.ContactInformation();
+
       this.m_guiMessages = new Dictionary<long, GUI.Message>();
     }
 
-    public void Initialize()
+    public void Initialize(App.ApplicationLoadLanguage langLoader)
     {
       if (!this.m_clientConfig.LoadConfig()) {
         Debug.Log("Failed to load configuration file.. Creating.");
@@ -75,6 +77,9 @@ namespace TeamNote.Client
         Debug.Error("Config not loaded. Closing client.");
         this.m_appCloseDelegate(0);
       }
+
+      langLoader?.Invoke(this.m_clientConfig.CurrentLocale);
+
       this.m_localClient.InitializeKeypair();
 
       this.m_guiSplash.SetMessage("Splash_Discover");

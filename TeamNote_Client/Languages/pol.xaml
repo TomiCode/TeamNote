@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TeamNote.Languages"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib">
+  <System:String x:Key="Splash_Discover">Wyszukiwanie serwera</System:String>
+  <System:String x:Key="Splash_DiscoverFailure">Brak serwera lokalnego</System:String>
+  <System:String x:Key="Splash_Connect">Łączenie z serwerem</System:String>
+  <System:String x:Key="Splash_CannotConnect">Wystąpił błąd podczas łączenia</System:String>
+  <System:String x:Key="Splash_HandshakeFail">Wystąpił błąd klucza publicznego</System:String>
+  <System:String x:Key="Splash_Contacts">Ładowanie klienta</System:String>
+  <System:String x:Key="Splash_ServerDisconnected">Utracono połączenie z serwerem</System:String>
+  <System:String x:Key="Splash_Closing">Zamykanie połączenia</System:String>
+
+  <System:String x:Key="Authenticate_Title">TeamNote – Logowanie</System:String>
+  <System:String x:Key="Authenticate_Name">Imię</System:String>
+  <System:String x:Key="Authenticate_Surname">Nazwisko</System:String>
+  <System:String x:Key="Authenticate_btnConnect">Połącz</System:String>
+  <System:String x:Key="Authenticate_btnCancel">Anuluj</System:String>
+  <System:String x:Key="Authenticate_Status_Notice">Witaj! Wpisz poniżej swoje dane.</System:String>
+  <System:String x:Key="Authenticate_Status_Invalid_Empty">Niektóre pola nie zostały poprawnie uzupełnione</System:String>
+
+  <System:String x:Key="Contacts_Title">TeamNote – Kontakty</System:String>
+  <System:String x:Key="Contacts_Status_Online">Online</System:String>
+  <System:String x:Key="Contacts_Status_Away">Zaraz wracam</System:String>
+
+  <System:String x:Key="Message_Title">TeamNote – Wiadomości</System:String>
+  <System:String x:Key="Message_Description">Prywatna wiadomość</System:String>
+  <System:String x:Key="Message_ServerName">Serwer</System:String>
+  <System:String x:Key="Message_SendFailed">Wystąpił błąd podczas wysyłania wiadomości :(</System:String>
+  <System:String x:Key="Message_KeyUpdated">Nastąpiła aktualizacja klucza publicznego.</System:String>
+  <System:String x:Key="Message_btnSend">Wyślij</System:String>
+
+  <System:String x:Key="ContactInformation_Title">TeamNote – Informacje</System:String>
+  <System:String x:Key="ContactInformation_Username">Nazwa</System:String>
+  <System:String x:Key="ContactInformation_ClientId">Identyfikator</System:String>
+
+  <System:String x:Key="Notice_Title">TeamNote – Powiadomienie</System:String>
+  <System:String x:Key="Notice_NewMessage">Otrzymano wiadomość</System:String>
+  <System:String x:Key="Notice_ShowButton">Pokaż</System:String>
+</ResourceDictionary>

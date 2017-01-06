@@ -3,25 +3,22 @@
                     xmlns:local="clr-namespace:TeamNote.Languages"
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
 
-  <System:String x:Key="Splash_Discover">Waiting for application server..</System:String>
-  <System:String x:Key="Splash_DiscoverFailure">Server did not respond to client. Exiting..</System:String>
-  <System:String x:Key="Splash_Connect">Connecting to server..</System:String>
-  <System:String x:Key="Splash_CannotConnect">Cannot connect to server. Check Your system.</System:String>
-  <System:String x:Key="Splash_HandshakeFail">Error occured with the local rsa key.</System:String>
-  <System:String x:Key="Splash_Contacts">Collecting users..</System:String>
-  <System:String x:Key="Splash_ServerDisconnected">Server connection lost! Closing..</System:String>
-  <System:String x:Key="Splash_Closing">Closing server connection..</System:String>
+  <System:String x:Key="Splash_Discover">Discovering application server</System:String>
+  <System:String x:Key="Splash_DiscoverFailure">Server not available</System:String>
+  <System:String x:Key="Splash_Connect">Connecting to server</System:String>
+  <System:String x:Key="Splash_CannotConnect">Connection failed. Check network config</System:String>
+  <System:String x:Key="Splash_HandshakeFail">Error occured with the local rsa key</System:String>
+  <System:String x:Key="Splash_Contacts">Loading client</System:String>
+  <System:String x:Key="Splash_ServerDisconnected">Server connection lost</System:String>
+  <System:String x:Key="Splash_Closing">Closing server connection</System:String>
   
   <System:String x:Key="Authenticate_Title">TeamNote – Authentication</System:String>
   <System:String x:Key="Authenticate_Name">Name</System:String>
   <System:String x:Key="Authenticate_Surname">Surname</System:String>
   <System:String x:Key="Authenticate_btnConnect">Connect</System:String>
   <System:String x:Key="Authenticate_btnCancel">Cancel</System:String>
-
-  <System:String x:Key="Authenticate_Status_Notice">{Status Notice}</System:String>
+  <System:String x:Key="Authenticate_Status_Notice">Hello! Enter Your contact information.</System:String>
   <System:String x:Key="Authenticate_Status_Invalid_Empty">One or more fields are empty.</System:String>
-  <System:String x:Key="Authenticate_Status_Invalid_Name">Your name contains invalid characters!</System:String>
-  <System:String x:Key="Authenticate_Status_Invalid_Surname">Surname: Invalid characters.</System:String>
 
   <System:String x:Key="Contacts_Title">TeamNote – Contacts</System:String>
   <System:String x:Key="Contacts_Status_Online">Online</System:String>
@@ -41,5 +38,4 @@
   <System:String x:Key="Notice_Title">TeamNote – Notice</System:String>
   <System:String x:Key="Notice_NewMessage">You received a message</System:String>
   <System:String x:Key="Notice_ShowButton">Show Message</System:String>
-  
 </ResourceDictionary>

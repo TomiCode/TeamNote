@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TeamNote.GUI"
         xmlns:UI="clr-namespace:TeamNote.UI" x:Class="TeamNote.GUI.Contacts"
         mc:Ignorable="d"
-        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="Contacts" Height="430" Width="325" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Icon="/TeamNote_Client;component/Resources/teamnote_icon.ico">
   <Grid Margin="10" Background="{DynamicResource WindowBackgroundBrush}" Effect="{DynamicResource WindowShadowEffect}">
     <Border Grid.ColumnSpan="2" Style="{DynamicResource WindowTitleBorder}">
       <Grid>
